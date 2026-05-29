@@ -93,6 +93,18 @@
     },
     {
       "type": "export",
+      "name": "getTraceResult",
+      "file": "src/commands/trace.ts",
+      "line": 18
+    },
+    {
+      "type": "export",
+      "name": "TraceResult",
+      "file": "src/commands/trace.ts",
+      "line": 11
+    },
+    {
+      "type": "export",
       "name": "performValidate",
       "file": "src/commands/validate.ts",
       "line": 35
@@ -305,6 +317,18 @@
     },
     {
       "type": "export",
+      "name": "getTraceResult",
+      "file": "src/commands/trace.ts",
+      "line": 18
+    },
+    {
+      "type": "export",
+      "name": "TraceResult",
+      "file": "src/commands/trace.ts",
+      "line": 11
+    },
+    {
+      "type": "export",
       "name": "performValidate",
       "file": "src/commands/validate.ts",
       "line": 35
@@ -427,5 +451,5 @@
   "unusedFiles": [],
   "unusedDeps": [],
   "unlistedDeps": [],
-  "summary": "Found 35 issues"
+  "summary": "Found 37 issues"
 }
