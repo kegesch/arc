@@ -39,6 +39,18 @@
     },
     {
       "type": "export",
+      "name": "getImpactResult",
+      "file": "src/commands/impact.ts",
+      "line": 18
+    },
+    {
+      "type": "export",
+      "name": "ImpactResult",
+      "file": "src/commands/impact.ts",
+      "line": 10
+    },
+    {
+      "type": "export",
       "name": "performUnlink",
       "file": "src/commands/link.ts",
       "line": 162
@@ -263,6 +275,18 @@
     },
     {
       "type": "export",
+      "name": "getImpactResult",
+      "file": "src/commands/impact.ts",
+      "line": 18
+    },
+    {
+      "type": "export",
+      "name": "ImpactResult",
+      "file": "src/commands/impact.ts",
+      "line": 10
+    },
+    {
+      "type": "export",
       "name": "performUnlink",
       "file": "src/commands/link.ts",
       "line": 162
@@ -451,5 +475,5 @@
   "unusedFiles": [],
   "unusedDeps": [],
   "unlistedDeps": [],
-  "summary": "Found 37 issues"
+  "summary": "Found 39 issues"
 }

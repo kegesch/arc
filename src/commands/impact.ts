@@ -2,49 +2,65 @@
 import { readAllEntities, requireArcProject } from '../io/files.js';
 import { buildGraph, impactAnalysis } from '../graph/graph.js';
 import { formatEntityBrief, colorId, red, yellow, bold, dim } from '../display/format.js';
+import type { Entity } from '../types.js';
+import { EntityNotFound } from '../core/errors.js';
+
+// ─── Pure logic types ───
+
+export interface ImpactResult {
+  entity: Entity;
+  direct: Entity[];
+  transitive: Entity[];
+}
+
+// ─── Pure logic ───
+
+export function getImpactResult(dir: string, id: string): ImpactResult {
+  const entities = readAllEntities(dir);
+  const graph = buildGraph(entities);
+
+  const entity = graph.entities.get(id);
+  if (!entity) throw new EntityNotFound(id);
+
+  const { direct, transitive } = impactAnalysis(graph, id);
+  return { entity, direct, transitive };
+}
+
+// ─── CLI entry point ───
 
 export function impactCommand(id: string): void {
   requireArcProject();
 
-  const entities = readAllEntities();
-  const graph = buildGraph(entities);
+  const result = getImpactResult(process.cwd(), id);
 
-  const entity = graph.entities.get(id);
-  if (!entity) {
-    console.error(`Entity ${colorId(id)} not found.`);
-    return;
-  }
-
-  const { direct, transitive } = impactAnalysis(graph, id);
-
-  const statusWarning = entity.type === 'assumption' && entity.status === 'unvalidated'
+  const statusWarning = result.entity.type === 'assumption' && result.entity.status === 'unvalidated'
     ? yellow(' (unvalidated)')
-    : entity.type === 'assumption' && entity.status === 'invalidated'
+    : result.entity.type === 'assumption' && result.entity.status === 'invalidated'
     ? red(' (invalidated)')
     : '';
 
-  console.log(bold(`Impact of changing ${colorId(id)} "${entity.title}"${statusWarning}:`));
+  console.log(bold(`Impact of changing ${colorId(result.entity.id)} "${result.entity.title}"${statusWarning}:`));
   console.log('');
 
-  if (direct.length === 0) {
+  if (result.direct.length === 0) {
     console.log(dim('  No direct dependents.'));
     return;
   }
 
   console.log('Direct dependents:');
-  for (const dep of direct) {
+  for (const dep of result.direct) {
     console.log(`  ${formatEntityBrief(dep)}`);
   }
 
-  if (transitive.length > 0) {
+  if (result.transitive.length > 0) {
     console.log('');
     console.log('Transitive impact:');
-    for (const dep of transitive) {
+    for (const dep of result.transitive) {
       console.log(`  ${formatEntityBrief(dep)}`);
     }
   }
 
-  const total = direct.length + transitive.length;
+  const total = result.direct.length + result.transitive.length;
   console.log('');
-  console.log(dim(`  ${total} entities affected (${direct.length} direct, ${transitive.length} transitive)`));
+  console.log(dim(`  ${total} entities affected (${result.direct.length} direct, ${result.transitive.length} transitive)`));
 }
