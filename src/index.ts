@@ -110,8 +110,11 @@ program
 program
 	.command("trace")
 	.argument("<id>", "Entity ID to trace dependencies for")
+	.option("--format <format>", "Output format: text or json", "text")
 	.description("Show dependency tree (what backs this entity)")
-	.action(traceCommand);
+	.action((id: string, opts: { format?: string }) => {
+		traceCommand(id, opts);
+	});
 
 program
 	.command("impact")

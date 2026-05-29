@@ -107,13 +107,13 @@
       "type": "export",
       "name": "getTraceResult",
       "file": "src/commands/trace.ts",
-      "line": 18
+      "line": 17
     },
     {
       "type": "export",
       "name": "TraceResult",
       "file": "src/commands/trace.ts",
-      "line": 11
+      "line": 10
     },
     {
       "type": "export",
@@ -349,13 +349,13 @@
       "type": "export",
       "name": "getTraceResult",
       "file": "src/commands/trace.ts",
-      "line": 18
+      "line": 17
     },
     {
       "type": "export",
       "name": "TraceResult",
       "file": "src/commands/trace.ts",
-      "line": 11
+      "line": 10
     },
     {
       "type": "export",

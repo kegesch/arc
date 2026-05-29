@@ -1,8 +1,7 @@
 // arc trace <id>
 import { readAllEntities, requireArcProject } from '../io/files.js';
 import { buildGraph, traceUp, type TraceNode } from '../graph/graph.js';
-import { findUnvalidatedAssumptions } from '../graph/analysis.js';
-import { formatTraceTree, colorId, yellow, dim } from '../display/format.js';
+import { formatTraceTree, colorId, yellow } from '../display/format.js';
 import type { Entity } from '../types.js';
 import { EntityNotFound } from '../core/errors.js';
 
@@ -41,11 +40,32 @@ function findUnvalidatedInTree(node: TraceNode): Entity[] {
 
 // ─── CLI entry point ───
 
-export function traceCommand(id: string): void {
+function traceNodeToJson(node: TraceNode): Record<string, unknown> {
+  return {
+    id: node.entity.id,
+    title: node.entity.title,
+    type: node.entity.type,
+    status: node.entity.status,
+    edgeType: node.edgeType,
+    children: node.children.map(traceNodeToJson),
+  };
+}
+
+export function traceCommand(id: string, options?: { format?: string }): void {
   requireArcProject();
 
   try {
     const result = getTraceResult(process.cwd(), id);
+
+    if (options?.format === 'json') {
+      const output = {
+        tree: traceNodeToJson(result.tree),
+        unvalidated: result.unvalidated.map((e) => ({ id: e.id, title: e.title })),
+      };
+      console.log(JSON.stringify(output, null, 2));
+      return;
+    }
+
     const lines = formatTraceTree(result.tree);
     console.log(lines.join('\n'));
 

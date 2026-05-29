@@ -1,4 +1,4 @@
 {
-  "signature": "src/commands/impact.ts::ℹ️ Advisory — no action required this turn:\n⚠️ Newly unused exports in modified files — check if callers need updating (Knip):\n  src/commands/impact.ts:18 — getImpactResult\n  src/commands/impact.ts:10 — ImpactResult\n",
+  "signature": "src/commands/trace.ts::ℹ️ Advisory — no action required this turn:\n⚠️ Newly unused exports in modified files — check if callers need updating (Knip):\n  src/commands/trace.ts:17 — getTraceResult\n  src/commands/trace.ts:10 — TraceResult\n",
   "sessionId": "lens-mprced0x-8ccd15bf"
 }
