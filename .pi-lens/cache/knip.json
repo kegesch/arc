@@ -69,6 +69,18 @@
     },
     {
       "type": "export",
+      "name": "getShowResult",
+      "file": "src/commands/show.ts",
+      "line": 18
+    },
+    {
+      "type": "export",
+      "name": "ShowResult",
+      "file": "src/commands/show.ts",
+      "line": 10
+    },
+    {
+      "type": "export",
       "name": "getStatus",
       "file": "src/commands/status.ts",
       "line": 48
@@ -269,6 +281,18 @@
     },
     {
       "type": "export",
+      "name": "getShowResult",
+      "file": "src/commands/show.ts",
+      "line": 18
+    },
+    {
+      "type": "export",
+      "name": "ShowResult",
+      "file": "src/commands/show.ts",
+      "line": 10
+    },
+    {
+      "type": "export",
       "name": "getStatus",
       "file": "src/commands/status.ts",
       "line": 48
@@ -403,5 +427,5 @@
   "unusedFiles": [],
   "unusedDeps": [],
   "unlistedDeps": [],
-  "summary": "Found 33 issues"
+  "summary": "Found 35 issues"
 }

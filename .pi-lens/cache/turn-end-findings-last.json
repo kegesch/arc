@@ -1,4 +1,4 @@
 {
-  "signature": "src/commands/list.ts::ℹ️ Advisory — no action required this turn:\n⚠️ Newly unused exports in modified files — check if callers need updating (Knip):\n  src/commands/list.ts:23 — getListResult\n  src/commands/list.ts:10 — ListFilterOptions\n  src/commands/list.ts:16 — ListResult\n",
+  "signature": "src/commands/show.ts::ℹ️ Advisory — no action required this turn:\n⚠️ Newly unused exports in modified files — check if callers need updating (Knip):\n  src/commands/show.ts:18 — getShowResult\n  src/commands/show.ts:10 — ShowResult\n",
   "sessionId": "lens-mprced0x-8ccd15bf"
 }

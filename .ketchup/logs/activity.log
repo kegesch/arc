@@ -12,3 +12,4 @@
 05-29 21:56:20 [] session-start: loaded 8 reminders
 05-29 21:57:00 [] before-agent-start: injected 2 reminders
 05-29 22:00:06 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-29 22:00:41 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT

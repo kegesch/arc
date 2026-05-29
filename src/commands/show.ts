@@ -3,41 +3,52 @@ import { readAllEntities, requireArcProject } from '../io/files.js';
 import { buildGraph, getDependents, getDependencies } from '../graph/graph.js';
 import { formatEntityDetail, colorId, statusIcon, typeColor } from '../display/format.js';
 import type { Entity } from '../types.js';
+import { EntityNotFound } from '../core/errors.js';
 
-export function showCommand(id: string): void {
-  requireArcProject();
+// ─── Pure logic types ───
 
-  const entities = readAllEntities();
+export interface ShowResult {
+  entity: Entity;
+  dependencies: Entity[];
+  dependents: Entity[];
+}
+
+// ─── Pure logic ───
+
+export function getShowResult(dir: string, id: string): ShowResult {
+  const entities = readAllEntities(dir);
   const entity = entities.find(e => e.id === id);
+  if (!entity) throw new EntityNotFound(id);
 
-  if (!entity) {
-    console.error(`Entity ${id} not found.`);
-    return;
-  }
-
-  // Show entity detail
-  console.log(formatEntityDetail(entity));
-
-  // Show immediate relationships
   const graph = buildGraph(entities);
   const dependents = getDependents(graph, id);
   const dependencies = getDependencies(graph, id);
 
-  if (dependencies.length > 0) {
+  return { entity, dependencies, dependents };
+}
+
+// ─── CLI entry point ───
+
+export function showCommand(id: string): void {
+  requireArcProject();
+
+  const result = getShowResult(process.cwd(), id);
+
+  console.log(formatEntityDetail(result.entity));
+
+  if (result.dependencies.length > 0) {
     console.log(`\nDepends on:`);
-    for (const dep of dependencies) {
-      const tc = typeColor(dep.type);
+    for (const dep of result.dependencies) {
       console.log(`  ${statusIcon(dep.status)} ${colorId(dep.id)} ${dep.title}`);
     }
   }
 
-  if (dependents.length > 0) {
+  if (result.dependents.length > 0) {
     console.log(`\nReferenced by:`);
-    for (const dep of dependents) {
-      const tc = typeColor(dep.type);
+    for (const dep of result.dependents) {
       console.log(`  ${statusIcon(dep.status)} ${colorId(dep.id)} ${dep.title}`);
     }
   }
 
-  console.log(`\n  ${entity.filePath}`);
+  console.log(`\n  ${result.entity.filePath}`);
 }
