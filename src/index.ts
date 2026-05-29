@@ -255,8 +255,9 @@ program
 program
 	.command("status")
 	.description("Quick project health summary")
-	.action(() => {
-		statusCommand();
+	.option("--format <format>", "Output format: text or json", "text")
+	.action((opts: { format?: string }) => {
+		statusCommand(opts);
 	});
 
 program

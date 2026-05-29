@@ -121,10 +121,15 @@ export function getStatus(dir: string): StatusResult {
 
 // ─── CLI entry point ───
 
-export function statusCommand(): void {
+export function statusCommand(options?: { format?: string }): void {
 	requireArcProject();
 
 	const result = getStatus(process.cwd());
+
+	if (options?.format === "json") {
+		console.log(JSON.stringify(result, null, 2));
+		return;
+	}
 
 	console.log(bold(`ARC project "${result.projectName}"`));
 	console.log("");
