@@ -58,6 +58,7 @@ program
 	.option("--body <text>", "Body content (markdown)")
 	.option("--body-file <path>", "Read body from file (use - for stdin)")
 	.option("--context <context>", "Context (e.g. billing, fulfillment)")
+	.option("--format <format>", "Output format: text or json", "text")
 	.action(
 		async (
 			type: string,

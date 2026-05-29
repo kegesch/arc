@@ -181,6 +181,7 @@ interface AddOptions {
 	inspiredBy?: string;
 	body?: string;
 	bodyFile?: string;
+	format?: string;
 }
 
 export async function addCommand(
@@ -375,4 +376,8 @@ export async function addCommand(
 
 	console.log(`\nCreated ${result.entity.id}: ${title.trim()}`);
 	console.log(`  .arc/${result.path}`);
+
+	if (options?.format === "json") {
+		console.log(JSON.stringify(result.entity, null, 2));
+	}
 }
