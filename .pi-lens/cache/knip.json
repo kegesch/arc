@@ -225,6 +225,12 @@
     },
     {
       "type": "export",
+      "name": "typeColor",
+      "file": "src/display/format.ts",
+      "line": 27
+    },
+    {
+      "type": "export",
       "name": "RawFrontmatter",
       "file": "src/io/parser.ts",
       "line": 9
@@ -461,6 +467,12 @@
     },
     {
       "type": "export",
+      "name": "typeColor",
+      "file": "src/display/format.ts",
+      "line": 27
+    },
+    {
+      "type": "export",
       "name": "RawFrontmatter",
       "file": "src/io/parser.ts",
       "line": 9
@@ -475,5 +487,5 @@
   "unusedFiles": [],
   "unusedDeps": [],
   "unlistedDeps": [],
-  "summary": "Found 39 issues"
+  "summary": "Found 40 issues"
 }

@@ -97,7 +97,10 @@ program
 program
 	.command("show")
 	.argument("<id>", "Entity ID (e.g. R-001, A-003, D-007)")
-	.action(showCommand);
+	.option("--format <format>", "Output format: text or json", "text")
+	.action((id: string, opts: { format?: string }) => {
+		showCommand(id, opts);
+	});
 
 program
 	.command("edit")

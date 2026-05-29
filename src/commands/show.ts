@@ -1,7 +1,7 @@
 // arc show <id>
 import { readAllEntities, requireArcProject } from '../io/files.js';
 import { buildGraph, getDependents, getDependencies } from '../graph/graph.js';
-import { formatEntityDetail, colorId, statusIcon, typeColor } from '../display/format.js';
+import { formatEntityDetail, colorId, statusIcon } from '../display/format.js';
 import type { Entity } from '../types.js';
 import { EntityNotFound } from '../core/errors.js';
 
@@ -29,10 +29,20 @@ export function getShowResult(dir: string, id: string): ShowResult {
 
 // ─── CLI entry point ───
 
-export function showCommand(id: string): void {
+export function showCommand(id: string, options?: { format?: string }): void {
   requireArcProject();
 
   const result = getShowResult(process.cwd(), id);
+
+  if (options?.format === 'json') {
+    const output = {
+      ...result.entity,
+      dependencies: result.dependencies.map((e) => ({ id: e.id, title: e.title, type: e.type, status: e.status })),
+      dependents: result.dependents.map((e) => ({ id: e.id, title: e.title, type: e.type, status: e.status })),
+    };
+    console.log(JSON.stringify(output, null, 2));
+    return;
+  }
 
   console.log(formatEntityDetail(result.entity));
 
