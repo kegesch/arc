@@ -1095,7 +1095,32 @@
         }
       ],
       "trend": "stable"
+    },
+    "tests\\new-types.test.ts": {
+      "latest": {
+        "commit": "84d9b8d",
+        "timestamp": "2026-05-29T20:10:00.304Z",
+        "mi": 10.3,
+        "cognitive": 9,
+        "nesting": 3,
+        "lines": 618,
+        "maxCyclomatic": 4,
+        "entropy": 4.88
+      },
+      "history": [
+        {
+          "commit": "84d9b8d",
+          "timestamp": "2026-05-29T20:10:00.304Z",
+          "mi": 10.3,
+          "cognitive": 9,
+          "nesting": 3,
+          "lines": 618,
+          "maxCyclomatic": 4,
+          "entropy": 4.88
+        }
+      ],
+      "trend": "stable"
     }
   },
-  "capturedAt": "2026-05-29T19:58:30.521Z"
+  "capturedAt": "2026-05-29T20:10:05.307Z"
 }

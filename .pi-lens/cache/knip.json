@@ -201,15 +201,15 @@
     },
     {
       "type": "export",
-      "name": "ArcError",
-      "file": "src/core/errors.ts",
-      "line": 9
-    },
-    {
-      "type": "export",
       "name": "getValidEdges",
       "file": "src/entities/registry.ts",
       "line": 76
+    },
+    {
+      "type": "export",
+      "name": "ArcError",
+      "file": "src/core/errors.ts",
+      "line": 9
     },
     {
       "type": "export",
@@ -443,15 +443,15 @@
     },
     {
       "type": "export",
-      "name": "ArcError",
-      "file": "src/core/errors.ts",
-      "line": 9
-    },
-    {
-      "type": "export",
       "name": "getValidEdges",
       "file": "src/entities/registry.ts",
       "line": 76
+    },
+    {
+      "type": "export",
+      "name": "ArcError",
+      "file": "src/core/errors.ts",
+      "line": 9
     },
     {
       "type": "export",
