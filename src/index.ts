@@ -146,7 +146,10 @@ program
 	.command("validate")
 	.argument("<id>", "Assumption ID to validate")
 	.description("Mark an assumption as validated")
-	.action(validateCommand);
+	.option("--format <format>", "Output format: text or json", "text")
+	.action((id: string, opts: { format?: string }) => {
+		validateCommand(id, opts);
+	});
 
 program
 	.command("invalidate")
@@ -155,9 +158,10 @@ program
 		"--derive-requirement <title>",
 		"Create an opposing requirement and re-link dependent decisions",
 	)
+	.option("--format <format>", "Output format: text or json", "text")
 	.description("Mark an assumption as invalidated (shows impact)")
 	.action(
-		async (id: string, opts: { deriveRequirement?: string }) => {
+		async (id: string, opts: { deriveRequirement?: string; format?: string }) => {
 			await invalidateCommand(id, opts);
 		},
 	);
@@ -172,11 +176,12 @@ program
 		"--to <type>",
 		"For ideas: promote to requirement or decision (default: requirement)",
 	)
-	.action(async (id: string, opts: { to?: string }) => {
+	.option("--format <format>", "Output format: text or json", "text")
+	.action(async (id: string, opts: { to?: string; format?: string }) => {
 		if (opts.to) {
 			process.env.__ARC_PROMOTE_TO = opts.to;
 		}
-		await promoteCommand(id);
+		await promoteCommand(id, opts);
 	});
 
 program

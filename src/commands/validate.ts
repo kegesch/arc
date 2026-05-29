@@ -267,10 +267,14 @@ function promoteIdea(
 
 // ─── CLI entry points ───
 
-export function validateCommand(id: string): void {
+export function validateCommand(id: string, options?: { format?: string }): void {
 	requireArcProject();
 	try {
 		const result = performValidate(process.cwd(), id);
+		if (options?.format === "json") {
+			console.log(JSON.stringify(result.entity, null, 2));
+			return;
+		}
 		console.log(
 			green(`✓ Validated ${colorId(result.entity.id)}: ${result.entity.title}`),
 		);
@@ -281,7 +285,7 @@ export function validateCommand(id: string): void {
 
 export async function invalidateCommand(
 	id: string,
-	options?: { deriveRequirement?: string },
+	options?: { deriveRequirement?: string; format?: string },
 ): Promise<void> {
 	requireArcProject();
 	try {
@@ -293,6 +297,11 @@ export async function invalidateCommand(
 				`✗ Invalidated ${colorId(result.entity.id)}: ${result.entity.title}`,
 			),
 		);
+
+		if (options?.format === "json") {
+			console.log(JSON.stringify(result, null, 2));
+			return;
+		}
 
 		if (result.derivedRequirement) {
 			console.log(
@@ -334,7 +343,7 @@ export async function invalidateCommand(
 	}
 }
 
-export async function promoteCommand(id: string): Promise<void> {
+export async function promoteCommand(id: string, options?: { format?: string }): Promise<void> {
 	requireArcProject();
 
 	const targetType =
@@ -345,6 +354,11 @@ export async function promoteCommand(id: string): Promise<void> {
 		const result = await withLock(process.cwd(), () =>
 			performPromote(process.cwd(), id, targetType),
 		);
+
+		if (options?.format === "json") {
+			console.log(JSON.stringify(result, null, 2));
+			return;
+		}
 
 		console.log(
 			green(
