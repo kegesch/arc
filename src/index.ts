@@ -89,6 +89,7 @@ program
 	.option("--status <status>", "Filter by status")
 	.option("--tag <tag>", "Filter by tag")
 	.option("--context <context>", "Filter by context")
+	.option("--format <format>", "Output format: text or json", "text")
 	.action((type: string | undefined, opts: Record<string, string>) => {
 		listCommand(type, opts);
 	});

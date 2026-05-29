@@ -68,11 +68,22 @@ export function getListResult(
 
 export function listCommand(
 	typeFilter?: string,
-	options?: { status?: string; tag?: string; context?: string },
+	options?: { status?: string; tag?: string; context?: string; format?: string },
 ): void {
 	requireArcProject();
 
 	const result = getListResult(process.cwd(), typeFilter, options);
+
+	if (options?.format === "json") {
+		const jsonEntities = result.entities.map((e) => ({
+			id: e.id,
+			title: e.title,
+			type: e.type,
+			status: e.status,
+		}));
+		console.log(JSON.stringify(jsonEntities, null, 2));
+		return;
+	}
 
 	if (result.entities.length === 0) {
 		console.log("No entities found.");
