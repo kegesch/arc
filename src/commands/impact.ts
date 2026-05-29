@@ -28,10 +28,24 @@ export function getImpactResult(dir: string, id: string): ImpactResult {
 
 // ─── CLI entry point ───
 
-export function impactCommand(id: string): void {
+function entitySummary(e: Entity) {
+  return { id: e.id, title: e.title, type: e.type, status: e.status };
+}
+
+export function impactCommand(id: string, options?: { format?: string }): void {
   requireArcProject();
 
   const result = getImpactResult(process.cwd(), id);
+
+  if (options?.format === 'json') {
+    const output = {
+      entity: entitySummary(result.entity),
+      direct: result.direct.map(entitySummary),
+      transitive: result.transitive.map(entitySummary),
+    };
+    console.log(JSON.stringify(output, null, 2));
+    return;
+  }
 
   const statusWarning = result.entity.type === 'assumption' && result.entity.status === 'unvalidated'
     ? yellow(' (unvalidated)')

@@ -119,8 +119,11 @@ program
 program
 	.command("impact")
 	.argument("<id>", "Entity ID to analyze impact for")
+	.option("--format <format>", "Output format: text or json", "text")
 	.description("Show what would be affected if this entity changes")
-	.action(impactCommand);
+	.action((id: string, opts: { format?: string }) => {
+		impactCommand(id, opts);
+	});
 
 program
 	.command("check")
