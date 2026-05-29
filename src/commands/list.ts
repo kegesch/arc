@@ -5,15 +5,28 @@ import { readAllEntities, requireArcProject } from "../io/files.js";
 import type { Entity, EntityType } from "../types.js";
 import { ENTITY_TYPE_ORDER, allTypes } from "../entities/registry.js";
 
-export function listCommand(
+// ─── Pure logic types ───
+
+export interface ListFilterOptions {
+	status?: string;
+	tag?: string;
+	context?: string;
+}
+
+export interface ListResult {
+	entities: Entity[];
+	grouped: Map<EntityType, Entity[]>;
+}
+
+// ─── Pure logic ───
+
+export function getListResult(
+	dir: string,
 	typeFilter?: string,
-	options?: { status?: string; tag?: string; context?: string },
-): void {
-	requireArcProject();
+	options?: ListFilterOptions,
+): ListResult {
+	let entities = readAllEntities(dir);
 
-	let entities = readAllEntities();
-
-	// Filter by context
 	if (options?.context) {
 		entities = entities.filter(
 			(e) =>
@@ -22,23 +35,19 @@ export function listCommand(
 		);
 	}
 
-	// Filter by type
 	if (typeFilter) {
 		if (!allTypes().includes(typeFilter as EntityType)) {
-			console.error(
+			throw new Error(
 				`Invalid type "${typeFilter}". Use: ${allTypes().join(", ")}`,
 			);
-			return;
 		}
 		entities = entities.filter((e) => e.type === typeFilter);
 	}
 
-	// Filter by status
 	if (options?.status) {
 		entities = entities.filter((e) => e.status === options.status);
 	}
 
-	// Filter by tag
 	if (options?.tag) {
 		const tag = options.tag.toLowerCase();
 		entities = entities.filter((e) =>
@@ -46,20 +55,32 @@ export function listCommand(
 		);
 	}
 
-	if (entities.length === 0) {
-		console.log("No entities found.");
-		return;
-	}
-
-	// Group by type for display
 	const grouped = new Map<EntityType, Entity[]>();
 	for (const e of entities) {
 		if (!grouped.has(e.type)) grouped.set(e.type, []);
 		grouped.get(e.type)!.push(e);
 	}
 
+	return { entities, grouped };
+}
+
+// ─── CLI entry point ───
+
+export function listCommand(
+	typeFilter?: string,
+	options?: { status?: string; tag?: string; context?: string },
+): void {
+	requireArcProject();
+
+	const result = getListResult(process.cwd(), typeFilter, options);
+
+	if (result.entities.length === 0) {
+		console.log("No entities found.");
+		return;
+	}
+
 	for (const t of ENTITY_TYPE_ORDER) {
-		const group = grouped.get(t);
+		const group = result.grouped.get(t);
 		if (!group || group.length === 0) continue;
 		console.log(
 			`\n${t.charAt(0).toUpperCase() + t.slice(1)}s (${group.length}):`,

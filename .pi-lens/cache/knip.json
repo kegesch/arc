@@ -1,9 +1,407 @@
 {
-  "success": false,
-  "issues": [],
-  "unusedExports": [],
+  "success": true,
+  "issues": [
+    {
+      "type": "export",
+      "name": "runCheck",
+      "file": "src/commands/check.ts",
+      "line": 54
+    },
+    {
+      "type": "export",
+      "name": "CheckResult",
+      "file": "src/commands/check.ts",
+      "line": 26
+    },
+    {
+      "type": "export",
+      "name": "CheckIssue",
+      "file": "src/commands/check.ts",
+      "line": 33
+    },
+    {
+      "type": "export",
+      "name": "CheckWarning",
+      "file": "src/commands/check.ts",
+      "line": 42
+    },
+    {
+      "type": "export",
+      "name": "renderMermaid",
+      "file": "src/commands/graph.ts",
+      "line": 36
+    },
+    {
+      "type": "export",
+      "name": "renderDot",
+      "file": "src/commands/graph.ts",
+      "line": 151
+    },
+    {
+      "type": "export",
+      "name": "performUnlink",
+      "file": "src/commands/link.ts",
+      "line": 162
+    },
+    {
+      "type": "export",
+      "name": "UnlinkResult",
+      "file": "src/commands/link.ts",
+      "line": 152
+    },
+    {
+      "type": "export",
+      "name": "getListResult",
+      "file": "src/commands/list.ts",
+      "line": 23
+    },
+    {
+      "type": "export",
+      "name": "ListFilterOptions",
+      "file": "src/commands/list.ts",
+      "line": 10
+    },
+    {
+      "type": "export",
+      "name": "ListResult",
+      "file": "src/commands/list.ts",
+      "line": 16
+    },
+    {
+      "type": "export",
+      "name": "getStatus",
+      "file": "src/commands/status.ts",
+      "line": 48
+    },
+    {
+      "type": "export",
+      "name": "StatusResult",
+      "file": "src/commands/status.ts",
+      "line": 21
+    },
+    {
+      "type": "export",
+      "name": "performValidate",
+      "file": "src/commands/validate.ts",
+      "line": 35
+    },
+    {
+      "type": "export",
+      "name": "performPromote",
+      "file": "src/commands/validate.ts",
+      "line": 145
+    },
+    {
+      "type": "export",
+      "name": "ValidateResult",
+      "file": "src/commands/validate.ts",
+      "line": 31
+    },
+    {
+      "type": "export",
+      "name": "PromoteResult",
+      "file": "src/commands/validate.ts",
+      "line": 139
+    },
+    {
+      "type": "export",
+      "name": "ENTITY_CONFIG",
+      "file": "src/types.ts",
+      "line": 137
+    },
+    {
+      "type": "export",
+      "name": "RequirementStatus",
+      "file": "src/types.ts",
+      "line": 12
+    },
+    {
+      "type": "export",
+      "name": "AssumptionStatus",
+      "file": "src/types.ts",
+      "line": 17
+    },
+    {
+      "type": "export",
+      "name": "DecisionStatus",
+      "file": "src/types.ts",
+      "line": 18
+    },
+    {
+      "type": "export",
+      "name": "IdeaStatus",
+      "file": "src/types.ts",
+      "line": 23
+    },
+    {
+      "type": "export",
+      "name": "StakeholderStatus",
+      "file": "src/types.ts",
+      "line": 24
+    },
+    {
+      "type": "export",
+      "name": "RiskStatus",
+      "file": "src/types.ts",
+      "line": 25
+    },
+    {
+      "type": "export",
+      "name": "TermStatus",
+      "file": "src/types.ts",
+      "line": 31
+    },
+    {
+      "type": "export",
+      "name": "EntityStatus",
+      "file": "src/types.ts",
+      "line": 32
+    },
+    {
+      "type": "export",
+      "name": "slugify",
+      "file": "src/io/files.ts",
+      "line": 130
+    },
+    {
+      "type": "export",
+      "name": "ArcError",
+      "file": "src/core/errors.ts",
+      "line": 9
+    },
+    {
+      "type": "export",
+      "name": "getValidEdges",
+      "file": "src/entities/registry.ts",
+      "line": 76
+    },
+    {
+      "type": "export",
+      "name": "cyan",
+      "file": "src/display/format.ts",
+      "line": 24
+    },
+    {
+      "type": "export",
+      "name": "mag",
+      "file": "src/display/format.ts",
+      "line": 25
+    },
+    {
+      "type": "export",
+      "name": "RawFrontmatter",
+      "file": "src/io/parser.ts",
+      "line": 9
+    },
+    {
+      "type": "export",
+      "name": "RelationDisplay",
+      "file": "src/entities/descriptor.ts",
+      "line": 42
+    }
+  ],
+  "unusedExports": [
+    {
+      "type": "export",
+      "name": "runCheck",
+      "file": "src/commands/check.ts",
+      "line": 54
+    },
+    {
+      "type": "export",
+      "name": "CheckResult",
+      "file": "src/commands/check.ts",
+      "line": 26
+    },
+    {
+      "type": "export",
+      "name": "CheckIssue",
+      "file": "src/commands/check.ts",
+      "line": 33
+    },
+    {
+      "type": "export",
+      "name": "CheckWarning",
+      "file": "src/commands/check.ts",
+      "line": 42
+    },
+    {
+      "type": "export",
+      "name": "renderMermaid",
+      "file": "src/commands/graph.ts",
+      "line": 36
+    },
+    {
+      "type": "export",
+      "name": "renderDot",
+      "file": "src/commands/graph.ts",
+      "line": 151
+    },
+    {
+      "type": "export",
+      "name": "performUnlink",
+      "file": "src/commands/link.ts",
+      "line": 162
+    },
+    {
+      "type": "export",
+      "name": "UnlinkResult",
+      "file": "src/commands/link.ts",
+      "line": 152
+    },
+    {
+      "type": "export",
+      "name": "getListResult",
+      "file": "src/commands/list.ts",
+      "line": 23
+    },
+    {
+      "type": "export",
+      "name": "ListFilterOptions",
+      "file": "src/commands/list.ts",
+      "line": 10
+    },
+    {
+      "type": "export",
+      "name": "ListResult",
+      "file": "src/commands/list.ts",
+      "line": 16
+    },
+    {
+      "type": "export",
+      "name": "getStatus",
+      "file": "src/commands/status.ts",
+      "line": 48
+    },
+    {
+      "type": "export",
+      "name": "StatusResult",
+      "file": "src/commands/status.ts",
+      "line": 21
+    },
+    {
+      "type": "export",
+      "name": "performValidate",
+      "file": "src/commands/validate.ts",
+      "line": 35
+    },
+    {
+      "type": "export",
+      "name": "performPromote",
+      "file": "src/commands/validate.ts",
+      "line": 145
+    },
+    {
+      "type": "export",
+      "name": "ValidateResult",
+      "file": "src/commands/validate.ts",
+      "line": 31
+    },
+    {
+      "type": "export",
+      "name": "PromoteResult",
+      "file": "src/commands/validate.ts",
+      "line": 139
+    },
+    {
+      "type": "export",
+      "name": "ENTITY_CONFIG",
+      "file": "src/types.ts",
+      "line": 137
+    },
+    {
+      "type": "export",
+      "name": "RequirementStatus",
+      "file": "src/types.ts",
+      "line": 12
+    },
+    {
+      "type": "export",
+      "name": "AssumptionStatus",
+      "file": "src/types.ts",
+      "line": 17
+    },
+    {
+      "type": "export",
+      "name": "DecisionStatus",
+      "file": "src/types.ts",
+      "line": 18
+    },
+    {
+      "type": "export",
+      "name": "IdeaStatus",
+      "file": "src/types.ts",
+      "line": 23
+    },
+    {
+      "type": "export",
+      "name": "StakeholderStatus",
+      "file": "src/types.ts",
+      "line": 24
+    },
+    {
+      "type": "export",
+      "name": "RiskStatus",
+      "file": "src/types.ts",
+      "line": 25
+    },
+    {
+      "type": "export",
+      "name": "TermStatus",
+      "file": "src/types.ts",
+      "line": 31
+    },
+    {
+      "type": "export",
+      "name": "EntityStatus",
+      "file": "src/types.ts",
+      "line": 32
+    },
+    {
+      "type": "export",
+      "name": "slugify",
+      "file": "src/io/files.ts",
+      "line": 130
+    },
+    {
+      "type": "export",
+      "name": "ArcError",
+      "file": "src/core/errors.ts",
+      "line": 9
+    },
+    {
+      "type": "export",
+      "name": "getValidEdges",
+      "file": "src/entities/registry.ts",
+      "line": 76
+    },
+    {
+      "type": "export",
+      "name": "cyan",
+      "file": "src/display/format.ts",
+      "line": 24
+    },
+    {
+      "type": "export",
+      "name": "mag",
+      "file": "src/display/format.ts",
+      "line": 25
+    },
+    {
+      "type": "export",
+      "name": "RawFrontmatter",
+      "file": "src/io/parser.ts",
+      "line": 9
+    },
+    {
+      "type": "export",
+      "name": "RelationDisplay",
+      "file": "src/entities/descriptor.ts",
+      "line": 42
+    }
+  ],
   "unusedFiles": [],
   "unusedDeps": [],
   "unlistedDeps": [],
-  "summary": "Failed to parse output"
+  "summary": "Found 33 issues"
 }
