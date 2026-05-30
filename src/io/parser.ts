@@ -1,6 +1,6 @@
 // Frontmatter parsing for ARC entity files
 
-import { parse as yamlParse } from "yaml";
+import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 import type { Entity } from "../types";
 import { getTypeFromId } from "../types";
 import { getDescriptor } from "../entities/registry";
@@ -53,24 +53,27 @@ export function parseEntity(content: string, filePath: string): Entity {
  */
 export function serializeFrontmatter(entity: Entity): string {
 	const desc = getDescriptor(entity.type);
-	const lines: string[] = [];
-	lines.push(`id: ${entity.id}`);
-	lines.push(`title: "${entity.title.replace(/"/g, '\\"')}"`);
-	lines.push(`status: ${entity.status}`);
-	lines.push(`date: ${entity.date}`);
+
+	const frontmatter: Record<string, unknown> = {
+		id: entity.id,
+		title: entity.title,
+		status: entity.status,
+		date: entity.date,
+	};
 
 	if (entity.tags.length > 0) {
-		lines.push(`tags: [${entity.tags.join(", ")}]`);
+		frontmatter.tags = entity.tags;
 	}
 
 	if (entity.context) {
-		lines.push(`context: ${entity.context}`);
+		frontmatter.context = entity.context;
 	}
 
-	// Append type-specific lines
-	lines.push(...desc.serialize(entity as any));
+	// Append type-specific fields
+	const typeFields = desc.jsonFields(entity as any);
+	Object.assign(frontmatter, typeFields);
 
-	return lines.join("\n") + "\n";
+	return yamlStringify(frontmatter, { lineWidth: 0 });
 }
 
 /**

@@ -360,7 +360,8 @@ describe("risk lifecycle transitions", () => {
 		expect(k.mitigated_by).toEqual(["D-001"]);
 
 		const content = serializeEntity(k);
-		expect(content).toContain("mitigated_by: [D-001]");
+		expect(content).toContain("mitigated_by");
+		expect(content).toContain("D-001");
 	});
 });
 
@@ -1061,7 +1062,7 @@ describe("use case serialization", () => {
 
 		const content = serializeEntity(result.entity);
 		expect(content).toContain("id: UC-001");
-		expect(content).toContain('title: "Search catalog"');
+		expect(content).toContain("title: Search catalog");
 		expect(content).toContain("actors:");
 		expect(content).toContain("preconditions:");
 		expect(content).toContain("main_flow:");

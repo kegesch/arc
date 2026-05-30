@@ -363,8 +363,8 @@
     },
     "src\\io\\parser.ts": {
       "latest": {
-        "commit": "5fac730",
-        "timestamp": "2026-05-30T10:57:03.413Z",
+        "commit": "2d80da1",
+        "timestamp": "2026-05-30T14:41:19.884Z",
         "mi": 47.8,
         "cognitive": 13,
         "nesting": 3,
@@ -402,9 +402,19 @@
           "lines": 66,
           "maxCyclomatic": 6,
           "entropy": 5.6
+        },
+        {
+          "commit": "2d80da1",
+          "timestamp": "2026-05-30T14:41:19.884Z",
+          "mi": 47.8,
+          "cognitive": 13,
+          "nesting": 3,
+          "lines": 66,
+          "maxCyclomatic": 6,
+          "entropy": 5.6
         }
       ],
-      "trend": "improving"
+      "trend": "stable"
     },
     "src\\display\\format.ts": {
       "latest": {
@@ -1690,7 +1700,32 @@
         }
       ],
       "trend": "stable"
+    },
+    "tests\\entity-types.test.ts": {
+      "latest": {
+        "commit": "2d80da1",
+        "timestamp": "2026-05-30T14:42:58.455Z",
+        "mi": 1.9,
+        "cognitive": 39,
+        "nesting": 3,
+        "lines": 1215,
+        "maxCyclomatic": 14,
+        "entropy": 5.11
+      },
+      "history": [
+        {
+          "commit": "2d80da1",
+          "timestamp": "2026-05-30T14:42:58.455Z",
+          "mi": 1.9,
+          "cognitive": 39,
+          "nesting": 3,
+          "lines": 1215,
+          "maxCyclomatic": 14,
+          "entropy": 5.11
+        }
+      ],
+      "trend": "stable"
     }
   },
-  "capturedAt": "2026-05-30T14:16:10.770Z"
+  "capturedAt": "2026-05-30T14:43:03.464Z"
 }
