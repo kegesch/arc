@@ -1,8 +1,5 @@
 import type { EdgeType, UseCase } from "../types";
-import type {
-	EntityDescriptor,
-	RawFrontmatter,
-} from "./descriptor";
+import type { EntityDescriptor, RawFrontmatter } from "./descriptor";
 
 export const useCaseDescriptor: EntityDescriptor = {
 	type: "use_case",
@@ -89,15 +86,7 @@ export const useCaseDescriptor: EntityDescriptor = {
 		{ field: "requested_by", edgeType: "requested_by", isArray: true },
 	],
 
-	detailRelations: (entity) => {
-		const e = entity as UseCase;
-		const rels: Array<{ label: string; ids: string[] | string; style?: "normal" | "red" }> = [];
-		if (e.actors.length > 0)
-			rels.push({ label: "actors", ids: e.actors });
-		if (e.preconditions.length > 0)
-			rels.push({ label: "preconditions", ids: e.preconditions });
-		return rels;
-	},
+	detailRelations: () => [],
 
 	jsonFields: (entity) => {
 		const e = entity as UseCase;

@@ -35,3 +35,213 @@
 05-30 09:34:50 [] before-agent-start: injected 2 reminders
 05-30 09:36:16 [] before-agent-start: injected 2 reminders
 05-30 09:37:05 [] before-agent-start: injected 2 reminders
+05-30 09:37:19 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 10:26:03 [] session-start: loaded 9 reminders
+05-30 10:30:46 [] session-start: loaded 9 reminders
+05-30 10:32:04 [] before-agent-start: injected 2 reminders
+05-30 10:32:59 [] before-agent-start: injected 2 reminders
+05-30 10:35:34 [] session-start: loaded 9 reminders
+05-30 10:35:36 [] session-start: loaded 9 reminders
+05-30 10:35:36 [] before-agent-start: injected 2 reminders
+05-30 10:35:36 [] session-start: loaded 9 reminders
+05-30 10:35:36 [] before-agent-start: injected 2 reminders
+05-30 10:35:36 [] session-start: loaded 9 reminders
+05-30 10:35:36 [] before-agent-start: injected 2 reminders
+05-30 10:36:12 [] session-start: loaded 9 reminders
+05-30 10:36:12 [] before-agent-start: injected 2 reminders
+05-30 10:38:04 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-30 10:38:04 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-30 10:38:04 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-30 10:38:38 [] commit: validator complete: backwards-compat → ACK
+05-30 10:38:38 [] commit: validator complete: burst-atomicity → ACK
+05-30 10:38:38 [] commit: validator complete: commit-message-no-speculation → ACK
+05-30 10:38:38 [] commit: validator complete: coverage-rules → ACK
+05-30 10:38:38 [] commit: validator complete: dead-code → ACK
+05-30 10:38:38 [] commit: validator complete: hygiene → ACK
+05-30 10:38:38 [] commit: validator complete: infra-commit-format → ACK
+05-30 10:38:53 [] commit: validator complete: ketchup-plan-format → ACK
+05-30 10:38:53 [] commit: validator complete: new-code-requires-tests → ACK
+05-30 10:38:53 [] commit: validator complete: no-comments → ACK
+05-30 10:38:53 [] commit: validator complete: no-dangerous-git → ACK
+05-30 10:38:53 [] commit: validator complete: tcr-workflow → ACK
+05-30 10:38:53 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-30 10:38:53 [] commit: validator complete: testing-no-state-peeking → ACK
+05-30 10:38:55 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-30 10:38:55 [] commit: validator complete: testing-structure → ACK
+05-30 10:38:55 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-30 10:38:55 [] commit: validator complete: testing-weak-assertions → ACK
+05-30 10:38:55 [] commit: validator complete: type-organization → ACK
+05-30 10:38:55 [] commit: validator complete: arc-dogfooding → NACK: Commit modifies src/ files but touches no .arc/ entities, the message references no arc entity ID (R-xxx, D-xxx, etc.), and there is no appeal: justification.
+05-30 10:38:55 [] commit: blocked: arc-dogfooding: Commit modifies src/ files but touches no .arc/ entities, the message references no arc entity ID (R-xxx, D-xxx, etc.), and there is no appeal: justification.
+
+To appeal, add [appeal: your justification] to your commit message.
+05-30 10:39:00 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-30 10:39:00 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-30 10:39:00 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-30 10:39:35 [] commit: validator complete: backwards-compat → ACK
+05-30 10:39:35 [] commit: validator complete: burst-atomicity → ACK
+05-30 10:39:35 [] commit: validator complete: commit-message-no-speculation → ACK
+05-30 10:39:35 [] commit: validator complete: coverage-rules → ACK
+05-30 10:39:35 [] commit: validator complete: dead-code → ACK
+05-30 10:39:35 [] commit: validator complete: hygiene → ACK
+05-30 10:39:35 [] commit: validator complete: infra-commit-format → ACK
+05-30 10:39:46 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-30 10:39:46 [] commit: validator complete: testing-structure → ACK
+05-30 10:39:46 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-30 10:39:46 [] commit: validator complete: testing-weak-assertions → ACK
+05-30 10:39:46 [] commit: validator complete: type-organization → ACK
+05-30 10:39:46 [] commit: validator complete: arc-dogfooding → ACK
+05-30 10:39:59 [] commit: validator complete: ketchup-plan-format → ACK
+05-30 10:39:59 [] commit: validator complete: new-code-requires-tests → ACK
+05-30 10:39:59 [] commit: validator complete: no-comments → NACK: Added section divider comment `// ─── Auto-mark superseded ───` in src/entities/registry.ts; the function name and JSDoc already convey the intent.
+05-30 10:39:59 [] commit: validator complete: no-dangerous-git → ACK
+05-30 10:39:59 [] commit: validator complete: tcr-workflow → ACK
+05-30 10:39:59 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-30 10:39:59 [] commit: validator complete: testing-no-state-peeking → ACK
+05-30 10:39:59 [] commit: blocked: no-comments: Added section divider comment `// ─── Auto-mark superseded ───` in src/entities/registry.ts; the function name and JSDoc already convey the intent.
+
+To appeal, add [appeal: your justification] to your commit message.
+05-30 10:40:45 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-30 10:40:45 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-30 10:40:45 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-30 10:41:17 [] commit: validator complete: backwards-compat → ACK
+05-30 10:41:17 [] commit: validator complete: burst-atomicity → ACK
+05-30 10:41:17 [] commit: validator complete: commit-message-no-speculation → ACK
+05-30 10:41:17 [] commit: validator complete: coverage-rules → ACK
+05-30 10:41:17 [] commit: validator complete: dead-code → ACK
+05-30 10:41:17 [] commit: validator complete: hygiene → ACK
+05-30 10:41:17 [] commit: validator complete: infra-commit-format → ACK
+05-30 10:41:19 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-30 10:41:19 [] commit: validator complete: testing-structure → ACK
+05-30 10:41:19 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-30 10:41:19 [] commit: validator complete: testing-weak-assertions → ACK
+05-30 10:41:19 [] commit: validator complete: type-organization → ACK
+05-30 10:41:19 [] commit: validator complete: arc-dogfooding → ACK
+05-30 10:41:33 [] commit: validator complete: ketchup-plan-format → ACK
+05-30 10:41:33 [] commit: validator complete: new-code-requires-tests → ACK
+05-30 10:41:33 [] commit: validator complete: no-comments → NACK: Adds a single-line section-divider comment `// ─── Auto-mark superseded ───` in registry.ts; the exported function already has a JSDoc, making the divider redundant
+05-30 10:41:33 [] commit: validator complete: no-dangerous-git → ACK
+05-30 10:41:33 [] commit: validator complete: tcr-workflow → ACK
+05-30 10:41:33 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-30 10:41:33 [] commit: validator complete: testing-no-state-peeking → ACK
+05-30 10:41:33 [] commit: blocked: no-comments: Adds a single-line section-divider comment `// ─── Auto-mark superseded ───` in registry.ts; the exported function already has a JSDoc, making the divider redundant
+
+To appeal, add [appeal: your justification] to your commit message.
+05-30 10:41:53 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-30 10:41:53 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-30 10:41:53 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-30 10:42:25 [] commit: validator complete: ketchup-plan-format → ACK
+05-30 10:42:25 [] commit: validator complete: new-code-requires-tests → ACK
+05-30 10:42:25 [] commit: validator complete: no-comments → ACK
+05-30 10:42:25 [] commit: validator complete: no-dangerous-git → ACK
+05-30 10:42:25 [] commit: validator complete: tcr-workflow → ACK
+05-30 10:42:25 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-30 10:42:25 [] commit: validator complete: testing-no-state-peeking → ACK
+05-30 10:42:39 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-30 10:42:39 [] commit: validator complete: testing-structure → ACK
+05-30 10:42:39 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-30 10:42:39 [] commit: validator complete: testing-weak-assertions → ACK
+05-30 10:42:39 [] commit: validator complete: type-organization → ACK
+05-30 10:42:39 [] commit: validator complete: arc-dogfooding → ACK
+05-30 10:42:40 [] commit: validator complete: backwards-compat → ACK
+05-30 10:42:40 [] commit: validator complete: burst-atomicity → ACK
+05-30 10:42:40 [] commit: validator complete: commit-message-no-speculation → ACK
+05-30 10:42:40 [] commit: validator complete: coverage-rules → ACK
+05-30 10:42:40 [] commit: validator complete: dead-code → ACK
+05-30 10:42:40 [] commit: validator complete: hygiene → ACK
+05-30 10:42:40 [] commit: validator complete: infra-commit-format → ACK
+05-30 10:42:40 [] commit: allowed
+05-30 10:43:30 [] session-start: loaded 9 reminders
+05-30 10:43:30 [] before-agent-start: injected 2 reminders
+05-30 10:45:09 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-30 10:45:09 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-30 10:45:09 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-30 10:45:36 [] commit: validator complete: ketchup-plan-format → ACK
+05-30 10:45:36 [] commit: validator complete: new-code-requires-tests → ACK
+05-30 10:45:36 [] commit: validator complete: no-comments → ACK
+05-30 10:45:36 [] commit: validator complete: no-dangerous-git → ACK
+05-30 10:45:36 [] commit: validator complete: tcr-workflow → ACK
+05-30 10:45:36 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-30 10:45:36 [] commit: validator complete: testing-no-state-peeking → ACK
+05-30 10:45:40 [] commit: validator complete: backwards-compat → ACK
+05-30 10:45:40 [] commit: validator complete: burst-atomicity → ACK
+05-30 10:45:40 [] commit: validator complete: commit-message-no-speculation → ACK
+05-30 10:45:40 [] commit: validator complete: coverage-rules → ACK
+05-30 10:45:40 [] commit: validator complete: dead-code → ACK
+05-30 10:45:40 [] commit: validator complete: hygiene → ACK
+05-30 10:45:40 [] commit: validator complete: infra-commit-format → ACK
+05-30 10:45:46 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-30 10:45:46 [] commit: validator complete: testing-structure → ACK
+05-30 10:45:46 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-30 10:45:46 [] commit: validator complete: testing-weak-assertions → ACK
+05-30 10:45:46 [] commit: validator complete: type-organization → ACK
+05-30 10:45:46 [] commit: validator complete: arc-dogfooding → NACK: Commit modifies src/ (analysis code per message) but references no arc entity ID, touches no .arc/ files, and includes no appeal.
+05-30 10:45:46 [] commit: blocked: arc-dogfooding: Commit modifies src/ (analysis code per message) but references no arc entity ID, touches no .arc/ files, and includes no appeal.
+
+To appeal, add [appeal: your justification] to your commit message.
+05-30 10:45:51 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-30 10:45:51 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-30 10:45:51 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-30 10:46:15 [] commit: validator complete: ketchup-plan-format → ACK
+05-30 10:46:15 [] commit: validator complete: new-code-requires-tests → ACK
+05-30 10:46:15 [] commit: validator complete: no-comments → ACK
+05-30 10:46:15 [] commit: validator complete: no-dangerous-git → ACK
+05-30 10:46:15 [] commit: validator complete: tcr-workflow → ACK
+05-30 10:46:15 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-30 10:46:15 [] commit: validator complete: testing-no-state-peeking → ACK
+05-30 10:46:18 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-30 10:46:18 [] commit: validator complete: testing-structure → ACK
+05-30 10:46:18 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-30 10:46:18 [] commit: validator complete: testing-weak-assertions → ACK
+05-30 10:46:18 [] commit: validator complete: type-organization → ACK
+05-30 10:46:18 [] commit: validator complete: arc-dogfooding → ACK
+05-30 10:46:26 [] commit: validator complete: backwards-compat → ACK
+05-30 10:46:26 [] commit: validator complete: burst-atomicity → ACK
+05-30 10:46:26 [] commit: validator complete: commit-message-no-speculation → ACK
+05-30 10:46:26 [] commit: validator complete: coverage-rules → ACK
+05-30 10:46:26 [] commit: validator complete: dead-code → ACK
+05-30 10:46:26 [] commit: validator complete: hygiene → ACK
+05-30 10:46:26 [] commit: validator complete: infra-commit-format → ACK
+05-30 10:46:26 [] commit: allowed
+05-30 10:46:31 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-30 10:46:31 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-30 10:46:31 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-30 10:46:59 [] commit: validator complete: ketchup-plan-format → ACK
+05-30 10:46:59 [] commit: validator complete: new-code-requires-tests → ACK
+05-30 10:46:59 [] commit: validator complete: no-comments → ACK
+05-30 10:46:59 [] commit: validator complete: no-dangerous-git → ACK
+05-30 10:46:59 [] commit: validator complete: tcr-workflow → ACK
+05-30 10:46:59 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-30 10:46:59 [] commit: validator complete: testing-no-state-peeking → ACK
+05-30 10:47:00 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-30 10:47:00 [] commit: validator complete: testing-structure → ACK
+05-30 10:47:00 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-30 10:47:00 [] commit: validator complete: testing-weak-assertions → ACK
+05-30 10:47:00 [] commit: validator complete: type-organization → ACK
+05-30 10:47:00 [] commit: validator complete: arc-dogfooding → ACK
+05-30 10:47:02 [] commit: validator complete: backwards-compat → ACK
+05-30 10:47:02 [] commit: validator complete: burst-atomicity → ACK
+05-30 10:47:02 [] commit: validator complete: commit-message-no-speculation → ACK
+05-30 10:47:02 [] commit: validator complete: coverage-rules → ACK
+05-30 10:47:02 [] commit: validator complete: dead-code → ACK
+05-30 10:47:02 [] commit: validator complete: hygiene → ACK
+05-30 10:47:02 [] commit: validator complete: infra-commit-format → ACK
+05-30 10:47:02 [] commit: allowed
+05-30 10:47:46 [] session-start: loaded 9 reminders
+05-30 10:47:46 [] before-agent-start: injected 2 reminders
+05-30 11:53:11 [] before-agent-start: injected 2 reminders
+05-30 11:54:06 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 11:54:28 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 11:55:11 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 12:52:03 [] before-agent-start: injected 2 reminders
+05-30 12:52:10 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 12:52:47 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 12:55:49 [] session-start: loaded 9 reminders
+05-30 12:56:29 [] before-agent-start: injected 2 reminders
+05-30 12:58:04 [] session-start: loaded 9 reminders
+05-30 12:58:09 [] before-agent-start: injected 2 reminders
+05-30 13:07:03 [] before-agent-start: injected 2 reminders
+05-30 13:08:21 [] before-agent-start: injected 2 reminders
+05-30 13:15:33 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 16:05:44 [] before-agent-start: injected 2 reminders
+05-30 16:11:25 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT

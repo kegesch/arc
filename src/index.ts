@@ -42,7 +42,10 @@ program
 
 program
 	.command("add")
-	.argument("<type>", "Entity type: requirement | assumption | decision | use_case | entity_model | idea | stakeholder | risk | term")
+	.argument(
+		"<type>",
+		"Entity type: requirement | assumption | decision | use_case | entity_model | idea | stakeholder | risk | term",
+	)
 	.argument("[title]", "Entity title")
 	.option("--driven-by <ids>", "Comma-separated IDs that drive this decision")
 	.option("--status <status>", "Entity status")
@@ -163,7 +166,10 @@ program
 	.option("--format <format>", "Output format: text or json", "text")
 	.description("Mark an assumption as invalidated (shows impact)")
 	.action(
-		async (id: string, opts: { deriveRequirement?: string; format?: string }) => {
+		async (
+			id: string,
+			opts: { deriveRequirement?: string; format?: string },
+		) => {
 			await invalidateCommand(id, opts);
 		},
 	);
@@ -271,14 +277,19 @@ program
 program
 	.command("skill")
 	.description("Output or install the ARC skill file for AI agents")
-	.option("--install", "Install skill file into .hermes/skills/arc/ in the current project")
+	.option(
+		"--install",
+		"Install skill file into .hermes/skills/arc/ in the current project",
+	)
 	.action((opts: { install?: boolean }) => {
 		skillCommand({ install: opts.install });
 	});
 
 program
 	.command("init-agent")
-	.description("Append ARC usage instructions to AGENTS.md for AI agent onboarding")
+	.description(
+		"Append ARC usage instructions to AGENTS.md for AI agent onboarding",
+	)
 	.action(() => {
 		initAgentCommand();
 	});

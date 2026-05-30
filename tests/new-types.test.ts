@@ -13,6 +13,7 @@ import {
 } from "../src/graph/graph";
 import { findOrphans } from "../src/graph/analysis";
 import { parseEntity, serializeEntity } from "../src/io/parser";
+import { formatEntityDetail } from "../src/display/format";
 import {
 	initArcDir,
 	readAllEntities,
@@ -972,7 +973,13 @@ describe("entity model creation via createEntity", () => {
 					attributes: [
 						{ name: "id", type: "UUID", required: true },
 						{ name: "title", type: "String", length: 255, required: true },
-						{ name: "isbn", type: "String", length: 13, required: false, unique: true },
+						{
+							name: "isbn",
+							type: "String",
+							length: 13,
+							required: false,
+							unique: true,
+						},
 					],
 					relationships: [{ target: "Loan", type: "one-to-many" }],
 				},
@@ -1279,5 +1286,119 @@ describe("entity model lifecycle transitions", () => {
 		em.status = "deprecated";
 		updateEntity(TMP, em);
 		expect(readEntityById(TMP, "EM-001")!.status).toBe("deprecated");
+	});
+});
+
+// ─── Use case structured field rendering ───
+
+describe("use case formatEntityDetail", () => {
+	test("renders actors, preconditions, main_flow, acceptance_criteria", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Search catalog",
+			actors: ["Member", "Librarian"],
+			preconditions: ["User is authenticated", "Catalog has books"],
+			main_flow: [
+				{ step: 1, actor: "Member", action: "Enters search query" },
+				{ step: 2, actor: "System", action: "Filters catalog by query" },
+				{ step: 3, actor: "System", action: "Displays results" },
+			],
+			acceptance_criteria: [
+				"Results appear within 1 second",
+				"Empty state shown when no results",
+			],
+		});
+
+		const formatted = formatEntityDetail(result.entity);
+		expect(formatted).toContain("UC-001");
+		expect(formatted).toContain("Search catalog");
+		expect(formatted).toContain("actors");
+		expect(formatted).toContain("Member");
+		expect(formatted).toContain("preconditions");
+		expect(formatted).toContain("User is authenticated");
+	});
+
+	test("renders without structured fields when empty", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Simple UC",
+		});
+		const formatted = formatEntityDetail(result.entity);
+		expect(formatted).toContain("UC-001");
+		expect(formatted).toContain("Simple UC");
+	});
+});
+
+// ─── Entity model structured field rendering ───
+
+describe("entity model formatEntityDetail", () => {
+	test("renders entities with attributes and relationships", () => {
+		const result = createEntity(TMP, {
+			type: "entity_model",
+			title: "Book Library",
+			entities: [
+				{
+					name: "Book",
+					attributes: [
+						{ name: "id", type: "UUID", required: true },
+						{ name: "title", type: "String", required: true },
+					],
+					relationships: [{ target: "Loan", type: "one-to-many" }],
+				},
+			],
+		});
+
+		const formatted = formatEntityDetail(result.entity);
+		expect(formatted).toContain("EM-001");
+		expect(formatted).toContain("Book Library");
+	});
+
+	test("renders without entities when empty", () => {
+		const result = createEntity(TMP, {
+			type: "entity_model",
+			title: "Empty model",
+		});
+		const formatted = formatEntityDetail(result.entity);
+		expect(formatted).toContain("EM-001");
+		expect(formatted).toContain("Empty model");
+	});
+});
+
+// ─── Use case and entity model JSON output ───
+
+describe("use case and entity model JSON output", () => {
+	test("use case includes structured fields in JSON", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Search",
+			actors: ["Member"],
+			acceptance_criteria: ["Fast results"],
+			main_flow: [{ step: 1, actor: "Member", action: "Search" }],
+			preconditions: ["Authenticated"],
+		});
+		const json = JSON.parse(JSON.stringify(result.entity));
+		expect(json.type).toBe("use_case");
+		expect(json.actors).toEqual(["Member"]);
+		expect(json.acceptance_criteria).toEqual(["Fast results"]);
+		expect(json.main_flow).toEqual([{ step: 1, actor: "Member", action: "Search" }]);
+		expect(json.preconditions).toEqual(["Authenticated"]);
+	});
+
+	test("entity model includes structured fields in JSON", () => {
+		const result = createEntity(TMP, {
+			type: "entity_model",
+			title: "Model",
+			entities: [
+				{
+					name: "Book",
+					attributes: [{ name: "title", type: "String", required: true }],
+					relationships: [],
+				},
+			],
+		});
+		const json = JSON.parse(JSON.stringify(result.entity));
+		expect(json.type).toBe("entity_model");
+		expect(json.entities).toHaveLength(1);
+		expect(json.entities[0].name).toBe("Book");
 	});
 });

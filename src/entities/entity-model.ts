@@ -1,8 +1,5 @@
 import type { EdgeType, EntityModel } from "../types";
-import type {
-	EntityDescriptor,
-	RawFrontmatter,
-} from "./descriptor";
+import type { EntityDescriptor, RawFrontmatter } from "./descriptor";
 
 export const entityModelDescriptor: EntityDescriptor = {
 	type: "entity_model",
@@ -41,8 +38,13 @@ export const entityModelDescriptor: EntityDescriptor = {
 				.map((ent) => {
 					const attrs = ent.attributes
 						.map((attr) => {
-							const parts = [`name: ${attr.name}`, `type: ${attr.type}`, `required: ${attr.required}`];
-							if (attr.length !== undefined) parts.push(`length: ${attr.length}`);
+							const parts = [
+								`name: ${attr.name}`,
+								`type: ${attr.type}`,
+								`required: ${attr.required}`,
+							];
+							if (attr.length !== undefined)
+								parts.push(`length: ${attr.length}`);
 							if (attr.unique) parts.push(`unique: true`);
 							return `{${parts.join(", ")}}`;
 						})
@@ -51,7 +53,8 @@ export const entityModelDescriptor: EntityDescriptor = {
 						.map((rel) => `{target: ${rel.target}, type: ${rel.type}}`)
 						.join(", ");
 					const parts = [`name: ${ent.name}`, `attributes: [${attrs}]`];
-					if (ent.relationships.length > 0) parts.push(`relationships: [${rels}]`);
+					if (ent.relationships.length > 0)
+						parts.push(`relationships: [${rels}]`);
 					return `{${parts.join(", ")}}`;
 				})
 				.join(", ");

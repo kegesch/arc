@@ -3,9 +3,9 @@
   "clones": [
     {
       "fileA": "src\\entities\\registry.ts",
-      "startA": 139,
+      "startA": 148,
       "fileB": "src\\entities\\registry.ts",
-      "startB": 118,
+      "startB": 121,
       "lines": 7,
       "tokens": 0
     },
@@ -75,6 +75,6 @@
     }
   ],
   "duplicatedLines": 68,
-  "totalLines": 5475,
-  "percentage": 1.24
+  "totalLines": 5719,
+  "percentage": 1.19
 }

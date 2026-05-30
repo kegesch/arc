@@ -120,7 +120,7 @@ function stripPlaceholderSections(body: string): string {
 	flush();
 
 	// Strip leading/trailing blank lines
-	let output = result.join("\n").replace(/^\n+/, "").replace(/\n+$/, "");
+	const output = result.join("\n").replace(/^\n+/, "").replace(/\n+$/, "");
 	return output;
 }
 
@@ -150,6 +150,45 @@ export function formatEntityDetail(entity: Entity): string {
 		const label =
 			rel.style === "red" ? red(rel.label) : rel.label;
 		lines.push(`${label}: ${ids}`);
+	}
+
+	// Structured fields for use_case and entity_model
+	if (entity.type === "use_case") {
+		const uc = entity as import("../types").UseCase;
+		if (uc.actors.length > 0) {
+			lines.push(`actors: ${uc.actors.map((a) => mag(a)).join(", ")}`);
+		}
+		if (uc.preconditions.length > 0) {
+			lines.push(`preconditions: ${uc.preconditions.join(", ")}`);
+		}
+		if (uc.main_flow.length > 0) {
+			for (const step of uc.main_flow) {
+				lines.push(`  ${dim(`${step.step}.`)} ${bold(step.actor)}: ${step.action}`);
+			}
+		}
+		if (uc.acceptance_criteria.length > 0) {
+			for (const ac of uc.acceptance_criteria) {
+				lines.push(`  ${green("✓")} ${ac}`);
+			}
+		}
+	}
+
+	if (entity.type === "entity_model") {
+		const em = entity as import("../types").EntityModel;
+		if (em.entities.length > 0) {
+			for (const ent of em.entities) {
+				lines.push(`${bold(ent.name)}:`);
+				for (const attr of ent.attributes) {
+					const required = attr.required ? red("*") : dim("?");
+					lines.push(`  ${required} ${attr.name}: ${cyan(attr.type)}`);
+				}
+				if (ent.relationships.length > 0) {
+					for (const rel of ent.relationships) {
+						lines.push(`  ${dim("→")} ${rel.target} (${dim(rel.type)})`);
+					}
+				}
+			}
+		}
 	}
 
 	if (entity.body) {
