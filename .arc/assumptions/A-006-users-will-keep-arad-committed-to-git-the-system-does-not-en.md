@@ -1,7 +1,7 @@
 ---
 id: A-006
 title: "Users will keep .arad/ committed to git — the system does not enforce this"
-status: unvalidated
+status: validated
 date: 2026-05-01
 tags: [workflow]
 ---

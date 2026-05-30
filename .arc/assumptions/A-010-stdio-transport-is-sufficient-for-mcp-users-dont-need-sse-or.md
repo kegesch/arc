@@ -1,7 +1,7 @@
 ---
 id: A-010
 title: "Stdio transport is sufficient for MCP — users don't need SSE or HTTP transport"
-status: unvalidated
+status: invalidated
 date: 2026-05-01
 tags: [mcp]
 ---
