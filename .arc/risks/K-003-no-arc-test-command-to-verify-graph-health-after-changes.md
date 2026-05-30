@@ -1,7 +1,7 @@
 ---
 id: K-003
 title: "No arc test command to verify graph health after changes"
-status: identified
+status: mitigated
 date: 2026-05-30
 ---
 

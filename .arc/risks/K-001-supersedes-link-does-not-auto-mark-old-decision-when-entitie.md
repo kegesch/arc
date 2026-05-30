@@ -1,7 +1,7 @@
 ---
 id: K-001
 title: "Supersedes link does not auto-mark old decision when entities are hand-edited"
-status: identified
+status: mitigated
 date: 2026-05-30
 ---
 
