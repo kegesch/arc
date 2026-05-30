@@ -7,14 +7,12 @@ import {
 	getNextId,
 	isArcProject,
 	readAllEntities,
-	readEntityById,
 	requireArcProject,
-	updateEntity,
 	withLock,
 	writeEntity,
 } from "../io/files.js";
 import type { Entity, EntityType } from "../types.js";
-import { getDescriptor, ENTITY_CONFIG } from "../entities/registry.js";
+import { autoMarkSuperseded, getDescriptor, ENTITY_CONFIG } from "../entities/registry.js";
 import type { RawFrontmatter } from "../entities/descriptor.js";
 import { InvalidStatus, NotAnArcProject, ValidationError } from "../core/errors.js";
 
@@ -155,13 +153,8 @@ export function createEntity(
 
 	const relPath = writeEntity(dir, entity);
 
-	// If this decision supersedes another, auto-mark the old one as superseded
 	if (input.type === "decision" && input.supersedes?.trim()) {
-		const oldEntity = readEntityById(dir, input.supersedes.trim());
-		if (oldEntity && oldEntity.type === "decision" && oldEntity.status !== "superseded") {
-			oldEntity.status = "superseded";
-			updateEntity(dir, oldEntity);
-		}
+		autoMarkSuperseded(dir, input.supersedes.trim());
 	}
 
 	return { entity, path: relPath };

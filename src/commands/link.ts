@@ -9,12 +9,12 @@ import {
 	withLock,
 } from "../io/files.js";
 import type {
-	Decision,
 	EdgeType,
 	Entity,
 	Requirement,
 } from "../types.js";
 import {
+	autoMarkSuperseded,
 	VALID_EDGES,
 	getAllRelFields,
 	getRelField,
@@ -129,10 +129,8 @@ export function performLink(
 
 	// If supersedes, mark the old decision as superseded
 	if (edgeType === "supersedes") {
-		const toDecision = toEntity as Decision;
-		if (toDecision.status !== "superseded") {
-			toDecision.status = "superseded";
-			updateEntity(dir, toEntity);
+		const marked = autoMarkSuperseded(dir, toId);
+		if (marked) {
 			sideEffects.push(`Marked ${toId} as superseded`);
 		}
 	}

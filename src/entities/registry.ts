@@ -1,9 +1,10 @@
 // Entity descriptor registry — single source of truth for all entity types.
 
 import type { EdgeType, Entity, EntityType } from "../types";
+import { readEntityById, updateEntity } from "../io/files.js";
 import { getTypeFromId } from "../types";
 import { assumptionDescriptor } from "./assumption";
-import type { EntityDescriptor, RelFieldDef } from "./descriptor";
+import type { EntityDescriptor } from "./descriptor";
 import { decisionDescriptor } from "./decision";
 import { ideaDescriptor } from "./idea";
 import { requirementDescriptor } from "./requirement";
@@ -175,6 +176,17 @@ export function hasRelation(
 				return true;
 			}
 		}
+	}
+	return false;
+}
+
+/** Mark a decision as superseded if it exists and isn't already superseded. Returns true if changed. */
+export function autoMarkSuperseded(dir: string, supersededId: string): boolean {
+	const old = readEntityById(dir, supersededId);
+	if (old && old.type === "decision" && old.status !== "superseded") {
+		old.status = "superseded";
+		updateEntity(dir, old);
+		return true;
 	}
 	return false;
 }
