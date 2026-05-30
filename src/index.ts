@@ -61,6 +61,20 @@ program
 	.option("--body <text>", "Body content (markdown)")
 	.option("--body-file <path>", "Read body from file (use - for stdin)")
 	.option("--context <context>", "Context (e.g. billing, fulfillment)")
+	.option("--actors <actors>", "Comma-separated actor names (use_case)")
+	.option(
+		"--preconditions <conditions>",
+		"Comma-separated preconditions (use_case)",
+	)
+	.option(
+		"--acceptance-criteria <criteria>",
+		"Comma-separated acceptance criteria (use_case)",
+	)
+	.option("--main-flow <json>", "Main flow steps as JSON array (use_case)")
+	.option(
+		"--entities <json>",
+		"Entity definitions as JSON array (entity_model)",
+	)
 	.option("--format <format>", "Output format: text or json", "text")
 	.action(
 		async (

@@ -116,17 +116,12 @@ export function createEntity(
 		throw new InvalidStatus(status, desc.statuses);
 	}
 
-	// Validate referenced IDs
-	const allEntities = readAllEntities(dir);
-	const entityIds = new Set(allEntities.map((e) => e.id));
-
-	function validateIds(ids: string[]): string[] {
-		// Just return them — dangling refs are allowed (the CLI warns)
-		return ids;
-	}
-
 	// Build frontmatter
 	const tags = input.tags ?? [];
+
+	function validateIds(ids: string[]): string[] {
+		return ids;
+	}
 
 	const meta: RawFrontmatter = {
 		id,
@@ -209,6 +204,11 @@ interface AddOptions {
 	body?: string;
 	bodyFile?: string;
 	format?: string;
+	actors?: string;
+	preconditions?: string;
+	acceptanceCriteria?: string;
+	mainFlow?: string;
+	entities?: string;
 }
 
 export async function addCommand(
@@ -235,7 +235,6 @@ export async function addCommand(
 		return;
 	}
 
-	const desc = getDescriptor(type);
 	const config = ENTITY_CONFIG[type];
 
 	// Status
@@ -297,6 +296,32 @@ export async function addCommand(
 	let enables: string[] | undefined;
 	let supersedes: string | undefined;
 	let inspiredBy: string[] | undefined;
+	let actors: string[] | undefined;
+	let preconditions: string[] | undefined;
+	let acceptance_criteria: string[] | undefined;
+	let main_flow:
+		| Array<{ step: number; actor: string; action: string }>
+		| undefined;
+	let entities:
+		| Array<{
+				name: string;
+				attributes: Array<{
+					name: string;
+					type: string;
+					required: boolean;
+					length?: number;
+					unique?: boolean;
+				}>;
+				relationships: Array<{ target: string; type: string }>;
+		  }>
+		| undefined;
+
+	function parseCommaStrings(input: string): string[] {
+		return input
+			.split(",")
+			.map((s) => s.trim())
+			.filter(Boolean);
+	}
 
 	switch (type) {
 		case "requirement": {
@@ -341,6 +366,33 @@ export async function addCommand(
 				inspiredInput = await prompt("Inspired by (IDs, comma-separated): ");
 			}
 			inspiredBy = parseIds(inspiredInput);
+			break;
+		}
+		case "use_case": {
+			if (options?.actors) actors = parseCommaStrings(options.actors);
+			if (options?.preconditions)
+				preconditions = parseCommaStrings(options.preconditions);
+			if (options?.acceptanceCriteria)
+				acceptance_criteria = parseCommaStrings(options.acceptanceCriteria);
+			if (options?.mainFlow) {
+				try {
+					main_flow = JSON.parse(options.mainFlow);
+				} catch {
+					console.error(`Invalid JSON in --main-flow: ${options.mainFlow}`);
+					process.exit(1);
+				}
+			}
+			break;
+		}
+		case "entity_model": {
+			if (options?.entities) {
+				try {
+					entities = JSON.parse(options.entities);
+				} catch {
+					console.error(`Invalid JSON in --entities: ${options.entities}`);
+					process.exit(1);
+				}
+			}
 			break;
 		}
 	}
@@ -397,6 +449,11 @@ export async function addCommand(
 			supersedes,
 			inspiredBy,
 			body,
+			actors,
+			preconditions,
+			main_flow,
+			acceptance_criteria,
+			entities,
 		}),
 	);
 
