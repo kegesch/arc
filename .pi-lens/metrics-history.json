@@ -518,8 +518,8 @@
     },
     "src\\commands\\check.ts": {
       "latest": {
-        "commit": "21711c0",
-        "timestamp": "2026-05-29T19:57:42.006Z",
+        "commit": "dac9626",
+        "timestamp": "2026-05-30T14:11:36.148Z",
         "mi": 27.1,
         "cognitive": 72,
         "nesting": 4,
@@ -541,6 +541,16 @@
         {
           "commit": "21711c0",
           "timestamp": "2026-05-29T19:57:42.006Z",
+          "mi": 27.1,
+          "cognitive": 72,
+          "nesting": 4,
+          "lines": 213,
+          "maxCyclomatic": 26,
+          "entropy": 6.15
+        },
+        {
+          "commit": "dac9626",
+          "timestamp": "2026-05-30T14:11:36.148Z",
           "mi": 27.1,
           "cognitive": 72,
           "nesting": 4,
@@ -1657,5 +1667,5 @@
       "trend": "stable"
     }
   },
-  "capturedAt": "2026-05-30T14:06:25.367Z"
+  "capturedAt": "2026-05-30T14:11:41.155Z"
 }

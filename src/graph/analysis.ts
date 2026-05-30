@@ -260,3 +260,61 @@ export function findOrphanRequirements(g: ArcGraph): Entity[] {
 	}
 	return orphans;
 }
+
+// ─── Structured field validation ───
+
+export interface StructuredFieldWarning {
+	entity: Entity;
+	field: string;
+	message: string;
+}
+
+/**
+ * Find use_case and entity_model entities with missing required structured fields.
+ * These are warnings because entities might start as drafts.
+ */
+export function findStructuredFieldWarnings(
+	g: ArcGraph,
+): StructuredFieldWarning[] {
+	const warnings: StructuredFieldWarning[] = [];
+
+	for (const [, entity] of g.entities) {
+		if (entity.type === "use_case") {
+			const uc = entity as import("../types").UseCase;
+			if (uc.actors.length === 0) {
+				warnings.push({
+					entity,
+					field: "actors",
+					message: `Use case ${uc.id} has no actors defined`,
+				});
+			}
+			if (uc.acceptance_criteria.length === 0) {
+				warnings.push({
+					entity,
+					field: "acceptance_criteria",
+					message: `Use case ${uc.id} has no acceptance criteria`,
+				});
+			}
+			if (uc.main_flow.length === 0) {
+				warnings.push({
+					entity,
+					field: "main_flow",
+					message: `Use case ${uc.id} has no main flow defined`,
+				});
+			}
+		}
+
+		if (entity.type === "entity_model") {
+			const em = entity as import("../types").EntityModel;
+			if (em.entities.length === 0) {
+				warnings.push({
+					entity,
+					field: "entities",
+					message: `Entity model ${em.id} has no entities defined`,
+				});
+			}
+		}
+	}
+
+	return warnings;
+}

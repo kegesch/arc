@@ -147,8 +147,7 @@ export function formatEntityDetail(entity: Entity): string {
 		const ids = Array.isArray(rel.ids)
 			? rel.ids.map(colorId).join(", ")
 			: colorId(rel.ids);
-		const label =
-			rel.style === "red" ? red(rel.label) : rel.label;
+		const label = rel.style === "red" ? red(rel.label) : rel.label;
 		lines.push(`${label}: ${ids}`);
 	}
 
@@ -163,7 +162,9 @@ export function formatEntityDetail(entity: Entity): string {
 		}
 		if (uc.main_flow.length > 0) {
 			for (const step of uc.main_flow) {
-				lines.push(`  ${dim(`${step.step}.`)} ${bold(step.actor)}: ${step.action}`);
+				lines.push(
+					`  ${dim(`${step.step}.`)} ${bold(step.actor)}: ${step.action}`,
+				);
 			}
 		}
 		if (uc.acceptance_criteria.length > 0) {

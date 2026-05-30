@@ -11,7 +11,10 @@ import {
 	impactAnalysis,
 	traceUp,
 } from "../src/graph/graph";
-import { findOrphans } from "../src/graph/analysis";
+import {
+	findOrphans,
+	findStructuredFieldWarnings,
+} from "../src/graph/analysis";
 import { parseEntity, serializeEntity } from "../src/io/parser";
 import { formatEntityDetail } from "../src/display/format";
 import {
@@ -1380,7 +1383,9 @@ describe("use case and entity model JSON output", () => {
 		expect(json.type).toBe("use_case");
 		expect(json.actors).toEqual(["Member"]);
 		expect(json.acceptance_criteria).toEqual(["Fast results"]);
-		expect(json.main_flow).toEqual([{ step: 1, actor: "Member", action: "Search" }]);
+		expect(json.main_flow).toEqual([
+			{ step: 1, actor: "Member", action: "Search" },
+		]);
 		expect(json.preconditions).toEqual(["Authenticated"]);
 	});
 
@@ -1400,5 +1405,75 @@ describe("use case and entity model JSON output", () => {
 		expect(json.type).toBe("entity_model");
 		expect(json.entities).toHaveLength(1);
 		expect(json.entities[0].name).toBe("Book");
+	});
+});
+
+// ─── Structured field validation ───
+
+describe("findStructuredFieldWarnings", () => {
+	test("warns when use case has empty actors", () => {
+		createEntity(TMP, { type: "use_case", title: "UC" });
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const warnings = findStructuredFieldWarnings(graph);
+		expect(warnings.length).toBeGreaterThan(0);
+		expect(
+			warnings.some((w) => w.entity.id === "UC-001" && w.field === "actors"),
+		).toBe(true);
+	});
+
+	test("warns when use case has empty acceptance_criteria", () => {
+		createEntity(TMP, { type: "use_case", title: "UC" });
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const warnings = findStructuredFieldWarnings(graph);
+		expect(
+			warnings.some(
+				(w) => w.entity.id === "UC-001" && w.field === "acceptance_criteria",
+			),
+		).toBe(true);
+	});
+
+	test("warns when entity_model has empty entities", () => {
+		createEntity(TMP, { type: "entity_model", title: "EM" });
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const warnings = findStructuredFieldWarnings(graph);
+		expect(
+			warnings.some((w) => w.entity.id === "EM-001" && w.field === "entities"),
+		).toBe(true);
+	});
+
+	test("does not warn when use case has all required fields", () => {
+		createEntity(TMP, {
+			type: "use_case",
+			title: "UC",
+			actors: ["Member"],
+			acceptance_criteria: ["Works"],
+			main_flow: [{ step: 1, actor: "Member", action: "Do" }],
+			preconditions: ["Auth"],
+		});
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const warnings = findStructuredFieldWarnings(graph);
+		expect(warnings.filter((w) => w.entity.id === "UC-001").length).toBe(0);
+	});
+
+	test("does not warn when entity_model has entities", () => {
+		createEntity(TMP, {
+			type: "entity_model",
+			title: "EM",
+			entities: [
+				{
+					name: "Book",
+					attributes: [{ name: "id", type: "UUID", required: true }],
+					relationships: [],
+				},
+			],
+		});
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const warnings = findStructuredFieldWarnings(graph);
+		expect(warnings.filter((w) => w.entity.id === "EM-001").length).toBe(0);
 	});
 });

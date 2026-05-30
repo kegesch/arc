@@ -13,6 +13,7 @@ import {
 	findPossibleContradictions,
 	findPossibleDuplicates,
 	findStatusAnomalies,
+	findStructuredFieldWarnings,
 	findUnvalidatedAssumptions,
 } from "../graph/analysis.js";
 import { readAllEntities, requireArcProject } from "../io/files.js";
@@ -135,9 +136,10 @@ export function runCheck(contextFilter?: string): CheckResult {
 			message: `Assumption ${a.id} "${a.title}" is unvalidated`,
 			ids: [a.id],
 			detail: depCount > 0 ? `${depCount} dependent decision(s)` : undefined,
-			suggestion: depCount > 0
-				? `High priority — validate or invalidate: arc validate ${a.id}`
-				: `Validate or invalidate: arc validate ${a.id}`,
+			suggestion:
+				depCount > 0
+					? `High priority — validate or invalidate: arc validate ${a.id}`
+					: `Validate or invalidate: arc validate ${a.id}`,
 		});
 	}
 
@@ -170,6 +172,16 @@ export function runCheck(contextFilter?: string): CheckResult {
 			message: `"${dup.a.title}" ≈ "${dup.b.title}" (${pct}% similar)`,
 			ids: [dup.a.id, dup.b.id],
 			suggestion: `Review and merge, or supersede: arc link ${dup.a.id} ${dup.b.id} --type supersedes`,
+		});
+	}
+
+	for (const w of findStructuredFieldWarnings(graph)) {
+		result.warnings.push({
+			kind: "missing_structured_field",
+			severity: "warning",
+			message: w.message,
+			ids: [w.entity.id],
+			suggestion: `arc edit ${w.entity.id} to add ${w.field}`,
 		});
 	}
 

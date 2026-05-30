@@ -5,25 +5,25 @@
       "type": "export",
       "name": "runCheck",
       "file": "src/commands/check.ts",
-      "line": 54
+      "line": 55
     },
     {
       "type": "export",
       "name": "CheckResult",
       "file": "src/commands/check.ts",
-      "line": 26
+      "line": 27
     },
     {
       "type": "export",
       "name": "CheckIssue",
       "file": "src/commands/check.ts",
-      "line": 33
+      "line": 34
     },
     {
       "type": "export",
       "name": "CheckWarning",
       "file": "src/commands/check.ts",
-      "line": 42
+      "line": 43
     },
     {
       "type": "export",
@@ -277,25 +277,25 @@
       "type": "export",
       "name": "runCheck",
       "file": "src/commands/check.ts",
-      "line": 54
+      "line": 55
     },
     {
       "type": "export",
       "name": "CheckResult",
       "file": "src/commands/check.ts",
-      "line": 26
+      "line": 27
     },
     {
       "type": "export",
       "name": "CheckIssue",
       "file": "src/commands/check.ts",
-      "line": 33
+      "line": 34
     },
     {
       "type": "export",
       "name": "CheckWarning",
       "file": "src/commands/check.ts",
-      "line": 42
+      "line": 43
     },
     {
       "type": "export",

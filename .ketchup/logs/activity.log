@@ -245,3 +245,4 @@ To appeal, add [appeal: your justification] to your commit message.
 05-30 13:15:33 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
 05-30 16:05:44 [] before-agent-start: injected 2 reminders
 05-30 16:11:25 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 16:15:28 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
