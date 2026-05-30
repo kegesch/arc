@@ -8,11 +8,7 @@ import {
 	updateEntity,
 	withLock,
 } from "../io/files.js";
-import type {
-	EdgeType,
-	Entity,
-	Requirement,
-} from "../types.js";
+import type { EdgeType, Entity, Requirement } from "../types.js";
 import {
 	autoMarkSuperseded,
 	VALID_EDGES,
@@ -211,9 +207,7 @@ export function performUnlink(
 		if (idx !== -1) {
 			toReq.conflicts_with.splice(idx, 1);
 			updateEntity(dir, toEntity);
-			sideEffects.push(
-				`Removed reverse conflicts_with: ${toId} → ${fromId}`,
-			);
+			sideEffects.push(`Removed reverse conflicts_with: ${toId} → ${fromId}`);
 		}
 	}
 
@@ -303,18 +297,14 @@ function handleLinkError(e: unknown): never | void {
 	}
 	if (e instanceof AmbiguousEdge) {
 		console.error(
-			yellow(
-				`Ambiguous relationship between ${e.fromType} → ${e.toType}.`,
-			),
+			yellow(`Ambiguous relationship between ${e.fromType} → ${e.toType}.`),
 		);
 		console.error(`  Specify --type: ${e.validTypes.join(", ")}`);
 		process.exit(1);
 	}
 	if (e instanceof NoValidEdge) {
 		console.error(
-			red(
-				`No valid relationship from ${e.fromType} to ${e.toType}.`,
-			),
+			red(`No valid relationship from ${e.fromType} to ${e.toType}.`),
 		);
 		process.exit(1);
 	}

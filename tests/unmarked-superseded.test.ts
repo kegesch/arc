@@ -48,8 +48,7 @@ describe("findStatusAnomalies: unmarked superseded decisions", () => {
 
 		const supersededAnomaly = anomalies.find(
 			(a) =>
-				a.issue.includes("supersedes this decision") &&
-				a.entity.id === "D-001",
+				a.issue.includes("supersedes this decision") && a.entity.id === "D-001",
 		);
 		expect(supersededAnomaly).toBeUndefined();
 	});

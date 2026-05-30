@@ -12,9 +12,17 @@ import {
 	writeEntity,
 } from "../io/files.js";
 import type { Entity, EntityType } from "../types.js";
-import { autoMarkSuperseded, getDescriptor, ENTITY_CONFIG } from "../entities/registry.js";
+import {
+	autoMarkSuperseded,
+	getDescriptor,
+	ENTITY_CONFIG,
+} from "../entities/registry.js";
 import type { RawFrontmatter } from "../entities/descriptor.js";
-import { InvalidStatus, NotAnArcProject, ValidationError } from "../core/errors.js";
+import {
+	InvalidStatus,
+	NotAnArcProject,
+	ValidationError,
+} from "../core/errors.js";
 
 function readline(): Promise<string> {
 	return new Promise((resolve) => {
@@ -321,8 +329,7 @@ export async function addCommand(
 			for await (const chunk of process.stdin) {
 				chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
 			}
-			body =
-				Buffer.concat(chunks).toString("utf-8").trim() || templateBody;
+			body = Buffer.concat(chunks).toString("utf-8").trim() || templateBody;
 		} else {
 			const resolvedPath = join(process.cwd(), options.bodyFile);
 			if (!existsSync(resolvedPath)) {
