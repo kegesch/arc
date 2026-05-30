@@ -1,7 +1,7 @@
 ---
 id: D-039
 title: "Add depends_on as a new edge type for decision-to-decision dependency"
-status: proposed
+status: accepted
 date: 2026-05-30
 driven_by: [R-034]
 ---
