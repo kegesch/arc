@@ -7,7 +7,9 @@ export type EntityType =
 	| "idea"
 	| "stakeholder"
 	| "risk"
-	| "term";
+	| "term"
+	| "use_case"
+	| "entity_model";
 
 export type RequirementStatus =
 	| "draft"
@@ -38,7 +40,16 @@ export type EntityStatus =
 	| RiskStatus
 	| TermStatus;
 
-export type EntityTypePrefix = "R" | "A" | "D" | "I" | "S" | "K" | "T";
+export type EntityTypePrefix =
+	| "R"
+	| "A"
+	| "D"
+	| "I"
+	| "S"
+	| "K"
+	| "T"
+	| "UC"
+	| "EM";
 
 export interface EntityBase {
 	id: string;
@@ -97,6 +108,49 @@ export interface Term extends EntityBase {
 	status: TermStatus;
 }
 
+export interface UseCaseStep {
+	step: number;
+	actor: string;
+	action: string;
+}
+
+export interface UseCase extends EntityBase {
+	type: "use_case";
+	status: RequirementStatus;
+	actors: string[];
+	preconditions: string[];
+	main_flow: UseCaseStep[];
+	acceptance_criteria: string[];
+	derived_from: string[];
+	requested_by: string[];
+}
+
+export interface EntityModelAttribute {
+	name: string;
+	type: string;
+	required: boolean;
+	length?: number;
+	unique?: boolean;
+}
+
+export interface EntityModelRelationship {
+	target: string;
+	type: string;
+}
+
+export interface EntityModelEntity {
+	name: string;
+	attributes: EntityModelAttribute[];
+	relationships: EntityModelRelationship[];
+}
+
+export interface EntityModel extends EntityBase {
+	type: "entity_model";
+	status: RequirementStatus;
+	entities: EntityModelEntity[];
+	derived_from: string[];
+}
+
 export type Entity =
 	| Requirement
 	| Assumption
@@ -104,7 +158,9 @@ export type Entity =
 	| Idea
 	| Stakeholder
 	| Risk
-	| Term;
+	| Term
+	| UseCase
+	| EntityModel;
 
 export type EdgeType =
 	| "driven_by"
@@ -146,7 +202,9 @@ export function getTypeFromId(id: string): EntityType {
 	if (id.startsWith("S-")) return "stakeholder";
 	if (id.startsWith("K-")) return "risk";
 	if (id.startsWith("T-")) return "term";
+	if (id.startsWith("UC-")) return "use_case";
+	if (id.startsWith("EM-")) return "entity_model";
 	throw new Error(
-		`Unknown ID prefix in "${id}". Expected R-, A-, D-, I-, S-, K-, or T-.`,
+		`Unknown ID prefix in "${id}". Expected R-, A-, D-, I-, S-, K-, T-, UC-, or EM-.`,
 	);
 }

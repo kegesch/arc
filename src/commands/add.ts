@@ -63,6 +63,23 @@ export interface CreateEntityInput {
 	supersedes?: string;
 	inspiredBy?: string[];
 	body?: string;
+	// Use case fields
+	actors?: string[];
+	preconditions?: string[];
+	main_flow?: Array<{ step: number; actor: string; action: string }>;
+	acceptance_criteria?: string[];
+	// Entity model fields
+	entities?: Array<{
+		name: string;
+		attributes: Array<{
+			name: string;
+			type: string;
+			required: boolean;
+			length?: number;
+			unique?: boolean;
+		}>;
+		relationships: Array<{ target: string; type: string }>;
+	}>;
 }
 
 export interface CreateEntityResult {
@@ -138,6 +155,15 @@ export function createEntity(
 			break;
 		case "risk":
 			meta.mitigated_by = [];
+			break;
+		case "use_case":
+			meta.actors = input.actors ?? [];
+			meta.preconditions = input.preconditions ?? [];
+			meta.main_flow = input.main_flow ?? [];
+			meta.acceptance_criteria = input.acceptance_criteria ?? [];
+			break;
+		case "entity_model":
+			meta.entities = input.entities ?? [];
 			break;
 	}
 

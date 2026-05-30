@@ -22,6 +22,23 @@ export interface RawFrontmatter {
 	affects?: string[];
 	mitigated_by?: string[];
 	depends_on?: string[];
+	// Use case fields
+	actors?: string[];
+	preconditions?: string[];
+	main_flow?: Array<{ step: number; actor: string; action: string }>;
+	acceptance_criteria?: string[];
+	// Entity model fields
+	entities?: Array<{
+		name: string;
+		attributes: Array<{
+			name: string;
+			type: string;
+			required: boolean;
+			length?: number;
+			unique?: boolean;
+		}>;
+		relationships: Array<{ target: string; type: string }>;
+	}>;
 }
 
 /** Describes a single relationship field on an entity */

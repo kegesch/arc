@@ -11,12 +11,8 @@ import {
 	impactAnalysis,
 	traceUp,
 } from "../src/graph/graph";
-import {
-	findOrphans,
-} from "../src/graph/analysis";
-import {
-	serializeEntity,
-} from "../src/io/parser";
+import { findOrphans } from "../src/graph/analysis";
+import { parseEntity, serializeEntity } from "../src/io/parser";
 import {
 	initArcDir,
 	readAllEntities,
@@ -31,6 +27,7 @@ import type {
 	Stakeholder,
 	Term,
 } from "../src/types";
+import { getTypeFromId } from "../src/types";
 import { getDescriptor, VALID_EDGES } from "../src/entities/registry";
 import { InvalidStatus } from "../src/core/errors";
 
@@ -152,11 +149,15 @@ describe("stakeholder lifecycle transitions", () => {
 
 		s.status = "inactive";
 		updateEntity(TMP, s);
-		expect((readEntityById(TMP, "S-001")! as Stakeholder).status).toBe("inactive");
+		expect((readEntityById(TMP, "S-001")! as Stakeholder).status).toBe(
+			"inactive",
+		);
 
 		s.status = "active";
 		updateEntity(TMP, s);
-		expect((readEntityById(TMP, "S-001")! as Stakeholder).status).toBe("active");
+		expect((readEntityById(TMP, "S-001")! as Stakeholder).status).toBe(
+			"active",
+		);
 	});
 });
 
@@ -705,9 +706,7 @@ describe("check with new entity types", () => {
 
 		const entities = readAllEntities(TMP);
 		const graph = buildGraph(entities);
-		const danglers = graph.edges.filter(
-			(e) => !graph.entities.has(e.to),
-		);
+		const danglers = graph.edges.filter((e) => !graph.entities.has(e.to));
 		expect(danglers.length).toBe(1);
 		expect(danglers[0].to).toBe("D-999");
 	});
@@ -721,9 +720,7 @@ describe("check with new entity types", () => {
 
 		const entities = readAllEntities(TMP);
 		const graph = buildGraph(entities);
-		const danglingEdges = graph.edges.filter(
-			(e) => !graph.entities.has(e.to),
-		);
+		const danglingEdges = graph.edges.filter((e) => !graph.entities.has(e.to));
 		expect(danglingEdges.length).toBe(1);
 	});
 
@@ -736,9 +733,7 @@ describe("check with new entity types", () => {
 
 		const entities = readAllEntities(TMP);
 		const graph = buildGraph(entities);
-		const danglingEdges = graph.edges.filter(
-			(e) => !graph.entities.has(e.to),
-		);
+		const danglingEdges = graph.edges.filter((e) => !graph.entities.has(e.to));
 		expect(danglingEdges.length).toBe(1);
 	});
 });
@@ -768,5 +763,521 @@ describe("VALID_EDGES for new types", () => {
 		expect(VALID_EDGES["term-requirement"]).toBeUndefined();
 		expect(VALID_EDGES["term-decision"]).toBeUndefined();
 		expect(VALID_EDGES["term-term"]).toBeUndefined();
+	});
+
+	test("use_case has derived_from edges to requirement", () => {
+		expect(VALID_EDGES["use_case-requirement"]).toEqual(["derived_from"]);
+	});
+
+	test("use_case has requested_by edges to stakeholder", () => {
+		expect(VALID_EDGES["use_case-stakeholder"]).toEqual(["requested_by"]);
+	});
+
+	test("no valid edges from use_case to decision or use_case", () => {
+		expect(VALID_EDGES["use_case-decision"]).toBeUndefined();
+		expect(VALID_EDGES["use_case-use_case"]).toBeUndefined();
+	});
+
+	test("entity_model has derived_from edges to requirement", () => {
+		expect(VALID_EDGES["entity_model-requirement"]).toEqual(["derived_from"]);
+	});
+
+	test("no valid edges from entity_model to decision or entity_model", () => {
+		expect(VALID_EDGES["entity_model-decision"]).toBeUndefined();
+		expect(VALID_EDGES["entity_model-entity_model"]).toBeUndefined();
+	});
+});
+
+// ─── Use case and entity model type registration ───
+
+describe("use case and entity model type registration", () => {
+	test("getTypeFromId returns 'use_case' for UC-001", () => {
+		expect(getTypeFromId("UC-001")).toBe("use_case");
+	});
+
+	test("getTypeFromId returns 'entity_model' for EM-001", () => {
+		expect(getTypeFromId("EM-001")).toBe("entity_model");
+	});
+
+	test("getTypeFromId throws for unknown prefix", () => {
+		expect(() => getTypeFromId("X-001")).toThrow();
+	});
+
+	test("use_case descriptor exists and has correct prefix", () => {
+		const desc = getDescriptor("use_case");
+		expect(desc.type).toBe("use_case");
+		expect(desc.prefix).toBe("UC");
+	});
+
+	test("entity_model descriptor exists and has correct prefix", () => {
+		const desc = getDescriptor("entity_model");
+		expect(desc.type).toBe("entity_model");
+		expect(desc.prefix).toBe("EM");
+	});
+
+	test("use_case is in ENTITY_TYPE_ORDER and registry", () => {
+		const { ENTITY_TYPE_ORDER } = require("../src/entities/registry");
+		expect(ENTITY_TYPE_ORDER).toContain("use_case");
+	});
+
+	test("entity_model is in ENTITY_TYPE_ORDER and registry", () => {
+		const { ENTITY_TYPE_ORDER } = require("../src/entities/registry");
+		expect(ENTITY_TYPE_ORDER).toContain("entity_model");
+	});
+});
+
+// ─── Use case creation ───
+
+describe("use case creation via createEntity", () => {
+	beforeEach(() => {
+		// TMP is already set up in the outer beforeEach
+	});
+
+	test("creates a use case with default draft status", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Search catalog",
+		});
+		expect(result.entity.type).toBe("use_case");
+		expect(result.entity.id).toBe("UC-001");
+		expect(result.entity.status).toBe("draft");
+		expect(result.entity.title).toBe("Search catalog");
+		expect(result.path).toContain("use_cases");
+	});
+
+	test("creates a use case with explicit status", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Borrow book",
+			status: "accepted",
+		});
+		expect(result.entity.status).toBe("accepted");
+	});
+
+	test("creates a use case with actors", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Return book",
+			actors: ["Member", "Librarian"],
+		});
+		expect(result.entity.type).toBe("use_case");
+		if (result.entity.type === "use_case") {
+			expect(result.entity.actors).toEqual(["Member", "Librarian"]);
+		}
+	});
+
+	test("creates a use case with preconditions", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Reserve book",
+			preconditions: ["User is authenticated", "Book is available"],
+		});
+		if (result.entity.type === "use_case") {
+			expect(result.entity.preconditions).toEqual([
+				"User is authenticated",
+				"Book is available",
+			]);
+		}
+	});
+
+	test("creates a use case with acceptance criteria", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Search books",
+			acceptance_criteria: ["Results appear within 1 second"],
+		});
+		if (result.entity.type === "use_case") {
+			expect(result.entity.acceptance_criteria).toEqual([
+				"Results appear within 1 second",
+			]);
+		}
+	});
+
+	test("creates a use case with main flow steps", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Search catalog",
+			main_flow: [
+				{ step: 1, actor: "Member", action: "Enters search query" },
+				{ step: 2, actor: "System", action: "Filters catalog by query" },
+			],
+		});
+		if (result.entity.type === "use_case") {
+			expect(result.entity.main_flow).toEqual([
+				{ step: 1, actor: "Member", action: "Enters search query" },
+				{ step: 2, actor: "System", action: "Filters catalog by query" },
+			]);
+		}
+	});
+
+	test("throws InvalidStatus for bad use case status", () => {
+		expect(() =>
+			createEntity(TMP, {
+				type: "use_case",
+				title: "Bad",
+				status: "unknown",
+			}),
+		).toThrow(InvalidStatus);
+	});
+
+	test("persisted use case survives re-read", () => {
+		createEntity(TMP, {
+			type: "use_case",
+			title: "Search catalog",
+			actors: ["Member"],
+			preconditions: ["Authenticated"],
+			main_flow: [{ step: 1, actor: "Member", action: "Search" }],
+			acceptance_criteria: ["Results shown"],
+		});
+
+		const entities = readAllEntities(TMP);
+		expect(entities.length).toBe(1);
+
+		const uc = entities[0];
+		expect(uc.type).toBe("use_case");
+		expect(uc.id).toBe("UC-001");
+		if (uc.type === "use_case") {
+			expect(uc.actors).toEqual(["Member"]);
+			expect(uc.preconditions).toEqual(["Authenticated"]);
+			expect(uc.main_flow).toEqual([
+				{ step: 1, actor: "Member", action: "Search" },
+			]);
+			expect(uc.acceptance_criteria).toEqual(["Results shown"]);
+		}
+	});
+});
+
+// ─── Entity model creation ───
+
+describe("entity model creation via createEntity", () => {
+	test("creates an entity model with default draft status", () => {
+		const result = createEntity(TMP, {
+			type: "entity_model",
+			title: "Book Library domain model",
+		});
+		expect(result.entity.type).toBe("entity_model");
+		expect(result.entity.id).toBe("EM-001");
+		expect(result.entity.status).toBe("draft");
+		expect(result.entity.title).toBe("Book Library domain model");
+		expect(result.path).toContain("entity_models");
+	});
+
+	test("creates an entity model with entities and attributes", () => {
+		const result = createEntity(TMP, {
+			type: "entity_model",
+			title: "Library model",
+			entities: [
+				{
+					name: "Book",
+					attributes: [
+						{ name: "id", type: "UUID", required: true },
+						{ name: "title", type: "String", length: 255, required: true },
+						{ name: "isbn", type: "String", length: 13, required: false, unique: true },
+					],
+					relationships: [{ target: "Loan", type: "one-to-many" }],
+				},
+				{
+					name: "Loan",
+					attributes: [
+						{ name: "id", type: "UUID", required: true },
+						{ name: "borrowed_at", type: "DateTime", required: true },
+					],
+					relationships: [
+						{ target: "Book", type: "many-to-one" },
+						{ target: "Member", type: "many-to-one" },
+					],
+				},
+			],
+		});
+		expect(result.entity.type).toBe("entity_model");
+		if (result.entity.type === "entity_model") {
+			expect(result.entity.entities).toBeDefined();
+			expect(result.entity.entities!.length).toBe(2);
+			expect(result.entity.entities![0].name).toBe("Book");
+			expect(result.entity.entities![0].attributes.length).toBe(3);
+		}
+	});
+
+	test("throws InvalidStatus for bad entity model status", () => {
+		expect(() =>
+			createEntity(TMP, {
+				type: "entity_model",
+				title: "Bad",
+				status: "unknown",
+			}),
+		).toThrow(InvalidStatus);
+	});
+
+	test("persisted entity model survives re-read", () => {
+		createEntity(TMP, {
+			type: "entity_model",
+			title: "Simple model",
+			entities: [
+				{
+					name: "Book",
+					attributes: [{ name: "title", type: "String", required: true }],
+					relationships: [],
+				},
+			],
+		});
+
+		const entities = readAllEntities(TMP);
+		expect(entities.length).toBe(1);
+
+		const em = entities[0];
+		expect(em.type).toBe("entity_model");
+		expect(em.id).toBe("EM-001");
+		if (em.type === "entity_model") {
+			expect(em.entities![0].name).toBe("Book");
+		}
+	});
+});
+
+// ─── Use case serialization ───
+
+describe("use case serialization", () => {
+	test("serializes use case with all structured fields", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Search catalog",
+			actors: ["Member"],
+			preconditions: ["Authenticated"],
+			main_flow: [
+				{ step: 1, actor: "Member", action: "Enters query" },
+				{ step: 2, actor: "System", action: "Shows results" },
+			],
+			acceptance_criteria: ["Results appear within 1s"],
+		});
+
+		const content = serializeEntity(result.entity);
+		expect(content).toContain("id: UC-001");
+		expect(content).toContain('title: "Search catalog"');
+		expect(content).toContain("actors:");
+		expect(content).toContain("preconditions:");
+		expect(content).toContain("main_flow:");
+		expect(content).toContain("acceptance_criteria:");
+	});
+
+	test("serialized use case survives parse round-trip", () => {
+		const result = createEntity(TMP, {
+			type: "use_case",
+			title: "Search catalog",
+			actors: ["Member"],
+			preconditions: ["Authenticated"],
+			main_flow: [{ step: 1, actor: "Member", action: "Search" }],
+			acceptance_criteria: ["Results shown"],
+		});
+
+		const content = serializeEntity(result.entity);
+		const reparsed = parseEntity(content, "test-uc.md");
+		expect(reparsed.type).toBe("use_case");
+		expect(reparsed.id).toBe("UC-001");
+		if (reparsed.type === "use_case") {
+			expect(reparsed.actors).toEqual(["Member"]);
+			expect(reparsed.acceptance_criteria).toEqual(["Results shown"]);
+		}
+	});
+});
+
+// ─── Entity model serialization ───
+
+describe("entity model serialization", () => {
+	test("serializes entity model with entities", () => {
+		const result = createEntity(TMP, {
+			type: "entity_model",
+			title: "Library model",
+			entities: [
+				{
+					name: "Book",
+					attributes: [{ name: "title", type: "String", required: true }],
+					relationships: [],
+				},
+			],
+		});
+
+		const content = serializeEntity(result.entity);
+		expect(content).toContain("id: EM-001");
+		expect(content).toContain("entities:");
+		expect(content).toContain("name: Book");
+		expect(content).toContain("attributes:");
+	});
+
+	test("serialized entity model survives parse round-trip", () => {
+		const result = createEntity(TMP, {
+			type: "entity_model",
+			title: "Library model",
+			entities: [
+				{
+					name: "Book",
+					attributes: [{ name: "title", type: "String", required: true }],
+					relationships: [{ target: "Loan", type: "one-to-many" }],
+				},
+			],
+		});
+
+		const content = serializeEntity(result.entity);
+		const reparsed = parseEntity(content, "test-em.md");
+		expect(reparsed.type).toBe("entity_model");
+		expect(reparsed.id).toBe("EM-001");
+		if (reparsed.type === "entity_model") {
+			expect(reparsed.entities![0].name).toBe("Book");
+			expect(reparsed.entities![0].attributes[0].name).toBe("title");
+		}
+	});
+});
+
+// ─── Use case derived_from (requirement→use_case) ───
+
+describe("use case relationships", () => {
+	test("use case derived_from links to requirement", () => {
+		createEntity(TMP, { type: "requirement", title: "Catalog search" });
+		createEntity(TMP, { type: "use_case", title: "Search catalog" });
+
+		const result = performLink(TMP, "UC-001", "R-001", {
+			type: "derived_from",
+		});
+		expect(result.edgeType).toBe("derived_from");
+		expect(result.fromId).toBe("UC-001");
+		expect(result.toId).toBe("R-001");
+
+		const ucs = readAllEntities(TMP).filter((e) => e.type === "use_case");
+		expect(ucs.length).toBe(1);
+	});
+
+	test("use case derived_from shows in trace", () => {
+		createEntity(TMP, { type: "requirement", title: "Catalog search" });
+		createEntity(TMP, { type: "use_case", title: "Search catalog" });
+
+		performLink(TMP, "UC-001", "R-001", { type: "derived_from" });
+
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const tree = traceUp(graph, "UC-001");
+		expect(tree).not.toBeNull();
+	});
+});
+
+// ─── Entity model derived_from ───
+
+describe("entity model relationships", () => {
+	test("entity model derived_from links to requirement", () => {
+		createEntity(TMP, { type: "requirement", title: "Domain model" });
+		createEntity(TMP, { type: "entity_model", title: "Library model" });
+
+		const result = performLink(TMP, "EM-001", "R-001", {
+			type: "derived_from",
+		});
+		expect(result.edgeType).toBe("derived_from");
+		expect(result.fromId).toBe("EM-001");
+		expect(result.toId).toBe("R-001");
+
+		const ems = readAllEntities(TMP).filter((e) => e.type === "entity_model");
+		expect(ems.length).toBe(1);
+	});
+
+	test("entity model derived_from shows in trace", () => {
+		createEntity(TMP, { type: "requirement", title: "Domain model" });
+		createEntity(TMP, { type: "entity_model", title: "Library model" });
+
+		performLink(TMP, "EM-001", "R-001", { type: "derived_from" });
+
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const tree = traceUp(graph, "EM-001");
+		expect(tree).not.toBeNull();
+	});
+});
+
+// ─── Use case and entity model in graph ───
+
+describe("graph integration with use_case and entity_model", () => {
+	test("graph includes both new entity types", () => {
+		createEntity(TMP, { type: "use_case", title: "Search" });
+		createEntity(TMP, { type: "entity_model", title: "Model" });
+
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		expect(graph.entities.has("UC-001")).toBe(true);
+		expect(graph.entities.has("EM-001")).toBe(true);
+	});
+
+	test("use case and entity_model are not flagged as orphans", () => {
+		createEntity(TMP, { type: "use_case", title: "Search" });
+		createEntity(TMP, { type: "entity_model", title: "Model" });
+
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const orphans = findOrphans(graph);
+		expect(orphans.length).toBe(0);
+	});
+});
+
+// ─── Remove and rename with new types ───
+
+describe("remove and rename with use_case and entity_model", () => {
+	test("removes a use case with no dependents", () => {
+		createEntity(TMP, { type: "use_case", title: "Search" });
+		const result = performRemove(TMP, "UC-001");
+		expect(result.removed.id).toBe("UC-001");
+		expect(readEntityById(TMP, "UC-001")).toBeNull();
+	});
+
+	test("removes an entity model with no dependents", () => {
+		createEntity(TMP, { type: "entity_model", title: "Model" });
+		const result = performRemove(TMP, "EM-001");
+		expect(result.removed.id).toBe("EM-001");
+		expect(readEntityById(TMP, "EM-001")).toBeNull();
+	});
+
+	test("renames a use case", () => {
+		createEntity(TMP, { type: "use_case", title: "Old search" });
+		const result = performRename(TMP, "UC-001", "UC-050");
+		expect(result.oldId).toBe("UC-001");
+		expect(result.newId).toBe("UC-050");
+		expect(readEntityById(TMP, "UC-001")).toBeNull();
+		expect(readEntityById(TMP, "UC-050")).not.toBeNull();
+	});
+
+	test("renames an entity model", () => {
+		createEntity(TMP, { type: "entity_model", title: "Old model" });
+		const result = performRename(TMP, "EM-001", "EM-050");
+		expect(result.oldId).toBe("EM-001");
+		expect(result.newId).toBe("EM-050");
+		expect(readEntityById(TMP, "EM-001")).toBeNull();
+		expect(readEntityById(TMP, "EM-050")).not.toBeNull();
+	});
+});
+
+// ─── Use case and entity model lifecycle ───
+
+describe("use case lifecycle transitions", () => {
+	test("draft → accepted → deprecated via direct update", () => {
+		createEntity(TMP, { type: "use_case", title: "Search" });
+		const uc = readEntityById(TMP, "UC-001")!;
+		expect(uc.status).toBe("draft");
+
+		uc.status = "accepted";
+		updateEntity(TMP, uc);
+		expect(readEntityById(TMP, "UC-001")!.status).toBe("accepted");
+
+		uc.status = "deprecated";
+		updateEntity(TMP, uc);
+		expect(readEntityById(TMP, "UC-001")!.status).toBe("deprecated");
+	});
+});
+
+describe("entity model lifecycle transitions", () => {
+	test("draft → accepted → deprecated via direct update", () => {
+		createEntity(TMP, { type: "entity_model", title: "Model" });
+		const em = readEntityById(TMP, "EM-001")!;
+		expect(em.status).toBe("draft");
+
+		em.status = "accepted";
+		updateEntity(TMP, em);
+		expect(readEntityById(TMP, "EM-001")!.status).toBe("accepted");
+
+		em.status = "deprecated";
+		updateEntity(TMP, em);
+		expect(readEntityById(TMP, "EM-001")!.status).toBe("deprecated");
 	});
 });
