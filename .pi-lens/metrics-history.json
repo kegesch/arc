@@ -1665,7 +1665,32 @@
         }
       ],
       "trend": "stable"
+    },
+    "src\\commands\\skill.ts": {
+      "latest": {
+        "commit": "97483eb",
+        "timestamp": "2026-05-30T14:16:05.766Z",
+        "mi": 54,
+        "cognitive": 10,
+        "nesting": 3,
+        "lines": 48,
+        "maxCyclomatic": 2,
+        "entropy": 4.85
+      },
+      "history": [
+        {
+          "commit": "97483eb",
+          "timestamp": "2026-05-30T14:16:05.766Z",
+          "mi": 54,
+          "cognitive": 10,
+          "nesting": 3,
+          "lines": 48,
+          "maxCyclomatic": 2,
+          "entropy": 4.85
+        }
+      ],
+      "trend": "stable"
     }
   },
-  "capturedAt": "2026-05-30T14:11:41.155Z"
+  "capturedAt": "2026-05-30T14:16:10.770Z"
 }

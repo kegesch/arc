@@ -35,15 +35,17 @@ arc list --context billing  # List entities in the billing context
 
 ### Entities
 
-| Type            | Prefix  | What it is                                                  |
-| --------------- | ------- | ----------------------------------------------------------- |
-| **Requirement** | `R-001` | Something the system must satisfy                           |
-| **Assumption**  | `A-001` | Something believed true but not yet verified                |
-| **Decision**    | `D-001` | An architectural or design choice                           |
-| **Idea**        | `I-001` | A speculative thought or possibility — not yet committed to |
-| **Stakeholder** | `S-001` | A person, team, or group with interest in the system        |
-| **Risk**        | `K-001` | Something that could go wrong — tracked and mitigated       |
-| **Term**        | `T-001` | A shared vocabulary definition (ubiquitous language)        |
+| Type             | Prefix   | What it is                                                  |
+| ---------------- | -------- | ----------------------------------------------------------- |
+| **Requirement**  | `R-001`  | Something the system must satisfy                           |
+| **Assumption**   | `A-001`  | Something believed true but not yet verified                |
+| **Decision**     | `D-001`  | An architectural or design choice                           |
+| **Idea**         | `I-001`  | A speculative thought or possibility — not yet committed to |
+| **Stakeholder**  | `S-001`  | A person, team, or group with interest in the system        |
+| **Risk**         | `K-001`  | Something that could go wrong — tracked and mitigated       |
+| **Term**         | `T-001`  | A shared vocabulary definition (ubiquitous language)        |
+| **Use Case**     | `UC-001` | A structured use case with actors, flows, and criteria      |
+| **Entity Model** | `EM-001` | A structured domain model with entities and relationships   |
 
 ### Relationships
 
@@ -61,6 +63,9 @@ Idea ──promoted_to──▶ Requirement/Decision (graduated to something con
 Requirement ──requested_by──▶ Stakeholder (who asked for this)
 Decision ──affects──▶ Stakeholder (who is affected by this)
 Risk ──mitigated_by──▶ Decision (what addresses this risk)
+Use Case ──derived_from──▶ Requirement (which requirement it implements)
+Use Case ──requested_by──▶ Stakeholder (who participates)
+Entity Model ──derived_from──▶ Requirement (which requirement it models)
 ```
 
 ### Key Queries
@@ -131,6 +136,39 @@ Risks represent what could go wrong. They track threats, their likelihood, and w
 arc add risk "Payment provider downtime during peak hours"
 arc link K-001 D-005 --type mitigated_by   # Decision D-005 mitigates risk K-001
 ```
+
+### Use Cases
+
+Use cases describe how actors interact with the system to achieve a goal. They have structured fields for code generation:
+
+```bash
+arc add use_case "Search catalog" --context library
+# Then edit to add actors, preconditions, main_flow, acceptance_criteria
+arc link UC-001 R-001 --type derived_from  # Links to parent requirement
+arc link UC-001 S-001 --type requested_by  # Links to participating stakeholder
+```
+
+Use cases have structured YAML frontmatter fields:
+
+- `actors` — Who participates (string array)
+- `preconditions` — What must be true before (string array)
+- `main_flow` — Numbered steps with actor and action
+- `acceptance_criteria` — Given/When/Then criteria (string array)
+
+### Entity Models
+
+Entity models describe domain entities, their attributes, and relationships:
+
+```bash
+arc add entity_model "Book library domain model" --context library
+# Then edit to add entities with attributes and relationships
+arc link EM-001 R-001 --type derived_from  # Links to parent requirement
+```
+
+Entity models have structured YAML frontmatter fields:
+
+- `entities` — Array of domain entities
+  - Each entity has `name`, `attributes` (name, type, required, unique, length), and `relationships` (target, type)
 
 Risks appear in `arc impact` — if a mitigating decision is deprecated, you'll see the risk become unmitigated.
 
@@ -221,13 +259,18 @@ Use SQLite as the embedded database.
   terms/
     T-001-order.md
     T-002-fulfillment.md
+  use_cases/
+    UC-001-search-catalog.md
+    UC-002-borrow-book.md
+  entity_models/
+    EM-001-book-library.md
 ```
 
 ## CLI Reference
 
 ```
 arc init                              Initialize .arc/ in current directory
-arc add <type> [title]                Add entity (type: requirement|assumption|decision|idea|stakeholder|risk|term)
+arc add <type> [title]                Add entity (type: requirement|assumption|decision|idea|stakeholder|risk|term|use_case|entity_model)
                                         Options: --context, --status, --tags, --driven-by, --derived-from,
                                                  --conflicts-with, --enables, --supersedes, --inspired-by,
                                                  --body, --body-file

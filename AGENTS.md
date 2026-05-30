@@ -12,6 +12,8 @@ This means:
 - **Ideas** (I-xxx): Exploratory thinking and future possibilities go here, not in code comments or scattered docs.
 - **Risks** (K-xxx): Identified risks must be tracked with their mitigation status.
 - **Terms** (T-xxx): Domain-specific terminology should be defined in the glossary.
+- **Use Cases** (UC-xxx): Structured use cases with actors, preconditions, main flows, and acceptance criteria.
+- **Entity Models** (EM-xxx): Structured domain models with entities, attributes, and relationships.
 
 ### Workflow
 
@@ -25,7 +27,7 @@ This means:
 ```bash
 arc status              # project health summary
 arc list                # list all entities
-arc add <type> <title>  # add an entity (requirement|assumption|decision|idea|stakeholder|risk|term)
+arc add <type> <title>  # add an entity (requirement|assumption|decision|idea|stakeholder|risk|term|use_case|entity_model)
 arc show <id>           # show entity detail + relationships
 arc link <from> <to>    # create a relationship
 arc trace <id>          # trace dependency tree

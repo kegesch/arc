@@ -20,25 +20,25 @@ The `.arc/` directory will be created in the project root. Commit it to git — 
 
 ## When to Use This Skill
 
-|| Situation                                                          | Action                 |
-| ------------------------------------------------------------------ | ---------------------- |
-| User describes a feature or constraint the system must satisfy     | `arc add requirement`  |
-| User states something they believe to be true but haven't verified | `arc add assumption`   |
-| User makes an architectural or design choice                       | `arc add decision`     |
-| User has a speculative idea or "what if?" thought                  | `arc add idea`         |
+|                                                                      | Situation             | Action |
+| -------------------------------------------------------------------- | --------------------- | ------ |
+| User describes a feature or constraint the system must satisfy       | `arc add requirement` |
+| User states something they believe to be true but haven't verified   | `arc add assumption`  |
+| User makes an architectural or design choice                         | `arc add decision`    |
+| User has a speculative idea or "what if?" thought                    | `arc add idea`        |
 | User identifies a person, team, or group with interest in the system | `arc add stakeholder` |
-| User identifies something that could go wrong                       | `arc add risk`         |
-| User wants to define a shared term or concept                      | `arc add term`         |
-| User asks "why did we decide X?"                                   | `arc trace D-xxx`      |
-| User asks "what happens if Y is wrong?"                            | `arc impact A-xxx`    |
-| User wants to check the health of their architecture docs          | `arc check`            |
-| User validates an assumption                                       | `arc validate A-xxx`   |
-| User wants to connect entities after the fact                      | `arc link`             |
-| User wants to visualize the full graph                             | `arc graph`            |
+| User identifies something that could go wrong                        | `arc add risk`        |
+| User wants to define a shared term or concept                        | `arc add term`        |
+| User asks "why did we decide X?"                                     | `arc trace D-xxx`     |
+| User asks "what happens if Y is wrong?"                              | `arc impact A-xxx`    |
+| User wants to check the health of their architecture docs            | `arc check`           |
+| User validates an assumption                                         | `arc validate A-xxx`  |
+| User wants to connect entities after the fact                        | `arc link`            |
+| User wants to visualize the full graph                               | `arc graph`           |
 
 ## Core Concepts
 
-### Seven entity types
+### Nine entity types
 
 - **Requirement** (R-xxx) — Something the system must satisfy. Source of truth for what and why.
 - **Assumption** (A-xxx) — Something believed true but not verified. Dangerous when wrong. Can be promoted to a requirement once validated.
@@ -47,6 +47,8 @@ The `.arc/` directory will be created in the project root. Commit it to git — 
 - **Stakeholder** (S-xxx) — A person, team, or group with interest in the system. Answers "who asked for this?" and "who is affected?".
 - **Risk** (K-xxx) — Something that could go wrong. Tracked and mitigated via decisions.
 - **Term** (T-xxx) — A shared vocabulary definition (ubiquitous language). Prevents ambiguity.
+- **Use Case** (UC-xxx) — A structured use case with actors, preconditions, main flow, and acceptance criteria. Derives from requirements and links to stakeholders.
+- **Entity Model** (EM-xxx) — A structured domain model with entities, attributes, and relationships. Derives from requirements.
 
 ### Relationships
 
@@ -64,6 +66,9 @@ Idea ──promoted_to──▶ Requirement/Decision graduation
 Requirement ──requested_by──▶ Stakeholder  who asked for this
 Decision ──affects──▶ Stakeholder          who is affected
 Risk ──mitigated_by──▶ Decision            what addresses this risk
+Use Case ──derived_from──▶ Requirement     which requirement it implements
+Use Case ──requested_by──▶ Stakeholder     who participates
+Entity Model ──derived_from──▶ Requirement which requirement it models
 ```
 
 Every decision should have at least one `driven_by` reference. Decisions without backing are "orphans" — a code smell.
