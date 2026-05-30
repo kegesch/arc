@@ -47,12 +47,12 @@ export function getDescriptorForId(id: string): EntityDescriptor {
 
 /** All registered entity types */
 export function allTypes(): EntityType[] {
-	return (Object.keys(_registry) as EntityType[]);
+	return Object.keys(_registry) as EntityType[];
 }
 
 /** All registered descriptors */
 export function allDescriptors(): EntityDescriptor[] {
-	return (Object.values(_registry) as EntityDescriptor[]);
+	return Object.values(_registry) as EntityDescriptor[];
 }
 
 // ─── Valid edge pairs (derived from descriptors) ───
@@ -61,7 +61,7 @@ export function allDescriptors(): EntityDescriptor[] {
 export const VALID_EDGES: Record<string, EdgeType[]> = {
 	"decision-requirement": ["driven_by"],
 	"decision-assumption": ["driven_by"],
-	"decision-decision": ["enables", "supersedes"],
+	"decision-decision": ["enables", "supersedes", "depends_on"],
 	"decision-idea": ["driven_by"],
 	"decision-stakeholder": ["affects"],
 	"requirement-requirement": ["derived_from", "conflicts_with"],
@@ -110,7 +110,9 @@ export function getRelField(
 
 /** All edge types that a given entity type can hold */
 export function getAllRelFields(entityType: EntityType): EdgeType[] {
-	return getDescriptor(entityType).relFields().map((r) => r.edgeType);
+	return getDescriptor(entityType)
+		.relFields()
+		.map((r) => r.edgeType);
 }
 
 // ─── Reference cleanup / rename ───
@@ -123,7 +125,9 @@ export function cleanRefs(entity: Entity, removedId: string): boolean {
 		const val = (entity as any)[rf.field];
 		if (rf.isArray) {
 			if (Array.isArray(val) && val.includes(removedId)) {
-				(entity as any)[rf.field] = val.filter((id: string) => id !== removedId);
+				(entity as any)[rf.field] = val.filter(
+					(id: string) => id !== removedId,
+				);
 				changed = true;
 			}
 		} else {
@@ -137,14 +141,20 @@ export function cleanRefs(entity: Entity, removedId: string): boolean {
 }
 
 /** Rename all references from `oldId` to `newId` in `entity`, mutating in place. Returns true if changed. */
-export function renameRefs(entity: Entity, oldId: string, newId: string): boolean {
+export function renameRefs(
+	entity: Entity,
+	oldId: string,
+	newId: string,
+): boolean {
 	const desc = getDescriptor(entity.type);
 	let changed = false;
 	for (const rf of desc.relFields()) {
 		const val = (entity as any)[rf.field];
 		if (rf.isArray) {
 			if (Array.isArray(val) && val.includes(oldId)) {
-				(entity as any)[rf.field] = val.map((id: string) => id === oldId ? newId : id);
+				(entity as any)[rf.field] = val.map((id: string) =>
+					id === oldId ? newId : id,
+				);
 				changed = true;
 			}
 		} else {
@@ -168,7 +178,10 @@ export function hasRelation(
 		if (rf.edgeType !== edgeType) continue;
 		const val = (entity as any)[rf.field];
 		if (rf.isArray) {
-			if (Array.isArray(val) && val.some((id: string) => id.toLowerCase().includes(value))) {
+			if (
+				Array.isArray(val) &&
+				val.some((id: string) => id.toLowerCase().includes(value))
+			) {
 				return true;
 			}
 		} else {

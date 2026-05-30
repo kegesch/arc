@@ -1,8 +1,5 @@
-import type { Decision, Entity } from "../types";
-import type {
-	EntityDescriptor,
-	RawFrontmatter,
-} from "./descriptor";
+import type { Decision } from "../types";
+import type { EntityDescriptor, RawFrontmatter } from "./descriptor";
 
 export const decisionDescriptor: EntityDescriptor = {
 	type: "decision",
@@ -36,6 +33,7 @@ export const decisionDescriptor: EntityDescriptor = {
 		driven_by: meta.driven_by ?? [],
 		enables: meta.enables ?? [],
 		supersedes: meta.supersedes,
+		depends_on: meta.depends_on ?? [],
 		affects: meta.affects ?? [],
 	}),
 
@@ -44,11 +42,11 @@ export const decisionDescriptor: EntityDescriptor = {
 		const lines: string[] = [];
 		if (e.driven_by.length > 0)
 			lines.push(`driven_by: [${e.driven_by.join(", ")}]`);
-		if (e.enables.length > 0)
-			lines.push(`enables: [${e.enables.join(", ")}]`);
+		if (e.enables.length > 0) lines.push(`enables: [${e.enables.join(", ")}]`);
 		if (e.supersedes) lines.push(`supersedes: ${e.supersedes}`);
-		if (e.affects.length > 0)
-			lines.push(`affects: [${e.affects.join(", ")}]`);
+		if (e.depends_on && e.depends_on.length > 0)
+			lines.push(`depends_on: [${e.depends_on.join(", ")}]`);
+		if (e.affects.length > 0) lines.push(`affects: [${e.affects.join(", ")}]`);
 		return lines;
 	},
 
@@ -67,6 +65,9 @@ export const decisionDescriptor: EntityDescriptor = {
 		for (const stakeholderId of e.affects) {
 			result.push({ to: stakeholderId, type: "affects" });
 		}
+		for (const depId of e.depends_on ?? []) {
+			result.push({ to: depId, type: "depends_on" });
+		}
 		return result;
 	},
 
@@ -74,18 +75,23 @@ export const decisionDescriptor: EntityDescriptor = {
 		{ field: "driven_by", edgeType: "driven_by", isArray: true },
 		{ field: "enables", edgeType: "enables", isArray: true },
 		{ field: "supersedes", edgeType: "supersedes", isArray: false },
+		{ field: "depends_on", edgeType: "depends_on", isArray: true },
 		{ field: "affects", edgeType: "affects", isArray: true },
 	],
 
 	detailRelations: (entity) => {
 		const e = entity as Decision;
-		const rels: Array<{ label: string; ids: string[] | string; style?: "normal" | "red" }> = [];
+		const rels: Array<{
+			label: string;
+			ids: string[] | string;
+			style?: "normal" | "red";
+		}> = [];
 		if (e.driven_by.length > 0)
 			rels.push({ label: "driven by", ids: e.driven_by });
-		if (e.enables.length > 0)
-			rels.push({ label: "enables", ids: e.enables });
-		if (e.supersedes)
-			rels.push({ label: "supersedes", ids: e.supersedes });
+		if (e.enables.length > 0) rels.push({ label: "enables", ids: e.enables });
+		if (e.supersedes) rels.push({ label: "supersedes", ids: e.supersedes });
+		if (e.depends_on && e.depends_on.length > 0)
+			rels.push({ label: "depends on", ids: e.depends_on });
 		return rels;
 	},
 
@@ -95,6 +101,7 @@ export const decisionDescriptor: EntityDescriptor = {
 			driven_by: e.driven_by,
 			enables: e.enables,
 			supersedes: e.supersedes,
+			depends_on: e.depends_on ?? [],
 			affects: e.affects,
 		};
 	},

@@ -1,12 +1,7 @@
 // Entity Descriptor interface — encapsulates all type-specific behaviour
 // behind a single object per entity type.
 
-import type {
-	EdgeType,
-	Entity,
-	EntityBase,
-	EntityType,
-} from "../types";
+import type { EdgeType, Entity, EntityBase, EntityType } from "../types";
 
 /** Raw frontmatter parsed from YAML */
 export interface RawFrontmatter {
@@ -26,6 +21,7 @@ export interface RawFrontmatter {
 	requested_by?: string[];
 	affects?: string[];
 	mitigated_by?: string[];
+	depends_on?: string[];
 }
 
 /** Describes a single relationship field on an entity */

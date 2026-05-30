@@ -70,6 +70,7 @@ export interface Decision extends EntityBase {
 	driven_by: string[];
 	enables: string[];
 	supersedes?: string;
+	depends_on: string[];
 	affects: string[];
 }
 
@@ -109,6 +110,7 @@ export type EdgeType =
 	| "driven_by"
 	| "derived_from"
 	| "conflicts_with"
+	| "depends_on"
 	| "enables"
 	| "supersedes"
 	| "promoted_to"

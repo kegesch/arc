@@ -12,6 +12,7 @@ const DEPENDENCY_EDGE_TYPES: Set<EdgeType> = new Set([
 	"driven_by",
 	"derived_from",
 	"enables",
+	"depends_on",
 	"inspired_by",
 	"requested_by",
 	"affects",
@@ -22,6 +23,7 @@ const DEPENDENCY_EDGE_TYPES: Set<EdgeType> = new Set([
 const TRACE_EDGE_TYPES: Set<EdgeType> = new Set([
 	"driven_by",
 	"derived_from",
+	"depends_on",
 	"supersedes",
 	"inspired_by",
 ]);
