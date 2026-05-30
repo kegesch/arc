@@ -190,6 +190,7 @@ export interface StatusAnomaly {
  * Find status anomalies:
  * - Accepted decisions driven by deprecated/rejected requirements
  * - Accepted decisions backed by invalidated assumptions
+ * - Decisions with supersedes reference where superseded decision is not in superseded status
  */
 export function findStatusAnomalies(g: ArcGraph): StatusAnomaly[] {
 	const anomalies: StatusAnomaly[] = [];
@@ -218,6 +219,23 @@ export function findStatusAnomalies(g: ArcGraph): StatusAnomaly[] {
 					entity,
 					issue: `accepted decision backed by ${badRefs.map((r) => `${r.status} ${r.id}`).join(", ")}`,
 					refs: badRefs,
+				});
+			}
+		}
+	}
+
+	for (const [, entity] of g.entities) {
+		if (entity.type === "decision" && entity.supersedes) {
+			const superseded = g.entities.get(entity.supersedes);
+			if (
+				superseded &&
+				superseded.type === "decision" &&
+				superseded.status !== "superseded"
+			) {
+				anomalies.push({
+					entity: superseded,
+					issue: `${entity.id} supersedes this decision, but status is still "${superseded.status}"`,
+					refs: [entity],
 				});
 			}
 		}
