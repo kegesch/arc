@@ -1,9 +1,15 @@
 ---
 id: R-021
-title: "The MCP server must expose link, unlink, and graph tools for full programmatic graph manipulation"
+title: The MCP server must expose link, unlink, and graph tools for full programmatic graph manipulation
 status: accepted
 date: 2026-05-01
-tags: [mcp, api]
+tags:
+  - mcp
+  - api
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: The MCP server must expose link, unlink, and graph tools for full programmatic graph manipulation

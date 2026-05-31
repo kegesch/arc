@@ -1,9 +1,15 @@
 ---
 id: R-025
-title: "When promoting an assumption to a requirement, the system must auto-link dependent decisions to the new requirement"
+title: When promoting an assumption to a requirement, the system must auto-link dependent decisions to the new requirement
 status: accepted
 date: 2026-05-01
-tags: [mutation, lifecycle]
+tags:
+  - mutation
+  - lifecycle
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: When promoting an assumption to a requirement, the system must auto-link dependent decisions to the new requirement

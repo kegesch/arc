@@ -1,9 +1,15 @@
 ---
 id: R-028
-title: "The system must support Stakeholder entities (S-xxx) to represent people or teams affected by or requesting requirements and decisions"
+title: The system must support Stakeholder entities (S-xxx) to represent people or teams affected by or requesting requirements and decisions
 status: accepted
 date: 2026-05-04
-tags: [model, stakeholders]
+tags:
+  - model
+  - stakeholders
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: The system must support Stakeholder entities (S-xxx) to represent people or teams affected by or requesting requirements and decisions

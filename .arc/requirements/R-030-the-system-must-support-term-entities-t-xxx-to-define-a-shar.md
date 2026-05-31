@@ -1,9 +1,15 @@
 ---
 id: R-030
-title: "The system must support Term entities (T-xxx) to define a shared project glossary of domain-specific terminology"
+title: The system must support Term entities (T-xxx) to define a shared project glossary of domain-specific terminology
 status: accepted
 date: 2026-05-04
-tags: [model, glossary]
+tags:
+  - model
+  - glossary
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: The system must support Term entities (T-xxx) to define a shared project glossary of domain-specific terminology

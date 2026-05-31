@@ -1,9 +1,14 @@
 ---
 id: R-014
-title: "The system must be distributable as a standalone binary requiring no runtime"
+title: The system must be distributable as a standalone binary requiring no runtime
 status: accepted
 date: 2026-05-01
-tags: [distribution]
+tags:
+  - distribution
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: The system must be distributable as a standalone binary requiring no runtime

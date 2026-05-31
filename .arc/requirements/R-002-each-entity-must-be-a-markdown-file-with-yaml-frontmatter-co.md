@@ -1,9 +1,15 @@
 ---
 id: R-002
-title: "Each entity must be a Markdown file with YAML frontmatter containing structured metadata"
+title: Each entity must be a Markdown file with YAML frontmatter containing structured metadata
 status: accepted
 date: 2026-05-01
-tags: [storage, format]
+tags:
+  - storage
+  - format
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: Each entity must be a Markdown file with YAML frontmatter containing structured metadata

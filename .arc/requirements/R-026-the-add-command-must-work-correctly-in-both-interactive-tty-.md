@@ -1,9 +1,15 @@
 ---
 id: R-026
-title: "The add command must work correctly in both interactive (TTY) and non-interactive (piped) modes"
+title: The add command must work correctly in both interactive (TTY) and non-interactive (piped) modes
 status: accepted
 date: 2026-05-01
-tags: [ux, cli]
+tags:
+  - ux
+  - cli
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: The add command must work correctly in both interactive (TTY) and non-interactive (piped) modes

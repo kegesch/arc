@@ -1,9 +1,14 @@
 ---
 id: R-004
-title: "Command execution must be fast — under 1 second for repos with up to 10000 entities"
+title: Command execution must be fast — under 1 second for repos with up to 10000 entities
 status: accepted
 date: 2026-05-01
-tags: [performance]
+tags:
+  - performance
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: Command execution must be fast — under 1 second for repos with up to 10000 entities

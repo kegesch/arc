@@ -1,9 +1,15 @@
 ---
 id: R-023
-title: "Users must be able to import existing ADR markdown files as ARAD decisions"
+title: Users must be able to import existing ADR markdown files as ARAD decisions
 status: accepted
 date: 2026-05-01
-tags: [import, migration]
+tags:
+  - import
+  - migration
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: Users must be able to import existing ADR markdown files as ARAD decisions

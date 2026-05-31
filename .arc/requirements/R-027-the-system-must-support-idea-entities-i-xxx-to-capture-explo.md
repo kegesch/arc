@@ -1,9 +1,15 @@
 ---
 id: R-027
-title: "The system must support Idea entities (I-xxx) to capture exploratory thinking that may graduate into requirements or decisions"
+title: The system must support Idea entities (I-xxx) to capture exploratory thinking that may graduate into requirements or decisions
 status: accepted
 date: 2026-05-04
-tags: [model, ideas]
+tags:
+  - model
+  - ideas
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: The system must support Idea entities (I-xxx) to capture exploratory thinking that may graduate into requirements or decisions

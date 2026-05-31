@@ -3,7 +3,8 @@ id: R-040
 title: Vision entity type (V-xxx) — root node for project purpose and direction
 status: accepted
 date: 2026-05-31
-derived_from: []
+derived_from:
+  - V-001
 conflicts_with: []
 requested_by: []
 ---

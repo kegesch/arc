@@ -1,9 +1,15 @@
 ---
 id: R-022
-title: "The system must provide a quick project health summary showing entity counts, status breakdown, and issue indicators"
+title: The system must provide a quick project health summary showing entity counts, status breakdown, and issue indicators
 status: accepted
 date: 2026-05-01
-tags: [ux, health]
+tags:
+  - ux
+  - health
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: The system must provide a quick project health summary showing entity counts, status breakdown, and issue indicators

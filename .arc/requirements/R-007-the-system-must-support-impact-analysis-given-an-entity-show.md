@@ -1,9 +1,14 @@
 ---
 id: R-007
-title: "The system must support impact analysis — given an entity, show what depends on it transitively"
+title: The system must support impact analysis — given an entity, show what depends on it transitively
 status: accepted
 date: 2026-05-01
-tags: [analysis]
+tags:
+  - analysis
+derived_from:
+  - V-001
+conflicts_with: []
+requested_by: []
 ---
 
 # Requirement: The system must support impact analysis — given an entity, show what depends on it transitively
