@@ -27,7 +27,9 @@ arc add idea "Use CRDTs for real-time sync"
 arc add decision "Use Stripe for payments" --context billing
 arc trace D-001          # See what backs a decision
 arc impact A-001         # See what breaks if an assumption is wrong
-arc check                # Find orphans, contradictions, dangling refs
+arc check                # Find orphans, contradictions, dangling refs, gaps
+arc next                 # What should I work on?
+arc context R-001        # Bundle entity with implementation context
 arc list --context billing  # List entities in the billing context
 ```
 
@@ -72,6 +74,8 @@ Entity Model ──derived_from──▶ Requirement (which requirement it model
 
 - **Trace** — Walk the graph from any entity. "What backs this decision?"
 - **Impact** — Reverse traversal. "If this assumption is wrong, what breaks?"
+- **Next** — Categorize requirements by readiness. "What should I work on?"
+- **Context** — Bundle entity with related context. "Everything I need to implement this."
 - **Orphans** — Decisions with no backing requirement or assumption.
 - **Contradictions** — Requirements that conflict with each other.
 - **Ideas** — Speculative thoughts not yet committed to. Excluded from strict checks.
@@ -283,7 +287,9 @@ arc status                            Quick project health summary
 arc import <path>                     Import ADR markdown files as decisions
 arc trace <id>                        Show dependency tree
 arc impact <id>                       Show what breaks if this changes
-arc check                             Find orphans, contradictions, dangling refs (--strict, --context, --format)
+arc check                             Find orphans, contradictions, dangling refs, gaps (--strict, --context, --format)
+arc next                              What should I work on? Categorizes by readiness (--format, --context)
+arc context <id>                      Bundle entity with related context (--format, --context, --shallow)
 arc validate <id>                     Mark assumption as validated
 arc invalidate <id>                   Mark assumption as invalidated
 arc promote <id> [--to <type>]        Promote assumption/idea (default: assumption→requirement, idea→requirement)

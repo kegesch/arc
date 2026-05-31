@@ -32,6 +32,8 @@ The `.arc/` directory will be created in the project root. Commit it to git — 
 | User wants to capture the project purpose and direction              | `arc add vision`      |
 | User asks "why did we decide X?"                                     | `arc trace D-xxx`     |
 | User asks "what happens if Y is wrong?"                              | `arc impact A-xxx`    |
+| User asks "what should I work on next?"                              | `arc next`            |
+| User asks "give me everything for R-xxx"                              | `arc context R-xxx`   |
 | User wants to check the health of their architecture docs            | `arc check`           |
 | User validates an assumption                                         | `arc validate A-xxx`  |
 | User wants to connect entities after the fact                        | `arc link`            |
@@ -228,8 +230,18 @@ arc trace D-001
 # What would break if this assumption is wrong?
 arc impact A-001
 
-# Full health check: orphans, contradictions, dangling refs, unvalidated assumptions
+# Full health check: orphans, contradictions, dangling refs, unvalidated assumptions, gaps
 arc check
+
+# What should I work on? Categorizes requirements by readiness.
+arc next
+
+# Everything I need to implement R-003.
+arc context R-003 --shallow
+
+# Machine-readable output
+arc next --format json
+arc context R-003 --format json
 
 # Stricter: treat warnings (unvalidated assumptions, orphan requirements) as errors
 arc check --strict
@@ -243,6 +255,28 @@ arc query "type:decision status:accepted"
 arc query "driven_by:R-001"
 arc query "tag:storage"
 ```
+
+#### `arc next` categories
+
+The command outputs requirements in these categories (no ordering — the agent decides priority):
+
+| Category | Meaning |
+| -------- | ------- |
+| Ready to implement | Requirement has accepted decisions AND use cases |
+| Needs use cases | Requirement has accepted decisions but no use cases |
+| Needs design | Requirement has no accepted decisions |
+| Risky assumptions | Unvalidated assumptions backing accepted decisions |
+| Orphan decisions | Decisions with no driven_by (no backing requirement/assumption) |
+
+#### `arc context` options
+
+| Flag | Effect |
+| ---- | ------ |
+| `--shallow` | One-hop only — direct relationships. Default is full transitive closure. |
+| `--format json` | Machine-readable output |
+| `--context <name>` | Filter by context |
+
+Bundles the entity with all related: decisions, use cases, assumptions, risks, requirements, visions.
 
 ### 5. Validate assumptions, promote ideas
 
@@ -333,6 +367,8 @@ The body is freeform markdown. The frontmatter is the structured data ARC reads.
 1. **Run `arc check` before finishing a session** — surface orphans and contradictions early.
 2. **Use `arc trace` to justify decisions** — if a stakeholder asks "why did we choose X?", the trace tells the full story.
 3. **Use `arc impact` before changing assumptions** — know what breaks before you invalidate.
+4. **Use `arc next` to decide what to work on** — categorizes requirements by readiness (ready, needs use cases, needs design) and flags risky assumptions and orphan decisions.
+5. **Use `arc context <id>` before implementing** — bundles the entity with all related decisions, assumptions, risks, and requirements. One call instead of five.
 
 ## Query Reference
 
@@ -374,6 +410,10 @@ arc list --format json
 arc show D-001
 arc trace D-001
 arc impact A-001
+
+# Driver commands — what to work on and implementation context
+arc next --format json
+arc context R-001 --shallow --format json
 
 # Non-interactive add (no TTY prompts)
 arc add decision "Use SQLite" --driven-by="R-001" --status=accepted --body="..."
