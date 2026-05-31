@@ -1918,14 +1918,14 @@
     },
     "tests\\vision.test.ts": {
       "latest": {
-        "commit": "7d3a117",
-        "timestamp": "2026-05-31T08:11:46.572Z",
-        "mi": 16.1,
+        "commit": "f4e979f",
+        "timestamp": "2026-05-31T18:39:19.512Z",
+        "mi": 15.6,
         "cognitive": 6,
         "nesting": 3,
-        "lines": 418,
+        "lines": 432,
         "maxCyclomatic": 2,
-        "entropy": 4.9
+        "entropy": 4.87
       },
       "history": [
         {
@@ -1937,10 +1937,45 @@
           "lines": 418,
           "maxCyclomatic": 2,
           "entropy": 4.9
+        },
+        {
+          "commit": "f4e979f",
+          "timestamp": "2026-05-31T18:39:19.512Z",
+          "mi": 15.6,
+          "cognitive": 6,
+          "nesting": 3,
+          "lines": 432,
+          "maxCyclomatic": 2,
+          "entropy": 4.87
+        }
+      ],
+      "trend": "stable"
+    },
+    "tests\\driver.test.ts": {
+      "latest": {
+        "commit": "f4e979f",
+        "timestamp": "2026-05-31T18:42:18.916Z",
+        "mi": 25.7,
+        "cognitive": 0,
+        "nesting": 2,
+        "lines": 193,
+        "maxCyclomatic": 1,
+        "entropy": 4.64
+      },
+      "history": [
+        {
+          "commit": "f4e979f",
+          "timestamp": "2026-05-31T18:42:18.916Z",
+          "mi": 25.7,
+          "cognitive": 0,
+          "nesting": 2,
+          "lines": 193,
+          "maxCyclomatic": 1,
+          "entropy": 4.64
         }
       ],
       "trend": "stable"
     }
   },
-  "capturedAt": "2026-05-31T17:58:43.992Z"
+  "capturedAt": "2026-05-31T18:42:23.927Z"
 }
