@@ -346,6 +346,83 @@ function reachesVision(
 	return false;
 }
 
+// ─── Next categories (driver command) ───
+
+export interface NextCategories {
+	ready: Entity[];
+	needs_use_cases: Entity[];
+	needs_design: Entity[];
+	risky: Entity[];
+	orphan: Entity[];
+}
+
+/**
+ * Categorize entities for the `arc next` command.
+ * Returns categorized entities without ordering — the agent decides priority.
+ */
+export function findNextCategories(g: ArcGraph): NextCategories {
+	const result: NextCategories = {
+		ready: [],
+		needs_use_cases: [],
+		needs_design: [],
+		risky: [],
+		orphan: [],
+	};
+
+	// Find unvalidated assumptions backing accepted decisions
+	for (const [, entity] of g.entities) {
+		if (entity.type === "assumption" && entity.status === "unvalidated") {
+			const incoming = g.incoming.get(entity.id) ?? [];
+			const backsAcceptedDecision = incoming.some((edge) => {
+				if (edge.type !== "driven_by" && edge.type !== "enables") return false;
+				const dep = g.entities.get(edge.from);
+				return dep?.type === "decision" && dep.status === "accepted";
+			});
+			if (backsAcceptedDecision) {
+				result.risky.push(entity);
+			}
+		}
+	}
+
+	// Find orphan decisions (no backing requirement or assumption)
+	for (const [, entity] of g.entities) {
+		if (entity.type === "decision" && entity.driven_by.length === 0) {
+			result.orphan.push(entity);
+		}
+	}
+
+	// Categorize accepted requirements
+	for (const [, entity] of g.entities) {
+		if (entity.type !== "requirement" || entity.status !== "accepted") continue;
+
+		// Find decisions that drive this requirement
+		const incoming = g.incoming.get(entity.id) ?? [];
+		const decisions = incoming
+			.filter((edge) => edge.type === "driven_by")
+			.map((edge) => g.entities.get(edge.from))
+			.filter((e): e is Entity => e !== undefined && e.type === "decision" && e.status === "accepted");
+
+		if (decisions.length === 0) {
+			result.needs_design.push(entity);
+			continue;
+		}
+
+		// Check if any use cases are derived from this requirement
+		const useCases = incoming
+			.filter((edge) => edge.type === "derived_from")
+			.map((edge) => g.entities.get(edge.from))
+			.filter((e): e is Entity => e !== undefined && e.type === "use_case");
+
+		if (useCases.length === 0) {
+			result.needs_use_cases.push(entity);
+		} else {
+			result.ready.push(entity);
+		}
+	}
+
+	return result;
+}
+
 export function findRequirementsWithoutVision(
 	g: ArcGraph,
 ): VisionOrphanWarning[] {

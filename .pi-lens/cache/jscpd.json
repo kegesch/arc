@@ -2,11 +2,35 @@
   "success": true,
   "clones": [
     {
+      "fileA": "src\\entities\\stakeholder.ts",
+      "startA": 31,
+      "fileB": "src\\entities\\vision.ts",
+      "startB": 32,
+      "lines": 13,
+      "tokens": 0
+    },
+    {
+      "fileA": "src\\entities\\requirement.ts",
+      "startA": 43,
+      "fileB": "src\\entities\\usecase.ts",
+      "startB": 66,
+      "lines": 8,
+      "tokens": 0
+    },
+    {
       "fileA": "src\\entities\\registry.ts",
-      "startA": 148,
+      "startA": 161,
       "fileB": "src\\entities\\registry.ts",
-      "startB": 121,
+      "startB": 134,
       "lines": 7,
+      "tokens": 0
+    },
+    {
+      "fileA": "src\\entities\\entity-model.ts",
+      "startA": 69,
+      "fileB": "src\\entities\\usecase.ts",
+      "startB": 73,
+      "lines": 6,
       "tokens": 0
     },
     {
@@ -72,9 +96,25 @@
       "startB": 111,
       "lines": 9,
       "tokens": 0
+    },
+    {
+      "fileA": "src\\commands\\add.ts",
+      "startA": 65,
+      "fileB": "src\\entities\\descriptor.ts",
+      "startB": 24,
+      "lines": 21,
+      "tokens": 0
+    },
+    {
+      "fileA": "src\\commands\\add.ts",
+      "startA": 308,
+      "fileB": "src\\entities\\descriptor.ts",
+      "startB": 31,
+      "lines": 12,
+      "tokens": 0
     }
   ],
-  "duplicatedLines": 68,
-  "totalLines": 5719,
-  "percentage": 1.19
+  "duplicatedLines": 123,
+  "totalLines": 6390,
+  "percentage": 1.92
 }

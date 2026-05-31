@@ -20,6 +20,7 @@ import { statusCommand } from "./commands/status.js";
 import { traceCommand } from "./commands/trace.js";
 import { skillCommand } from "./commands/skill.js";
 import { initAgentCommand } from "./commands/init-agent.js";
+import { nextCommand } from "./commands/next.js";
 import {
 	invalidateCommand,
 	promoteCommand,
@@ -287,6 +288,18 @@ program
 	.option("--format <format>", "Output format: text or json", "text")
 	.action((opts: { format?: string }) => {
 		statusCommand(opts);
+	});
+
+program
+	.command("next")
+	.description("What should I work on? Categorizes entities by readiness.")
+	.option("--format <format>", "Output format: text or json", "text")
+	.option("--context <context>", "Filter by context")
+	.action((opts: { format?: string; context?: string }) => {
+		nextCommand({
+			format: (opts.format as "text" | "json") ?? "text",
+			context: opts.context,
+		});
 	});
 
 program

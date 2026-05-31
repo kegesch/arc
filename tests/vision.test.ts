@@ -5,11 +5,7 @@ import { createEntity } from "../src/commands/add";
 import { performLink } from "../src/commands/link";
 import { performRemove } from "../src/commands/remove";
 import { performRename } from "../src/commands/rename";
-import {
-	buildGraph,
-	getDependents,
-	traceUp,
-} from "../src/graph/graph";
+import { buildGraph, getDependents, traceUp } from "../src/graph/graph";
 import {
 	findOrphans,
 	findRequirementsWithoutVision,

@@ -1,7 +1,7 @@
 ---
 id: A-014
 title: "arc list and arc status provide enough context for an agent to understand a codebase"
-status: unvalidated
+status: invalidated
 date: 2026-05-30
 ---
 

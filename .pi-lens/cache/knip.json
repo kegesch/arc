@@ -5,25 +5,25 @@
       "type": "export",
       "name": "runCheck",
       "file": "src/commands/check.ts",
-      "line": 55
+      "line": 56
     },
     {
       "type": "export",
       "name": "CheckResult",
       "file": "src/commands/check.ts",
-      "line": 27
+      "line": 28
     },
     {
       "type": "export",
       "name": "CheckIssue",
       "file": "src/commands/check.ts",
-      "line": 34
+      "line": 35
     },
     {
       "type": "export",
       "name": "CheckWarning",
       "file": "src/commands/check.ts",
-      "line": 43
+      "line": 44
     },
     {
       "type": "export",
@@ -117,6 +117,12 @@
     },
     {
       "type": "export",
+      "name": "runNext",
+      "file": "src/commands/next.ts",
+      "line": 13
+    },
+    {
+      "type": "export",
       "name": "performValidate",
       "file": "src/commands/validate.ts",
       "line": 35
@@ -143,97 +149,97 @@
       "type": "export",
       "name": "ENTITY_CONFIG",
       "file": "src/types.ts",
-      "line": 195
+      "line": 206
     },
     {
       "type": "export",
       "name": "RequirementStatus",
       "file": "src/types.ts",
-      "line": 14
+      "line": 15
     },
     {
       "type": "export",
       "name": "AssumptionStatus",
       "file": "src/types.ts",
-      "line": 19
+      "line": 20
     },
     {
       "type": "export",
       "name": "DecisionStatus",
       "file": "src/types.ts",
-      "line": 20
+      "line": 21
     },
     {
       "type": "export",
       "name": "IdeaStatus",
       "file": "src/types.ts",
-      "line": 25
+      "line": 26
     },
     {
       "type": "export",
       "name": "StakeholderStatus",
       "file": "src/types.ts",
-      "line": 26
+      "line": 27
     },
     {
       "type": "export",
       "name": "RiskStatus",
       "file": "src/types.ts",
-      "line": 27
+      "line": 28
     },
     {
       "type": "export",
       "name": "TermStatus",
       "file": "src/types.ts",
-      "line": 33
+      "line": 34
+    },
+    {
+      "type": "export",
+      "name": "VisionStatus",
+      "file": "src/types.ts",
+      "line": 35
     },
     {
       "type": "export",
       "name": "EntityStatus",
       "file": "src/types.ts",
-      "line": 34
+      "line": 37
     },
     {
       "type": "export",
       "name": "UseCaseStep",
       "file": "src/types.ts",
-      "line": 111
+      "line": 116
     },
     {
       "type": "export",
       "name": "EntityModelAttribute",
       "file": "src/types.ts",
-      "line": 128
+      "line": 133
     },
     {
       "type": "export",
       "name": "EntityModelRelationship",
       "file": "src/types.ts",
-      "line": 136
+      "line": 141
     },
     {
       "type": "export",
       "name": "EntityModelEntity",
       "file": "src/types.ts",
-      "line": 141
+      "line": 146
     },
     {
       "type": "export",
       "name": "getValidEdges",
       "file": "src/entities/registry.ts",
-      "line": 86
+      "line": 90
     },
     {
       "type": "export",
       "name": "slugify",
       "file": "src/io/files.ts",
       "line": 130
-    },
-    {
-      "type": "export",
-      "name": "cyan",
-      "file": "src/display/format.ts",
-      "line": 24
     },
     {
       "type": "export",
@@ -277,25 +283,25 @@
       "type": "export",
       "name": "runCheck",
       "file": "src/commands/check.ts",
-      "line": 55
+      "line": 56
     },
     {
       "type": "export",
       "name": "CheckResult",
       "file": "src/commands/check.ts",
-      "line": 27
+      "line": 28
     },
     {
       "type": "export",
       "name": "CheckIssue",
       "file": "src/commands/check.ts",
-      "line": 34
+      "line": 35
     },
     {
       "type": "export",
       "name": "CheckWarning",
       "file": "src/commands/check.ts",
-      "line": 43
+      "line": 44
     },
     {
       "type": "export",
@@ -389,6 +395,12 @@
     },
     {
       "type": "export",
+      "name": "runNext",
+      "file": "src/commands/next.ts",
+      "line": 13
+    },
+    {
+      "type": "export",
       "name": "performValidate",
       "file": "src/commands/validate.ts",
       "line": 35
@@ -415,97 +427,97 @@
       "type": "export",
       "name": "ENTITY_CONFIG",
       "file": "src/types.ts",
-      "line": 195
+      "line": 206
     },
     {
       "type": "export",
       "name": "RequirementStatus",
       "file": "src/types.ts",
-      "line": 14
+      "line": 15
     },
     {
       "type": "export",
       "name": "AssumptionStatus",
       "file": "src/types.ts",
-      "line": 19
+      "line": 20
     },
     {
       "type": "export",
       "name": "DecisionStatus",
       "file": "src/types.ts",
-      "line": 20
+      "line": 21
     },
     {
       "type": "export",
       "name": "IdeaStatus",
       "file": "src/types.ts",
-      "line": 25
+      "line": 26
     },
     {
       "type": "export",
       "name": "StakeholderStatus",
       "file": "src/types.ts",
-      "line": 26
+      "line": 27
     },
     {
       "type": "export",
       "name": "RiskStatus",
       "file": "src/types.ts",
-      "line": 27
+      "line": 28
     },
     {
       "type": "export",
       "name": "TermStatus",
       "file": "src/types.ts",
-      "line": 33
+      "line": 34
+    },
+    {
+      "type": "export",
+      "name": "VisionStatus",
+      "file": "src/types.ts",
+      "line": 35
     },
     {
       "type": "export",
       "name": "EntityStatus",
       "file": "src/types.ts",
-      "line": 34
+      "line": 37
     },
     {
       "type": "export",
       "name": "UseCaseStep",
       "file": "src/types.ts",
-      "line": 111
+      "line": 116
     },
     {
       "type": "export",
       "name": "EntityModelAttribute",
       "file": "src/types.ts",
-      "line": 128
+      "line": 133
     },
     {
       "type": "export",
       "name": "EntityModelRelationship",
       "file": "src/types.ts",
-      "line": 136
+      "line": 141
     },
     {
       "type": "export",
       "name": "EntityModelEntity",
       "file": "src/types.ts",
-      "line": 141
+      "line": 146
     },
     {
       "type": "export",
       "name": "getValidEdges",
       "file": "src/entities/registry.ts",
-      "line": 86
+      "line": 90
     },
     {
       "type": "export",
       "name": "slugify",
       "file": "src/io/files.ts",
       "line": 130
-    },
-    {
-      "type": "export",
-      "name": "cyan",
-      "file": "src/display/format.ts",
-      "line": 24
     },
     {
       "type": "export",
@@ -547,5 +559,5 @@
   "unusedFiles": [],
   "unusedDeps": [],
   "unlistedDeps": [],
-  "summary": "Found 45 issues"
+  "summary": "Found 46 issues"
 }

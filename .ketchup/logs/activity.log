@@ -257,3 +257,60 @@ To appeal, add [appeal: your justification] to your commit message.
 05-30 16:47:19 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
 05-30 16:49:23 [] before-agent-start: injected 2 reminders
 05-30 16:52:57 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-30 16:59:18 [] before-agent-start: injected 2 reminders
+05-30 17:04:05 [] before-agent-start: injected 2 reminders
+05-30 17:04:54 [] session-start: loaded 9 reminders
+05-30 17:05:40 [] before-agent-start: injected 2 reminders
+05-30 17:09:51 [] before-agent-start: injected 2 reminders
+05-30 17:10:58 [] before-agent-start: injected 2 reminders
+05-30 17:13:57 [] before-agent-start: injected 2 reminders
+05-30 17:15:36 [] before-agent-start: injected 2 reminders
+05-30 17:19:56 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-31 09:30:53 [] before-agent-start: injected 2 reminders
+05-31 09:32:10 [] before-agent-start: injected 2 reminders
+05-31 09:32:49 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-31 09:34:00 [] before-agent-start: injected 2 reminders
+05-31 09:38:46 [] before-agent-start: injected 2 reminders
+05-31 09:39:36 [] before-agent-start: injected 2 reminders
+05-31 09:41:58 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-31 09:44:51 [] session-start: loaded 9 reminders
+05-31 09:45:41 [] before-agent-start: injected 2 reminders
+05-31 09:48:00 [] before-agent-start: injected 2 reminders
+05-31 10:01:14 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-31 10:01:59 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-31 10:06:02 [] before-agent-start: injected 2 reminders
+05-31 10:08:41 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-31 10:08:57 [] before-agent-start: injected 2 reminders
+05-31 10:13:33 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-31 11:08:17 [] before-agent-start: injected 2 reminders
+05-31 11:11:53 [] before-agent-start: injected 2 reminders
+05-31 11:12:19 [] commit: error getting commit context: Error: spawnSync C:\WINDOWS\system32\cmd.exe ENOENT
+05-31 11:18:36 [] before-agent-start: injected 2 reminders
+05-31 11:19:53 [] session-start: loaded 9 reminders
+05-31 11:20:39 [] before-agent-start: injected 2 reminders
+05-31 11:21:08 [] before-agent-start: injected 2 reminders
+05-31 11:33:27 [] before-agent-start: injected 2 reminders
+05-31 11:41:04 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-31 11:41:04 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-31 11:41:04 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-31 11:41:31 [] commit: validator complete: ketchup-plan-format → ACK
+05-31 11:41:31 [] commit: validator complete: new-code-requires-tests → ACK
+05-31 11:41:31 [] commit: validator complete: no-comments → ACK
+05-31 11:41:31 [] commit: validator complete: no-dangerous-git → ACK
+05-31 11:41:31 [] commit: validator complete: tcr-workflow → ACK
+05-31 11:41:31 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-31 11:41:31 [] commit: validator complete: testing-no-state-peeking → ACK
+05-31 11:41:32 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-31 11:41:32 [] commit: validator complete: testing-structure → ACK
+05-31 11:41:32 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-31 11:41:32 [] commit: validator complete: testing-weak-assertions → ACK
+05-31 11:41:32 [] commit: validator complete: type-organization → ACK
+05-31 11:41:32 [] commit: validator complete: arc-dogfooding → ACK
+05-31 11:41:34 [] commit: validator complete: backwards-compat → ACK
+05-31 11:41:34 [] commit: validator complete: burst-atomicity → ACK
+05-31 11:41:34 [] commit: validator complete: commit-message-no-speculation → ACK
+05-31 11:41:34 [] commit: validator complete: coverage-rules → ACK
+05-31 11:41:34 [] commit: validator complete: dead-code → ACK
+05-31 11:41:34 [] commit: validator complete: hygiene → ACK
+05-31 11:41:34 [] commit: validator complete: infra-commit-format → ACK
+05-31 11:41:34 [] commit: allowed

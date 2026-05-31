@@ -45,4 +45,4 @@ When you modify `.arc/` entities, you MUST run `arc check` and confirm the graph
 
 ## Why This Matters
 
-Arc's value comes from traceability. If implementation lands without a corresponding `.arc/` change, the graph decays and the project loses its architectural record. Every feature should start with a requirement; every design choice should be a decision. And a graph with broken links or orphan entities is worse than no graph at all — `arc check` ensures integrity.
+Arc's value comes from traceability. If implementation lands without a corresponding `.arc/` change, the graph decays and the project loses its architectural record. Every feature should start with a requirement; every design choice should be a decision. And a graph with broken links or orphan entities is worse than no graph at all — `bun run dev check` ensures integrity.
