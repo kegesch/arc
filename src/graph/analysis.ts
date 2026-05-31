@@ -538,6 +538,8 @@ export function findDecisionsWithoutUseCases(g: ArcGraph): GapWarning[] {
 	for (const [, entity] of g.entities) {
 		if (entity.type !== "decision" || entity.status !== "accepted") continue;
 
+		if (!entity.context) continue;
+
 		const incoming = g.incoming.get(entity.id) ?? [];
 		hasUseCase: {
 			for (const edge of incoming) {
