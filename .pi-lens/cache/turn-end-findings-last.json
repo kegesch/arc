@@ -1,4 +1,4 @@
 {
-  "signature": "src/graph/analysis.ts::ℹ️ Advisory — no action required this turn:\n⚠️ Newly unused exports in modified files — check if callers need updating (Knip):\n  src/graph/analysis.ts:442 — buildContextBundle\n  src/graph/analysis.ts:428 — ContextBundle\n",
+  "signature": "src/commands/check.ts::ℹ️ Advisory — no action required this turn:\n⚠️ Newly unused exports in modified files — check if callers need updating (Knip):\n  src/commands/check.ts:57 — runCheck\n  src/commands/check.ts:29 — CheckResult\n  src/commands/check.ts:36 — CheckIssue\n  src/commands/check.ts:45 — CheckWarning\n",
   "sessionId": "lens-mptkjg0u-b281fd51"
 }

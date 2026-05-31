@@ -521,6 +521,42 @@ export function buildContextBundle(
 	return bundle;
 }
 
+// ─── Gap analysis (for arc check warnings) ───
+
+export interface GapWarning {
+	entity: Entity;
+	message: string;
+}
+
+/**
+ * Find accepted decisions without use cases derived from them.
+ * This is a gap warning, not an error — use cases are enrichment.
+ */
+export function findDecisionsWithoutUseCases(g: ArcGraph): GapWarning[] {
+	const warnings: GapWarning[] = [];
+
+	for (const [, entity] of g.entities) {
+		if (entity.type !== "decision" || entity.status !== "accepted") continue;
+
+		const incoming = g.incoming.get(entity.id) ?? [];
+		hasUseCase: {
+			for (const edge of incoming) {
+				if (edge.type !== "derived_from") continue;
+				const from = g.entities.get(edge.from);
+				if (from?.type === "use_case") {
+					break hasUseCase;
+				}
+			}
+			warnings.push({
+				entity,
+				message: `Decision ${entity.id} "${entity.title}" has no use cases`,
+			});
+		}
+	}
+
+	return warnings;
+}
+
 export function findRequirementsWithoutVision(
 	g: ArcGraph,
 ): VisionOrphanWarning[] {

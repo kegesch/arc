@@ -10,7 +10,7 @@
 - [x] A-014 invalidated (arc list/status not enough for agents)
 - [x] Dangling refs investigated — were valid V-001 relationships, reverted
 - [x] Burst 1-4: arc next command implemented and committed
-- [ ] Burst 5-8: arc context pending
+- [x] Burst 5-8: arc context command implemented and committed
 - [ ] Burst 9-11: arc check gaps pending
 - [ ] Burst 12-14: artifacts and docs pending
 
@@ -52,10 +52,10 @@
 
 ### Bottle: arc context [depends: none]
 
-- [ ] Burst 5: Add `buildContextBundle` to analysis.ts — traverse relationships, return entity bundle
-- [ ] Burst 6: Add `context` command to commands/context.ts — CLI with --shallow, --format json
-- [ ] Burst 7: Register context command in index.ts
-- [ ] Burst 8: Test arc context with --shallow and full closure
+- [x] Burst 5: Add `buildContextBundle` to analysis.ts — traverse relationships, return entity bundle
+- [x] Burst 6: Add `context` command to commands/context.ts — CLI with --shallow, --format json
+- [x] Burst 7: Register context command in index.ts
+- [x] Burst 8: Test arc context with --shallow and full closure
 
 ### Bottle: arc check gaps [depends: none]
 

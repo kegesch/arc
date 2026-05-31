@@ -16,6 +16,7 @@ import {
 	findStructuredFieldWarnings,
 	findUnvalidatedAssumptions,
 	findRequirementsWithoutVision,
+	findDecisionsWithoutUseCases,
 } from "../graph/analysis.js";
 import { readAllEntities, requireArcProject } from "../io/files.js";
 
@@ -193,6 +194,16 @@ export function runCheck(contextFilter?: string): CheckResult {
 			message: w.message,
 			ids: [w.entity.id],
 			suggestion: `Link to a vision: arc link ${w.entity.id} <V-xxx>`,
+		});
+	}
+
+	for (const w of findDecisionsWithoutUseCases(graph)) {
+		result.warnings.push({
+			kind: "missing_use_case",
+			severity: "warning",
+			message: w.message,
+			ids: [w.entity.id],
+			suggestion: `Add a use case: arc add use_case '...' --derived-from ${w.entity.id}`,
 		});
 	}
 
