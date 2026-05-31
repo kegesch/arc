@@ -11,7 +11,7 @@
 - [x] Dangling refs investigated — were valid V-001 relationships, reverted
 - [x] Burst 1-4: arc next command implemented and committed
 - [x] Burst 5-8: arc context command implemented and committed
-- [ ] Burst 9-11: arc check gaps pending
+- [x] Burst 9-11: arc check gaps implemented and committed
 - [ ] Burst 12-14: artifacts and docs pending
 
 ## Refined Design
@@ -59,9 +59,9 @@
 
 ### Bottle: arc check gaps [depends: none]
 
-- [ ] Burst 9: Add gap detection functions to analysis.ts (requirements without decisions, decisions without use cases, etc.)
-- [ ] Burst 10: Integrate gap warnings into check.ts runCheck — warnings only, exit 0
-- [ ] Burst 11: Test gap warnings appear in check output
+- [x] Burst 9: Add gap detection functions to analysis.ts (requirements without decisions, decisions without use cases, etc.)
+- [x] Burst 10: Integrate gap warnings into check.ts runCheck — warnings only, exit 0
+- [x] Burst 11: Test gap warnings appear in check output
 
 ### Bottle: Arc artifacts [depends: none]
 
