@@ -29,6 +29,7 @@ The `.arc/` directory will be created in the project root. Commit it to git — 
 | User identifies a person, team, or group with interest in the system | `arc add stakeholder` |
 | User identifies something that could go wrong                        | `arc add risk`        |
 | User wants to define a shared term or concept                        | `arc add term`        |
+| User wants to capture the project purpose and direction              | `arc add vision`      |
 | User asks "why did we decide X?"                                     | `arc trace D-xxx`     |
 | User asks "what happens if Y is wrong?"                              | `arc impact A-xxx`    |
 | User wants to check the health of their architecture docs            | `arc check`           |
@@ -38,7 +39,7 @@ The `.arc/` directory will be created in the project root. Commit it to git — 
 
 ## Core Concepts
 
-### Nine entity types
+### Ten entity types
 
 - **Requirement** (R-xxx) — Something the system must satisfy. Source of truth for what and why.
 - **Assumption** (A-xxx) — Something believed true but not verified. Dangerous when wrong. Can be promoted to a requirement once validated.
@@ -49,6 +50,7 @@ The `.arc/` directory will be created in the project root. Commit it to git — 
 - **Term** (T-xxx) — A shared vocabulary definition (ubiquitous language). Prevents ambiguity.
 - **Use Case** (UC-xxx) — A structured use case with actors, preconditions, main flow, and acceptance criteria. Derives from requirements and links to stakeholders.
 - **Entity Model** (EM-xxx) — A structured domain model with entities, attributes, and relationships. Derives from requirements.
+- **Vision** (V-xxx) — The project purpose and direction. The root of the graph. Every requirement should trace up to a vision through the `derived_from` chain. Typically one per project.
 
 ### Relationships
 
@@ -69,6 +71,7 @@ Risk ──mitigated_by──▶ Decision            what addresses this risk
 Use Case ──derived_from──▶ Requirement     which requirement it implements
 Use Case ──requested_by──▶ Stakeholder     who participates
 Entity Model ──derived_from──▶ Requirement which requirement it models
+Requirement ──derived_from──▶ Vision          pillar requirements link to vision
 ```
 
 Every decision should have at least one `driven_by` reference. Decisions without backing are "orphans" — a code smell.
@@ -116,6 +119,14 @@ draft → accepted    (the team agrees on this definition)
     │
     └──→ deprecated (no longer used, replaced by another term)
 ```
+
+### Vision lifecycle
+
+```
+active → retired   (project has pivoted or vision is no longer relevant)
+```
+
+No draft state. A vision is a committed statement — if you're still exploring, use an Idea (I-xxx) and promote it when ready.
 
 Ideas are **non-binding**: they don't appear in strict `arc check` results (no orphan warnings, no contradiction checks). Use them to capture speculative thoughts without ceremony.
 
@@ -301,6 +312,15 @@ The body is freeform markdown. The frontmatter is the structured data ARC reads.
 1. **Make them testable** — "System responds in under 200ms" is better than "System is fast".
 2. **Decompose large requirements** — use `derived_from` to link sub-requirements to their parent.
 3. **Declare conflicts** — if two requirements contradict, `arc link R-002 R-003 --type=conflicts_with`.
+4. **Build hierarchies, not stars** — link pillar requirements directly to the vision (V-xxx), then derive supporting requirements from pillars. `arc check` walks the chain transitively, so every requirement connected to a pillar is automatically connected to the vision. Don't fan-link every requirement directly to the vision — that flattens the dependency structure.
+
+### When linking to visions
+
+1. **One vision per project** (typically). If you have two distinct workstreams, a second vision is fine.
+2. **Link pillar requirements directly** — the core capabilities that define what the system IS. These are the handful of requirements that you'd point to if someone asked "what is this project?".
+3. **Derive supporting requirements from pillars** — requirements for specific features, CLI flags, file formats etc. should `derived_from` the pillar they serve.
+4. **The check is transitive** — `arc check` walks the `derived_from` chain to reach the vision. A requirement linked to a pillar linked to a vision is not warned about. Only truly disconnected requirements get flagged.
+5. **Vision check is gated** — warnings about requirements not linked to any vision only appear when at least one vision exists. Projects without visions are not noisy.
 
 ### When capturing assumptions
 
