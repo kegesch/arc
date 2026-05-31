@@ -13,7 +13,8 @@
 - [x] Burst 5-8: arc context command implemented and committed
 - [x] Burst 9-11: arc check gaps implemented and committed
 - [x] Burst 12: D-047 updated to reflect redesigned feature
-- [ ] Burst 13-14: requirements and docs pending
+- [x] Burst 13: Requirements added (R-041, R-042, R-043) and linked to D-047
+- [ ] Burst 14: docs (skipped — no new files needed per project rules)
 
 ## Refined Design
 

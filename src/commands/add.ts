@@ -152,6 +152,7 @@ export function createEntity(
 			meta.mitigated_by = [];
 			break;
 		case "use_case":
+			meta.derived_from = validateIds(input.derivedFrom ?? []);
 			meta.actors = input.actors ?? [];
 			meta.preconditions = input.preconditions ?? [];
 			meta.main_flow = input.main_flow ?? [];
@@ -371,6 +372,14 @@ export async function addCommand(
 			break;
 		}
 		case "use_case": {
+			let ucDerivedInput = options?.derivedFrom || "";
+			if (!ucDerivedInput && isInteractive) {
+				ucDerivedInput = await prompt(
+					"Derived from (R/D-IDs, comma-separated): ",
+				);
+			}
+			derivedFrom = parseIds(ucDerivedInput);
+
 			if (options?.actors) actors = parseCommaStrings(options.actors);
 			if (options?.preconditions)
 				preconditions = parseCommaStrings(options.preconditions);

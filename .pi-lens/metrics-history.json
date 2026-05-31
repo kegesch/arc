@@ -533,14 +533,14 @@
     },
     "src\\commands\\add.ts": {
       "latest": {
-        "commit": "2cabc38",
-        "timestamp": "2026-05-31T07:53:56.532Z",
+        "commit": "d60aeed",
+        "timestamp": "2026-05-31T17:58:38.989Z",
         "mi": 17.8,
-        "cognitive": 183,
+        "cognitive": 186,
         "nesting": 7,
-        "lines": 404,
+        "lines": 406,
         "maxCyclomatic": 118,
-        "entropy": 6.89
+        "entropy": 6.88
       },
       "history": [
         {
@@ -602,6 +602,16 @@
           "lines": 404,
           "maxCyclomatic": 118,
           "entropy": 6.89
+        },
+        {
+          "commit": "d60aeed",
+          "timestamp": "2026-05-31T17:58:38.989Z",
+          "mi": 17.8,
+          "cognitive": 186,
+          "nesting": 7,
+          "lines": 406,
+          "maxCyclomatic": 118,
+          "entropy": 6.88
         }
       ],
       "trend": "regressing"
@@ -1932,5 +1942,5 @@
       "trend": "stable"
     }
   },
-  "capturedAt": "2026-05-31T09:36:51.468Z"
+  "capturedAt": "2026-05-31T17:58:43.992Z"
 }
