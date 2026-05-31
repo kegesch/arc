@@ -12,7 +12,8 @@
 - [x] Burst 1-4: arc next command implemented and committed
 - [x] Burst 5-8: arc context command implemented and committed
 - [x] Burst 9-11: arc check gaps implemented and committed
-- [ ] Burst 12-14: artifacts and docs pending
+- [x] Burst 12: D-047 updated to reflect redesigned feature
+- [ ] Burst 13-14: requirements and docs pending
 
 ## Refined Design
 
