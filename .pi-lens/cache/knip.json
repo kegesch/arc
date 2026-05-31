@@ -117,6 +117,12 @@
     },
     {
       "type": "export",
+      "name": "runContext",
+      "file": "src/commands/context.ts",
+      "line": 14
+    },
+    {
+      "type": "export",
       "name": "runNext",
       "file": "src/commands/next.ts",
       "line": 13
@@ -395,6 +401,12 @@
     },
     {
       "type": "export",
+      "name": "runContext",
+      "file": "src/commands/context.ts",
+      "line": 14
+    },
+    {
+      "type": "export",
       "name": "runNext",
       "file": "src/commands/next.ts",
       "line": 13
@@ -559,5 +571,5 @@
   "unusedFiles": [],
   "unusedDeps": [],
   "unlistedDeps": [],
-  "summary": "Found 46 issues"
+  "summary": "Found 47 issues"
 }

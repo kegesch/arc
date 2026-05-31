@@ -27,9 +27,17 @@ export function runNext(contextFilter?: string) {
 function displayText(categories: ReturnType<typeof runNext>): void {
 	console.log(bold("ARC Next — What should I work on?\n"));
 
-	const sections: { label: string; entities: typeof categories.ready; color: typeof green }[] = [
+	const sections: {
+		label: string;
+		entities: typeof categories.ready;
+		color: typeof green;
+	}[] = [
 		{ label: "Ready to implement", entities: categories.ready, color: green },
-		{ label: "Needs use cases", entities: categories.needs_use_cases, color: cyan },
+		{
+			label: "Needs use cases",
+			entities: categories.needs_use_cases,
+			color: cyan,
+		},
 		{ label: "Needs design", entities: categories.needs_design, color: yellow },
 		{ label: "Risky assumptions", entities: categories.risky, color: red },
 		{ label: "Orphan decisions", entities: categories.orphan, color: dim },

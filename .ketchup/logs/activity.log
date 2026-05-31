@@ -314,3 +314,27 @@ To appeal, add [appeal: your justification] to your commit message.
 05-31 11:41:34 [] commit: validator complete: hygiene → ACK
 05-31 11:41:34 [] commit: validator complete: infra-commit-format → ACK
 05-31 11:41:34 [] commit: allowed
+05-31 11:45:08 [] commit: validator spawn: batch-0 → validators: backwards-compat, burst-atomicity, commit-message-no-speculation, coverage-rules, dead-code, hygiene, infra-commit-format
+05-31 11:45:08 [] commit: validator spawn: batch-1 → validators: ketchup-plan-format, new-code-requires-tests, no-comments, no-dangerous-git, tcr-workflow, testing-no-mock-assertions, testing-no-state-peeking
+05-31 11:45:08 [] commit: validator spawn: batch-2 → validators: testing-no-test-only-production-methods, testing-structure, testing-stubs-over-mocks, testing-weak-assertions, type-organization, arc-dogfooding
+05-31 11:45:38 [] commit: validator complete: ketchup-plan-format → ACK
+05-31 11:45:38 [] commit: validator complete: new-code-requires-tests → ACK
+05-31 11:45:38 [] commit: validator complete: no-comments → ACK
+05-31 11:45:38 [] commit: validator complete: no-dangerous-git → ACK
+05-31 11:45:38 [] commit: validator complete: tcr-workflow → ACK
+05-31 11:45:38 [] commit: validator complete: testing-no-mock-assertions → ACK
+05-31 11:45:38 [] commit: validator complete: testing-no-state-peeking → ACK
+05-31 11:45:41 [] commit: validator complete: backwards-compat → ACK
+05-31 11:45:41 [] commit: validator complete: burst-atomicity → ACK
+05-31 11:45:41 [] commit: validator complete: commit-message-no-speculation → ACK
+05-31 11:45:41 [] commit: validator complete: coverage-rules → ACK
+05-31 11:45:41 [] commit: validator complete: dead-code → ACK
+05-31 11:45:41 [] commit: validator complete: hygiene → ACK
+05-31 11:45:41 [] commit: validator complete: infra-commit-format → ACK
+05-31 11:45:41 [] commit: validator complete: testing-no-test-only-production-methods → ACK
+05-31 11:45:41 [] commit: validator complete: testing-structure → ACK
+05-31 11:45:41 [] commit: validator complete: testing-stubs-over-mocks → ACK
+05-31 11:45:41 [] commit: validator complete: testing-weak-assertions → ACK
+05-31 11:45:41 [] commit: validator complete: type-organization → ACK
+05-31 11:45:41 [] commit: validator complete: arc-dogfooding → ACK
+05-31 11:45:41 [] commit: allowed

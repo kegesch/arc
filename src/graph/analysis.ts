@@ -400,7 +400,10 @@ export function findNextCategories(g: ArcGraph): NextCategories {
 		const decisions = incoming
 			.filter((edge) => edge.type === "driven_by")
 			.map((edge) => g.entities.get(edge.from))
-			.filter((e): e is Entity => e !== undefined && e.type === "decision" && e.status === "accepted");
+			.filter(
+				(e): e is Entity =>
+					e !== undefined && e.type === "decision" && e.status === "accepted",
+			);
 
 		if (decisions.length === 0) {
 			result.needs_design.push(entity);
@@ -421,6 +424,101 @@ export function findNextCategories(g: ArcGraph): NextCategories {
 	}
 
 	return result;
+}
+
+// ─── Context bundle (driver command) ───
+
+export interface ContextBundle {
+	entity: Entity;
+	decisions: Entity[];
+	use_cases: Entity[];
+	assumptions: Entity[];
+	risks: Entity[];
+	requirements: Entity[];
+	visions: Entity[];
+}
+
+/**
+ * Build a context bundle for an entity — all related entities for implementation.
+ * Default: full transitive closure. Pass shallow=true for one-hop only.
+ */
+export function buildContextBundle(
+	g: ArcGraph,
+	id: string,
+	shallow: boolean = false,
+): ContextBundle | null {
+	const entity = g.entities.get(id);
+	if (!entity) return null;
+
+	const bundle: ContextBundle = {
+		entity,
+		decisions: [],
+		use_cases: [],
+		assumptions: [],
+		risks: [],
+		requirements: [],
+		visions: [],
+	};
+
+	const visited = new Set<string>([id]);
+
+	// BFS to collect related entities
+	const queue: string[] = [id];
+	let depth = 0;
+
+	while (queue.length > 0) {
+		const levelSize = queue.length;
+		const nextQueue: string[] = [];
+
+		for (let i = 0; i < levelSize; i++) {
+			const currentId = queue[i]!;
+			const outgoing = g.outgoing.get(currentId) ?? [];
+			const incomingEdges = g.incoming.get(currentId) ?? [];
+			const allEdges = [...outgoing, ...incomingEdges];
+
+			for (const edge of allEdges) {
+				const targetId = edge.from === currentId ? edge.to : edge.from;
+				if (visited.has(targetId)) continue;
+				visited.add(targetId);
+
+				const related = g.entities.get(targetId);
+				if (!related) continue;
+
+				// Categorize by type
+				switch (related.type) {
+					case "decision":
+						bundle.decisions.push(related);
+						break;
+					case "use_case":
+						bundle.use_cases.push(related);
+						break;
+					case "assumption":
+						bundle.assumptions.push(related);
+						break;
+					case "risk":
+						bundle.risks.push(related);
+						break;
+					case "requirement":
+						bundle.requirements.push(related);
+						break;
+					case "vision":
+						bundle.visions.push(related);
+						break;
+				}
+
+				// Continue traversal unless shallow
+				if (!shallow) {
+					nextQueue.push(targetId);
+				}
+			}
+		}
+
+		queue.length = 0;
+		queue.push(...nextQueue);
+		depth++;
+	}
+
+	return bundle;
 }
 
 export function findRequirementsWithoutVision(

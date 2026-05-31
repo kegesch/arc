@@ -20,6 +20,7 @@ import { statusCommand } from "./commands/status.js";
 import { traceCommand } from "./commands/trace.js";
 import { skillCommand } from "./commands/skill.js";
 import { initAgentCommand } from "./commands/init-agent.js";
+import { contextCommand } from "./commands/context.js";
 import { nextCommand } from "./commands/next.js";
 import {
 	invalidateCommand,
@@ -301,6 +302,26 @@ program
 			context: opts.context,
 		});
 	});
+
+program
+	.command("context")
+	.argument("<id>", "Entity ID to get context for")
+	.description("Bundle entity with all related context for implementation")
+	.option("--format <format>", "Output format: text or json", "text")
+	.option("--context <context>", "Filter by context")
+	.option("--shallow", "One-hop only, no transitive closure")
+	.action(
+		(
+			id: string,
+			opts: { format?: string; context?: string; shallow?: boolean },
+		) => {
+			contextCommand(id, {
+				format: (opts.format as "text" | "json") ?? "text",
+				context: opts.context,
+				shallow: opts.shallow,
+			});
+		},
+	);
 
 program
 	.command("skill")

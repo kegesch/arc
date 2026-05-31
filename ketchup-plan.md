@@ -9,17 +9,21 @@
 - [x] Socratic refinement complete — design decisions resolved
 - [x] A-014 invalidated (arc list/status not enough for agents)
 - [x] Dangling refs investigated — were valid V-001 relationships, reverted
-- [ ] Implementation pending
+- [x] Burst 1-4: arc next command implemented and committed
+- [ ] Burst 5-8: arc context pending
+- [ ] Burst 9-11: arc check gaps pending
+- [ ] Burst 12-14: artifacts and docs pending
 
 ## Refined Design
 
-| Original | Redesigned | Rationale |
-|----------|------------|-----------|
-| `arc next` (with priority ordering) | `arc next` (signals, no ordering) | Let agent decide priority |
-| `arc gaps` (separate command) | Merge into `arc check` as warnings | Simpler, one command |
-| `arc context <id>` | Full closure by default, `--shallow` for one-hop | LLMs don't make multiple calls |
+| Original                            | Redesigned                                       | Rationale                      |
+| ----------------------------------- | ------------------------------------------------ | ------------------------------ |
+| `arc next` (with priority ordering) | `arc next` (signals, no ordering)                | Let agent decide priority      |
+| `arc gaps` (separate command)       | Merge into `arc check` as warnings               | Simpler, one command           |
+| `arc context <id>`                  | Full closure by default, `--shallow` for one-hop | LLMs don't make multiple calls |
 
 ### arc next categories (no ordering):
+
 - **ready**: Requirements with accepted decisions + use cases
 - **needs_use_cases**: Requirements with accepted decisions but no use cases
 - **needs_design**: Requirements with no accepted decisions
@@ -27,9 +31,11 @@
 - **orphan**: Decisions with no backing requirement (signal, not error)
 
 ### arc check additions:
+
 - Gap warnings (not errors) — exit 0 for gaps, exit 1 for errors only
 
 ### arc context:
+
 - Bundles entity + all related entities (decisions, use cases, assumptions, risks)
 - Full transitive closure by default
 - `--shallow` flag for one-hop only
@@ -39,10 +45,10 @@
 
 ### Bottle: arc next [depends: none]
 
-- [ ] Burst 1: Add `findNextCategories` to analysis.ts — pure graph function returning categorized entities
-- [ ] Burst 2: Add `next` command to commands/next.ts — CLI wrapper with --format json/text
-- [ ] Burst 3: Register next command in index.ts
-- [ ] Burst 4: Test arc next with various graph states
+- [x] Burst 1: Add `findNextCategories` to analysis.ts — pure graph function returning categorized entities
+- [x] Burst 2: Add `next` command to commands/next.ts — CLI wrapper with --format json/text
+- [x] Burst 3: Register next command in index.ts
+- [x] Burst 4: Test arc next with various graph states
 
 ### Bottle: arc context [depends: none]
 
