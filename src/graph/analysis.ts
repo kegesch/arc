@@ -324,25 +324,47 @@ export interface VisionOrphanWarning {
 	message: string;
 }
 
+function reachesVision(
+	g: ArcGraph,
+	id: string,
+	visionIds: Set<string>,
+	visited: Set<string>,
+): boolean {
+	if (visionIds.has(id)) return true;
+	if (visited.has(id)) return false;
+	visited.add(id);
+
+	const outgoing = g.outgoing.get(id) ?? [];
+	for (const edge of outgoing) {
+		if (
+			edge.type === "derived_from" &&
+			reachesVision(g, edge.to, visionIds, visited)
+		) {
+			return true;
+		}
+	}
+	return false;
+}
+
 export function findRequirementsWithoutVision(
 	g: ArcGraph,
 ): VisionOrphanWarning[] {
-	const visions = [...g.entities.values()].filter((e) => e.type === "vision");
-	if (visions.length === 0) return [];
+	const visionIds = new Set(
+		[...g.entities.values()]
+			.filter((e) => e.type === "vision")
+			.map((e) => e.id),
+	);
+	if (visionIds.size === 0) return [];
 
 	const warnings: VisionOrphanWarning[] = [];
 	for (const [, entity] of g.entities) {
-		if (
-			entity.type === "requirement" &&
-			entity.status === "accepted" &&
-			(entity.derived_from ?? []).every(
-				(id) => !visions.some((v) => v.id === id),
-			)
-		) {
-			warnings.push({
-				entity,
-				message: `Requirement ${entity.id} "${entity.title}" is not derived from any vision`,
-			});
+		if (entity.type === "requirement" && entity.status === "accepted") {
+			if (!reachesVision(g, entity.id, visionIds, new Set())) {
+				warnings.push({
+					entity,
+					message: `Requirement ${entity.id} "${entity.title}" is not derived from any vision`,
+				});
+			}
 		}
 	}
 	return warnings;

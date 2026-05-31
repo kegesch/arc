@@ -8,7 +8,6 @@ import { performRename } from "../src/commands/rename";
 import {
 	buildGraph,
 	getDependents,
-	impactAnalysis,
 	traceUp,
 } from "../src/graph/graph";
 import {
@@ -408,7 +407,11 @@ describe("vision formatEntityDetail", () => {
 
 describe("findRequirementsWithoutVision", () => {
 	test("returns empty when no visions exist", () => {
-		createEntity(TMP, { type: "requirement", title: "Req", status: "accepted" });
+		createEntity(TMP, {
+			type: "requirement",
+			title: "Req",
+			status: "accepted",
+		});
 
 		const entities = readAllEntities(TMP);
 		const graph = buildGraph(entities);
@@ -480,7 +483,29 @@ describe("findRequirementsWithoutVision", () => {
 		expect(warnings.length).toBe(2);
 	});
 
-	test("does not warn about requirements derived from other requirements only when no vision link exists", () => {
+	test("does not warn about requirements that reach a vision transitively", () => {
+		createEntity(TMP, { type: "vision", title: "Vision" });
+		createEntity(TMP, {
+			type: "requirement",
+			title: "Pillar req",
+			status: "accepted",
+		});
+		createEntity(TMP, {
+			type: "requirement",
+			title: "Supporting req",
+			status: "accepted",
+		});
+
+		performLink(TMP, "R-001", "V-001", { type: "derived_from" });
+		performLink(TMP, "R-002", "R-001", { type: "derived_from" });
+
+		const entities = readAllEntities(TMP);
+		const graph = buildGraph(entities);
+		const warnings = findRequirementsWithoutVision(graph);
+		expect(warnings.length).toBe(0);
+	});
+
+	test("warns about requirements whose derived_from chain never reaches a vision", () => {
 		createEntity(TMP, { type: "vision", title: "Vision" });
 		createEntity(TMP, {
 			type: "requirement",
@@ -511,8 +536,6 @@ describe("vision structured field validation", () => {
 		const entities = readAllEntities(TMP);
 		const graph = buildGraph(entities);
 		const warnings = findStructuredFieldWarnings(graph);
-		expect(
-			warnings.filter((w) => w.entity.id === "V-001").length,
-		).toBe(0);
+		expect(warnings.filter((w) => w.entity.id === "V-001").length).toBe(0);
 	});
 });

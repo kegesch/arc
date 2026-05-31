@@ -7,7 +7,7 @@ tags:
   - mcp
   - api
 derived_from:
-  - V-001
+  - R-010
 conflicts_with: []
 requested_by: []
 ---

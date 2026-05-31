@@ -7,7 +7,7 @@ tags:
   - model
   - ideas
 derived_from:
-  - V-001
+  - R-003
 conflicts_with: []
 requested_by: []
 ---

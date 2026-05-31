@@ -6,7 +6,7 @@ date: 2026-05-01
 tags:
   - scope
 derived_from:
-  - V-001
+  - R-003
 conflicts_with: []
 requested_by: []
 ---

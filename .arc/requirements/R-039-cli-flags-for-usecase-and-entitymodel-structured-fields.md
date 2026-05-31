@@ -4,7 +4,7 @@ title: CLI flags for use_case and entity_model structured fields
 status: accepted
 date: 2026-05-30
 derived_from:
-  - V-001
+  - R-010
 conflicts_with: []
 requested_by: []
 ---

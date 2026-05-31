@@ -6,7 +6,7 @@ date: 2026-05-01
 tags:
   - assumptions
 derived_from:
-  - V-001
+  - R-005
 conflicts_with: []
 requested_by: []
 ---

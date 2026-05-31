@@ -6,7 +6,7 @@ date: 2026-05-01
 tags:
   - format
 derived_from:
-  - V-001
+  - R-002
 conflicts_with: []
 requested_by: []
 ---
