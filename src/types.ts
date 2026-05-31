@@ -9,7 +9,8 @@ export type EntityType =
 	| "risk"
 	| "term"
 	| "use_case"
-	| "entity_model";
+	| "entity_model"
+	| "vision";
 
 export type RequirementStatus =
 	| "draft"
@@ -31,6 +32,8 @@ export type RiskStatus =
 	| "materialized"
 	| "closed";
 export type TermStatus = "draft" | "accepted" | "deprecated";
+export type VisionStatus = "active" | "retired";
+
 export type EntityStatus =
 	| RequirementStatus
 	| AssumptionStatus
@@ -38,7 +41,8 @@ export type EntityStatus =
 	| IdeaStatus
 	| StakeholderStatus
 	| RiskStatus
-	| TermStatus;
+	| TermStatus
+	| VisionStatus;
 
 export type EntityTypePrefix =
 	| "R"
@@ -49,7 +53,8 @@ export type EntityTypePrefix =
 	| "K"
 	| "T"
 	| "UC"
-	| "EM";
+	| "EM"
+	| "V";
 
 export interface EntityBase {
 	id: string;
@@ -151,6 +156,11 @@ export interface EntityModel extends EntityBase {
 	derived_from: string[];
 }
 
+export interface Vision extends EntityBase {
+	type: "vision";
+	status: VisionStatus;
+}
+
 export type Entity =
 	| Requirement
 	| Assumption
@@ -160,7 +170,8 @@ export type Entity =
 	| Risk
 	| Term
 	| UseCase
-	| EntityModel;
+	| EntityModel
+	| Vision;
 
 export type EdgeType =
 	| "driven_by"
@@ -204,7 +215,8 @@ export function getTypeFromId(id: string): EntityType {
 	if (id.startsWith("T-")) return "term";
 	if (id.startsWith("UC-")) return "use_case";
 	if (id.startsWith("EM-")) return "entity_model";
+	if (id.startsWith("V-")) return "vision";
 	throw new Error(
-		`Unknown ID prefix in "${id}". Expected R-, A-, D-, I-, S-, K-, T-, UC-, or EM-.`,
+		`Unknown ID prefix in "${id}". Expected R-, A-, D-, I-, S-, K-, T-, UC-, EM-, or V-.`,
 	);
 }

@@ -44,7 +44,7 @@ program
 	.command("add")
 	.argument(
 		"<type>",
-		"Entity type: requirement | assumption | decision | use_case | entity_model | idea | stakeholder | risk | term",
+		"Entity type: requirement | assumption | decision | use_case | entity_model | idea | stakeholder | risk | term | vision",
 	)
 	.argument("[title]", "Entity title")
 	.option("--driven-by <ids>", "Comma-separated IDs that drive this decision")
@@ -92,10 +92,11 @@ program
 				"term",
 				"use_case",
 				"entity_model",
+				"vision",
 			] as const;
 			if (!validTypes.includes(type as (typeof validTypes)[number])) {
 				console.error(
-					`Invalid type: "${type}". Must be: requirement, assumption, decision, idea, stakeholder, risk, term, use_case, entity_model`,
+					`Invalid type: "${type}". Must be: requirement, assumption, decision, idea, stakeholder, risk, term, use_case, entity_model, vision`,
 				);
 				process.exit(1);
 			}

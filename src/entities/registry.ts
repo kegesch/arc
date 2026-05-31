@@ -13,6 +13,7 @@ import { stakeholderDescriptor } from "./stakeholder";
 import { termDescriptor } from "./term";
 import { useCaseDescriptor } from "./usecase";
 import { entityModelDescriptor } from "./entity-model";
+import { visionDescriptor } from "./vision";
 
 /** Canonical display order for entity types */
 export const ENTITY_TYPE_ORDER: EntityType[] = [
@@ -25,6 +26,7 @@ export const ENTITY_TYPE_ORDER: EntityType[] = [
 	"term",
 	"use_case",
 	"entity_model",
+	"vision",
 ];
 
 const _registry: Record<EntityType, EntityDescriptor> = {
@@ -37,6 +39,7 @@ const _registry: Record<EntityType, EntityDescriptor> = {
 	term: termDescriptor,
 	use_case: useCaseDescriptor,
 	entity_model: entityModelDescriptor,
+	vision: visionDescriptor,
 };
 
 /** Get the descriptor for a given entity type */
@@ -80,6 +83,7 @@ export const VALID_EDGES: Record<string, EdgeType[]> = {
 	"use_case-requirement": ["derived_from"],
 	"use_case-stakeholder": ["requested_by"],
 	"entity_model-requirement": ["derived_from"],
+	"requirement-vision": ["derived_from"],
 };
 
 /** Get valid edge types between two entity types */

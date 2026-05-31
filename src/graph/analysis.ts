@@ -318,3 +318,32 @@ export function findStructuredFieldWarnings(
 
 	return warnings;
 }
+
+export interface VisionOrphanWarning {
+	entity: Entity;
+	message: string;
+}
+
+export function findRequirementsWithoutVision(
+	g: ArcGraph,
+): VisionOrphanWarning[] {
+	const visions = [...g.entities.values()].filter((e) => e.type === "vision");
+	if (visions.length === 0) return [];
+
+	const warnings: VisionOrphanWarning[] = [];
+	for (const [, entity] of g.entities) {
+		if (
+			entity.type === "requirement" &&
+			entity.status === "accepted" &&
+			(entity.derived_from ?? []).every(
+				(id) => !visions.some((v) => v.id === id),
+			)
+		) {
+			warnings.push({
+				entity,
+				message: `Requirement ${entity.id} "${entity.title}" is not derived from any vision`,
+			});
+		}
+	}
+	return warnings;
+}

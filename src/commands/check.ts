@@ -15,6 +15,7 @@ import {
 	findStatusAnomalies,
 	findStructuredFieldWarnings,
 	findUnvalidatedAssumptions,
+	findRequirementsWithoutVision,
 } from "../graph/analysis.js";
 import { readAllEntities, requireArcProject } from "../io/files.js";
 
@@ -182,6 +183,16 @@ export function runCheck(contextFilter?: string): CheckResult {
 			message: w.message,
 			ids: [w.entity.id],
 			suggestion: `arc edit ${w.entity.id} to add ${w.field}`,
+		});
+	}
+
+	for (const w of findRequirementsWithoutVision(graph)) {
+		result.warnings.push({
+			kind: "no_vision_derivation",
+			severity: "warning",
+			message: w.message,
+			ids: [w.entity.id],
+			suggestion: `Link to a vision: arc link ${w.entity.id} <V-xxx>`,
 		});
 	}
 

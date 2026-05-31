@@ -160,6 +160,8 @@ export function createEntity(
 		case "entity_model":
 			meta.entities = input.entities ?? [];
 			break;
+		case "vision":
+			break;
 	}
 
 	const base = {
