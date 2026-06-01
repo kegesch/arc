@@ -1,17 +1,9 @@
 ---
 id: D-047
-title: Driver commands are arc next, arc gaps, arc context
-status: accepted
+title: "Driver commands are arc next, arc gaps, arc context"
+status: superseded
 date: 2026-05-30
-driven_by:
-  - R-003
-  - R-041
-  - R-042
-  - R-043
-enables: []
-depends_on:
-  - D-045
-affects: []
+driven_by: [R-003, R-041, R-042, R-043]
 ---
 
 # Decision: Driver commands are arc next, arc gaps, arc context

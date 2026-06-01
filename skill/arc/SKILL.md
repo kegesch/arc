@@ -33,7 +33,7 @@ The `.arc/` directory will be created in the project root. Commit it to git — 
 | User asks "why did we decide X?"                                     | `arc trace D-xxx`     |
 | User asks "what happens if Y is wrong?"                              | `arc impact A-xxx`    |
 | User asks "what should I work on next?"                              | `arc next`            |
-| User asks "give me everything for R-xxx"                              | `arc context R-xxx`   |
+| User asks "give me everything for R-xxx"                             | `arc context R-xxx`   |
 | User wants to check the health of their architecture docs            | `arc check`           |
 | User validates an assumption                                         | `arc validate A-xxx`  |
 | User wants to connect entities after the fact                        | `arc link`            |
@@ -260,21 +260,21 @@ arc query "tag:storage"
 
 The command outputs requirements in these categories (no ordering — the agent decides priority):
 
-| Category | Meaning |
-| -------- | ------- |
-| Ready to implement | Requirement has accepted decisions AND use cases |
-| Needs use cases | Requirement has accepted decisions but no use cases |
-| Needs design | Requirement has no accepted decisions |
-| Risky assumptions | Unvalidated assumptions backing accepted decisions |
-| Orphan decisions | Decisions with no driven_by (no backing requirement/assumption) |
+| Category           | Meaning                                                         |
+| ------------------ | --------------------------------------------------------------- |
+| Ready to implement | Requirement has accepted decisions AND use cases                |
+| Needs use cases    | Requirement has accepted decisions but no use cases             |
+| Needs design       | Requirement has no accepted decisions                           |
+| Risky assumptions  | Unvalidated assumptions backing accepted decisions              |
+| Orphan decisions   | Decisions with no driven_by (no backing requirement/assumption) |
 
 #### `arc context` options
 
-| Flag | Effect |
-| ---- | ------ |
-| `--shallow` | One-hop only — direct relationships. Default is full transitive closure. |
-| `--format json` | Machine-readable output |
-| `--context <name>` | Filter by context |
+| Flag               | Effect                                                                   |
+| ------------------ | ------------------------------------------------------------------------ |
+| `--shallow`        | One-hop only — direct relationships. Default is full transitive closure. |
+| `--format json`    | Machine-readable output                                                  |
+| `--context <name>` | Filter by context                                                        |
 
 Bundles the entity with all related: decisions, use cases, assumptions, risks, requirements, visions.
 
