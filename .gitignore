@@ -3,3 +3,5 @@ dist/
 /arc
 /arc.exe
 *.tgz
+.pi-lens/
+.ketchup/logs/
