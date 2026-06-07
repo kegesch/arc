@@ -22,6 +22,7 @@ import { skillCommand } from "./commands/skill.js";
 import { initAgentCommand } from "./commands/init-agent.js";
 import { contextCommand } from "./commands/context.js";
 import { nextCommand } from "./commands/next.js";
+import { reportCommand } from "./commands/report.js";
 import {
 	invalidateCommand,
 	promoteCommand,
@@ -342,5 +343,28 @@ program
 	.action(() => {
 		initAgentCommand();
 	});
+
+program
+	.command("report")
+	.argument(
+		"<type>",
+		"Report type: requirements | decisions | traceability | risks | full",
+	)
+	.description("Generate stakeholder-facing documentation from the graph")
+	.option("--format <format>", "Output format: markdown or json", "markdown")
+	.option("--output <path>", "Write report to file instead of stdout")
+	.option("--context <context>", "Filter by context")
+	.action(
+		(
+			type: string,
+			opts: { format?: string; output?: string; context?: string },
+		) => {
+			reportCommand(type, {
+				format: (opts.format as "markdown" | "json") ?? "markdown",
+				output: opts.output,
+				context: opts.context,
+			});
+		},
+	);
 
 program.parse();
