@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
 	reportRequirements,
@@ -387,6 +387,45 @@ describe("report command", () => {
 			const content = readFileSync(defaultPath, "utf-8");
 			expect(content).toContain("<!DOCTYPE html>");
 			expect(content).toContain("Requirements Catalog");
+		} finally {
+			process.chdir(origDir);
+			rmSync(tmpDir, { recursive: true, force: true });
+		}
+	});
+
+	test("full report includes graph visualization", () => {
+		const origDir = process.cwd();
+		const tmpDir = join(import.meta.dir, "_tmp_report_graph");
+		mkdirSync(tmpDir, { recursive: true });
+		const defaultPath = join(tmpDir, "report.html");
+		try {
+			process.chdir(tmpDir);
+			mkdirSync(join(tmpDir, ".arc", "requirements"), { recursive: true });
+			mkdirSync(join(tmpDir, ".arc", "decisions"), { recursive: true });
+			writeFileSync(
+				join(tmpDir, ".arc", "requirements", "R-001-test.md"),
+				"---\nid: R-001\ntype: requirement\ntitle: Test req\nstatus: accepted\ndate: '2026-01-01'\ntags: []\n---\nBody",
+			);
+			writeFileSync(
+				join(tmpDir, ".arc", "decisions", "D-001-test.md"),
+				"---\nid: D-001\ntype: decision\ntitle: Test dec\nstatus: accepted\ndate: '2026-01-01'\ntags: []\ndriven_by:\n  - R-001\n---\nBody",
+			);
+			const { reportCommand } = require("../src/commands/report");
+
+			const origExit = process.exit;
+			process.exit = (() => {}) as never;
+
+			try {
+				reportCommand("full");
+			} finally {
+				process.exit = origExit;
+			}
+
+			expect(existsSync(defaultPath)).toBe(true);
+			const content = readFileSync(defaultPath, "utf-8");
+			expect(content).toContain("graph-canvas");
+			expect(content).toContain("graph-tooltip");
+			expect(content).toContain("<script>");
 		} finally {
 			process.chdir(origDir);
 			rmSync(tmpDir, { recursive: true, force: true });

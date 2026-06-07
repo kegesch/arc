@@ -42,7 +42,9 @@ export function mdToHtml(md: string): string {
 			const raw = line.slice(4);
 			const summary = inlineHtml(raw);
 			const entityIdMatch = raw.match(/^((?:R|A|D|I|S|K|T|UC|EM|V)-\d+)/i);
-			const anchorId = entityIdMatch ? ` id="entity-${entityIdMatch[1].toLowerCase().replace(/[^a-z0-9]/g, "-")}"` : "";
+			const anchorId = entityIdMatch
+				? ` id="entity-${entityIdMatch[1].toLowerCase().replace(/[^a-z0-9]/g, "-")}"`
+				: "";
 			const contentLines: string[] = [];
 			i++;
 			while (
@@ -59,7 +61,9 @@ export function mdToHtml(md: string): string {
 					`<details${anchorId}>\n<summary>${summary}</summary>\n<div class="detail-content">${content}</div>\n</details>`,
 				);
 			} else {
-				blocks.push(`<details${anchorId}>\n<summary>${summary}</summary>\n</details>`);
+				blocks.push(
+					`<details${anchorId}>\n<summary>${summary}</summary>\n</details>`,
+				);
 			}
 		} else if (line.startsWith("## ")) {
 			blocks.push(`<h2>${inlineHtml(line.slice(3))}</h2>`);

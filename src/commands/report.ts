@@ -272,9 +272,9 @@ export function reportCommand(type: string, options: ReportOptions = {}): void {
 	let content: string;
 
 	if (format === "html") {
-		const { generateHtmlReport } =
+		const { generateHtmlReportWithGraph } =
 			require("./report-html.js") as typeof import("./report-html.js");
-		content = generateHtmlReport(type, entities);
+		content = generateHtmlReportWithGraph(type, entities);
 	} else if (format === "json") {
 		content = JSON.stringify({ report: type, markdown: md });
 	} else {
