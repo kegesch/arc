@@ -344,7 +344,9 @@ describe("report command", () => {
 			const origLog = console.log;
 			let logged = "";
 			process.exit = (() => {}) as never;
-			console.log = (msg: string) => { logged += msg; };
+			console.log = (msg: string) => {
+				logged += msg;
+			};
 
 			try {
 				reportCommand("requirements", { output: outPath });

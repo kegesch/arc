@@ -88,8 +88,7 @@ export function reportRequirements(entities: Entity[]): string {
 
 export function reportDecisions(entities: Entity[]): string {
 	const decisions = entitiesOf<Decision>(entities, "decision");
-	if (decisions.length === 0)
-		return "# Decision Log\n\nNo decisions found.\n";
+	if (decisions.length === 0) return "# Decision Log\n\nNo decisions found.\n";
 
 	const lines: string[] = ["# Decision Log", ""];
 
@@ -205,11 +204,9 @@ export interface ReportOptions {
 	context?: string;
 }
 
-export function reportCommand(
-	type: string,
-	options: ReportOptions = {},
-): void {
-	const { readAllEntities, requireArcProject } = require("../io/files") as typeof import("../io/files");
+export function reportCommand(type: string, options: ReportOptions = {}): void {
+	const { readAllEntities, requireArcProject } =
+		require("../io/files") as typeof import("../io/files");
 	requireArcProject();
 
 	let entities = readAllEntities();
@@ -218,11 +215,17 @@ export function reportCommand(
 		entities = entities.filter(
 			(e) =>
 				e.context?.toLowerCase().includes(options.context!.toLowerCase()) ??
-			false,
+				false,
 		);
 	}
 
-	const validTypes = ["requirements", "decisions", "traceability", "risks", "full"];
+	const validTypes = [
+		"requirements",
+		"decisions",
+		"traceability",
+		"risks",
+		"full",
+	];
 	if (!validTypes.includes(type)) {
 		console.error(
 			`Unknown report type "${type}". Use: ${validTypes.join(", ")}`,
@@ -252,10 +255,12 @@ export function reportCommand(
 	}
 
 	const format = options.format ?? "markdown";
-	const output = format === "json" ? JSON.stringify({ report: type, markdown: md }) : md;
+	const output =
+		format === "json" ? JSON.stringify({ report: type, markdown: md }) : md;
 
 	if (options.output) {
-		const { writeFileSync, mkdirSync } = require("node:fs") as typeof import("node:fs");
+		const { writeFileSync, mkdirSync } =
+			require("node:fs") as typeof import("node:fs");
 		const { dirname } = require("node:path") as typeof import("node:path");
 		mkdirSync(dirname(options.output), { recursive: true });
 		writeFileSync(options.output, output, "utf-8");

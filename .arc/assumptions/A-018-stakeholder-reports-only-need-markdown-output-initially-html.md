@@ -1,7 +1,7 @@
 ---
 id: A-018
 title: Stakeholder reports only need Markdown output initially — HTML/web can be a follow-up
-status: unvalidated
+status: invalidated
 date: 2026-06-07
 ---
 
