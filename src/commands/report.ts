@@ -1,5 +1,13 @@
 import { buildGraph, getDependents } from "../graph/graph.js";
-import type { Assumption, Decision, Entity, EntityModel, Requirement, Risk, UseCase } from "../types";
+import type {
+	Assumption,
+	Decision,
+	Entity,
+	EntityModel,
+	Requirement,
+	Risk,
+	UseCase,
+} from "../types";
 
 function demoteHeadings(md: string, _levels: number): string {
 	return md.replace(
@@ -253,9 +261,7 @@ export function reportVisions(entities: Entity[]): string {
 			(d) => d.type === "requirement",
 		);
 		if (reqs.length > 0) {
-			lines.push(
-				`**Requirements:** ${reqs.map((r) => r.id).join(", ")}`,
-			);
+			lines.push(`**Requirements:** ${reqs.map((r) => r.id).join(", ")}`);
 			lines.push("");
 		}
 
@@ -273,16 +279,14 @@ export function reportVisions(entities: Entity[]): string {
 
 export function reportUseCases(entities: Entity[]): string {
 	const useCases = entitiesOf<UseCase>(entities, "use_case");
-	if (useCases.length === 0)
-		return "# Use Cases\n\nNo use cases found.\n";
+	if (useCases.length === 0) return "# Use Cases\n\nNo use cases found.\n";
 
 	const lines: string[] = ["# Use Cases", ""];
 
 	for (const uc of useCases) {
 		lines.push(`### ${uc.id}: ${uc.title}`);
 		let meta = `**Status:** ${uc.status}`;
-		if (uc.actors.length > 0)
-			meta += ` | **Actors:** ${uc.actors.join(", ")}`;
+		if (uc.actors.length > 0) meta += ` | **Actors:** ${uc.actors.join(", ")}`;
 		if (uc.derived_from.length > 0)
 			meta += ` | **Derived from:** ${uc.derived_from.join(", ")}`;
 		lines.push(meta);
@@ -341,10 +345,7 @@ export function reportEntityModels(entities: Entity[]): string {
 			}
 			if (entity.relationships.length > 0) {
 				const rels = entity.relationships
-					.map(
-						(r) =>
-							`${r.type} → ${r.target}`,
-					)
+					.map((r) => `${r.type} → ${r.target}`)
 					.join(", ");
 				lines.push(`Relationships: ${rels}`);
 			}

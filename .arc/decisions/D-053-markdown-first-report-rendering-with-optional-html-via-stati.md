@@ -1,7 +1,7 @@
 ---
 id: D-053
 title: Markdown-first report rendering with optional HTML via static site
-status: proposed
+status: superseded
 date: 2026-06-07
 driven_by:
   - R-045

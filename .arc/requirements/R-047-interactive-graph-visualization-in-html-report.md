@@ -1,9 +1,10 @@
 ---
 id: R-047
 title: Interactive graph visualization in HTML report
-status: draft
+status: accepted
 date: 2026-06-07
-derived_from: []
+derived_from:
+  - V-001
 conflicts_with: []
 requested_by: []
 ---

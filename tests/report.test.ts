@@ -448,8 +448,27 @@ describe("report command", () => {
 describe("report assumptions", () => {
 	test("generates assumptions catalog with status and promotion info", () => {
 		const entities: Entity[] = [
-			{ type: "assumption", id: "A-001", title: "Users have internet", status: "validated", date: "2026-01-01", tags: [], body: "", filePath: "" },
-			{ type: "assumption", id: "A-002", title: "Low latency needed", status: "invalidated", date: "2026-01-01", tags: [], body: "", filePath: "", promoted_to: "R-010" },
+			{
+				type: "assumption",
+				id: "A-001",
+				title: "Users have internet",
+				status: "validated",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+			},
+			{
+				type: "assumption",
+				id: "A-002",
+				title: "Low latency needed",
+				status: "invalidated",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				promoted_to: "R-010",
+			},
 		];
 		const md = reportAssumptions(entities);
 		expect(md).toContain("# Assumptions");
@@ -470,8 +489,29 @@ describe("report assumptions", () => {
 describe("report visions", () => {
 	test("generates visions catalog with linked requirements", () => {
 		const entities: Entity[] = [
-			{ type: "vision", id: "V-001", title: "Secure platform", status: "active", date: "2026-01-01", tags: [], body: "", filePath: "" },
-			{ type: "requirement", id: "R-001", title: "Encrypt data", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: ["V-001"], conflicts_with: [], requested_by: [] },
+			{
+				type: "vision",
+				id: "V-001",
+				title: "Secure platform",
+				status: "active",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+			},
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Encrypt data",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: ["V-001"],
+				conflicts_with: [],
+				requested_by: [],
+			},
 		];
 		const md = reportVisions(entities);
 		expect(md).toContain("# Visions");
@@ -490,8 +530,20 @@ describe("report use cases", () => {
 	test("generates use cases catalog with actors and criteria", () => {
 		const entities: Entity[] = [
 			{
-				type: "use_case", id: "UC-001", title: "User login", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "",
-				actors: ["User", "System"], preconditions: ["User has account"], main_flow: [], acceptance_criteria: ["Login succeeds"], derived_from: ["R-001"], requested_by: [],
+				type: "use_case",
+				id: "UC-001",
+				title: "User login",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				actors: ["User", "System"],
+				preconditions: ["User has account"],
+				main_flow: [],
+				acceptance_criteria: ["Login succeeds"],
+				derived_from: ["R-001"],
+				requested_by: [],
 			},
 		];
 		const md = reportUseCases(entities);
@@ -512,8 +564,22 @@ describe("report entity models", () => {
 	test("generates entity models catalog with entities", () => {
 		const entities: Entity[] = [
 			{
-				type: "entity_model", id: "EM-001", title: "User model", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "",
-				entities: [{ name: "User", attributes: [{ name: "id", type: "string", required: true }], relationships: [] }], derived_from: ["R-001"],
+				type: "entity_model",
+				id: "EM-001",
+				title: "User model",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				entities: [
+					{
+						name: "User",
+						attributes: [{ name: "id", type: "string", required: true }],
+						relationships: [],
+					},
+				],
+				derived_from: ["R-001"],
 			},
 		];
 		const md = reportEntityModels(entities);
@@ -532,18 +598,91 @@ describe("report entity models", () => {
 describe("report full includes all entity types", () => {
 	test("includes visions, assumptions, use cases, entity models sections", () => {
 		const entities: Entity[] = [
-			{ type: "requirement", id: "R-001", title: "Test req", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: ["V-001"], conflicts_with: [], requested_by: [] },
-			{ type: "assumption", id: "A-001", title: "Test assumption", status: "validated", date: "2026-01-01", tags: [], body: "", filePath: "" },
-			{ type: "decision", id: "D-001", title: "Test dec", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", driven_by: ["R-001"], enables: [], affects: [], depends_on: [] },
-			{ type: "risk", id: "K-001", title: "Test risk", status: "identified", date: "2026-01-01", tags: [], body: "", filePath: "", mitigated_by: [] },
-			{ type: "vision", id: "V-001", title: "Test vision", status: "active", date: "2026-01-01", tags: [], body: "", filePath: "" },
 			{
-				type: "use_case", id: "UC-001", title: "Test UC", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "",
-				actors: [], preconditions: [], main_flow: [], acceptance_criteria: [], derived_from: ["R-001"], requested_by: [],
+				type: "requirement",
+				id: "R-001",
+				title: "Test req",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: ["V-001"],
+				conflicts_with: [],
+				requested_by: [],
 			},
 			{
-				type: "entity_model", id: "EM-001", title: "Test EM", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "",
-				entities: [], derived_from: ["R-001"],
+				type: "assumption",
+				id: "A-001",
+				title: "Test assumption",
+				status: "validated",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+			},
+			{
+				type: "decision",
+				id: "D-001",
+				title: "Test dec",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				driven_by: ["R-001"],
+				enables: [],
+				affects: [],
+				depends_on: [],
+			},
+			{
+				type: "risk",
+				id: "K-001",
+				title: "Test risk",
+				status: "identified",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				mitigated_by: [],
+			},
+			{
+				type: "vision",
+				id: "V-001",
+				title: "Test vision",
+				status: "active",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+			},
+			{
+				type: "use_case",
+				id: "UC-001",
+				title: "Test UC",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				actors: [],
+				preconditions: [],
+				main_flow: [],
+				acceptance_criteria: [],
+				derived_from: ["R-001"],
+				requested_by: [],
+			},
+			{
+				type: "entity_model",
+				id: "EM-001",
+				title: "Test EM",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				entities: [],
+				derived_from: ["R-001"],
 			},
 		];
 		const md = reportFull(entities);

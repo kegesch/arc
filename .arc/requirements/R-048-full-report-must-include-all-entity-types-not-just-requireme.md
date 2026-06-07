@@ -1,6 +1,6 @@
 ---
-id: R-045
-title: arc report generates stakeholder-facing documents from the graph
+id: R-048
+title: Full report must include all entity types not just requirements and decisions
 status: accepted
 date: 2026-06-07
 derived_from:
@@ -9,7 +9,7 @@ conflicts_with: []
 requested_by: []
 ---
 
-# Requirement: arc report generates stakeholder-facing documents from the graph
+# Requirement: Full report must include all entity types not just requirements and decisions
 
 ## Description
 
