@@ -5,6 +5,8 @@ import {
 	reportRisks,
 	reportFull,
 } from "./report.js";
+import { buildGraph } from "../graph/graph.js";
+import type { Entity } from "../types.js";
 
 export function mdToHtml(md: string): string {
 	const lines = md.split("\n");
@@ -471,6 +473,45 @@ ${bodyWithIds}
   </div>
 </body>
 </html>`;
+}
+
+const TYPE_COLORS: Record<string, string> = {
+	requirement: "#4da6ff",
+	assumption: "#ffb347",
+	decision: "#77dd77",
+	idea: "#dda0dd",
+	risk: "#ff6b6b",
+	term: "#87ceeb",
+	use_case: "#98d8c8",
+	entity_model: "#c9b1ff",
+	vision: "#ffa500",
+	stakeholder: "#b0b0b0",
+};
+
+export function buildGraphJson(entities: Entity[]): {
+	nodes: { id: string; title: string; type: string; color: string; anchor: string }[];
+	edges: { from: string; to: string; type: string }[];
+} {
+	const graph = buildGraph(entities);
+
+	const nodes = entities.map((e) => ({
+		id: e.id,
+		title: e.title,
+		type: e.type,
+		color: TYPE_COLORS[e.type] ?? "#999",
+		anchor: e.id.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+	}));
+
+	const seen = new Set<string>();
+	const edges: { from: string; to: string; type: string }[] = [];
+	for (const edge of graph.edges) {
+		const key = `${edge.from}-${edge.to}-${edge.type}`;
+		if (seen.has(key)) continue;
+		seen.add(key);
+		edges.push({ from: edge.from, to: edge.to, type: edge.type });
+	}
+
+	return { nodes, edges };
 }
 
 export function generateHtmlReport(

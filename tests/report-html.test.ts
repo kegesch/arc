@@ -3,6 +3,7 @@ import {
 	reportToHtml,
 	mdToHtml,
 	groupSectionsByCategory,
+	buildGraphJson,
 } from "../src/commands/report-html";
 
 describe("mdToHtml", () => {
@@ -127,5 +128,44 @@ describe("groupSectionsByCategory", () => {
 		const groups = groupSectionsByCategory(sections);
 		const overview = groups.find((g) => g.category === "Overview");
 		expect(overview).toBeDefined();
+	});
+});
+
+describe("buildGraphJson", () => {
+	test("extracts nodes with id, title, type, color, and anchor from entities", () => {
+		const entities = [
+			{ type: "requirement", id: "R-001", title: "Encrypt data", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: [], conflicts_with: [], requested_by: [] },
+			{ type: "decision", id: "D-001", title: "Use AES", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", driven_by: ["R-001"], enables: [], affects: [], depends_on: [] },
+		];
+		const graph = buildGraphJson(entities as any);
+		expect(graph.nodes).toHaveLength(2);
+		const r = graph.nodes.find((n) => n.id === "R-001");
+		expect(r).toBeDefined();
+		expect(r!.title).toBe("Encrypt data");
+		expect(r!.type).toBe("requirement");
+		expect(r!.color).toBe("#4da6ff");
+		expect(r!.anchor).toBe("r-001");
+	});
+
+	test("extracts edges from entity relationships", () => {
+		const entities = [
+			{ type: "requirement", id: "R-001", title: "Encrypt data", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: [], conflicts_with: [], requested_by: [] },
+			{ type: "decision", id: "D-001", title: "Use AES", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", driven_by: ["R-001"], enables: [], affects: [], depends_on: [] },
+		];
+		const graph = buildGraphJson(entities as any);
+		expect(graph.edges).toHaveLength(1);
+		expect(graph.edges[0].from).toBe("D-001");
+		expect(graph.edges[0].to).toBe("R-001");
+		expect(graph.edges[0].type).toBe("driven_by");
+	});
+
+	test("deduplicates duplicate edges", () => {
+		const entities = [
+			{ type: "requirement", id: "R-001", title: "A", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: [], conflicts_with: [], requested_by: [] },
+			{ type: "decision", id: "D-001", title: "B", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", driven_by: ["R-001", "R-001"], enables: [], affects: [], depends_on: [] },
+		];
+		const graph = buildGraphJson(entities as any);
+		const drivenEdges = graph.edges.filter((e) => e.type === "driven_by");
+		expect(drivenEdges).toHaveLength(1);
 	});
 });
