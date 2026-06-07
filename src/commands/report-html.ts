@@ -390,7 +390,7 @@ summary:hover {
 }
 #graph-canvas:active { cursor: grabbing; }
 #graph-tooltip {
-  position: absolute;
+  position: fixed;
   display: none;
   background: var(--text);
   color: white;
@@ -399,7 +399,7 @@ summary:hover {
   font-size: 0.8rem;
   pointer-events: none;
   white-space: nowrap;
-  z-index: 10;
+  z-index: 100;
 }
 `.trim();
 
@@ -727,6 +727,37 @@ function buildGraphJs(graphData: ReturnType<typeof buildGraphJson>): string {
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+
+  var vb = {x:0, y:0, w: w, h: h};
+  svg.setAttribute('viewBox', '0 0 '+vb.w+' '+vb.h);
+  svg.addEventListener('wheel', function(ev) {
+    ev.preventDefault();
+    var scale = ev.deltaY > 0 ? 1.1 : 0.9;
+    var rect = svg.getBoundingClientRect();
+    var mx = (ev.clientX - rect.left) / rect.width * vb.w + vb.x;
+    var my = (ev.clientY - rect.top) / rect.height * vb.h + vb.y;
+    vb.x = mx - (mx - vb.x) * scale;
+    vb.y = my - (my - vb.y) * scale;
+    vb.w *= scale;
+    vb.h *= scale;
+    svg.setAttribute('viewBox', vb.x+' '+vb.y+' '+vb.w+' '+vb.h);
+  });
+  var drag = null;
+  svg.addEventListener('mousedown', function(ev) {
+    if (ev.target.closest('g[style]')) return;
+    drag = {x: ev.clientX, y: ev.clientY, vx: vb.x, vy: vb.y};
+  });
+  svg.addEventListener('mousemove', function(ev) {
+    if (!drag) return;
+    var rect = svg.getBoundingClientRect();
+    var dx = (ev.clientX - drag.x) / rect.width * vb.w;
+    var dy = (ev.clientY - drag.y) / rect.height * vb.h;
+    vb.x = drag.vx - dx;
+    vb.y = drag.vy - dy;
+    svg.setAttribute('viewBox', vb.x+' '+vb.y+' '+vb.w+' '+vb.h);
+  });
+  svg.addEventListener('mouseup', function() { drag = null; });
+  svg.addEventListener('mouseleave', function() { drag = null; });
 })();`;
 }
 
@@ -748,7 +779,7 @@ export function generateHtmlReportWithGraph(
 		.join("");
 
 	const graphSection = `<div class="graph-section">
-<h2>Graph</h2>
+<h2 id="graph">Graph</h2>
 <div class="graph-legend">${legendHtml}</div>
 <svg id="graph-canvas"></svg>
 <div id="graph-tooltip"></div>
@@ -756,7 +787,10 @@ export function generateHtmlReportWithGraph(
 
 	const script = `<script>${buildGraphJs(graphData)}</script>`;
 
+	const sidebarLink = `<div class="sidebar-group">\n  <div class="sidebar-group-title">Visualization</div>\n  <ul>\n    <li><a href="#graph">Graph</a></li>\n  </ul>\n</div>\n`;
+
 	const withGraph = baseHtml
+		.replace("</nav>", `${sidebarLink}</nav>`)
 		.replace("</main>", `${graphSection}\n      </main>`)
 		.replace("</body>", `${script}\n</body>`);
 

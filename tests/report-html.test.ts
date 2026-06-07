@@ -286,4 +286,66 @@ describe("generateHtmlReportWithGraph", () => {
 		expect(html).toContain("D-001");
 		expect(html).toContain("<script>");
 	});
+
+	test("includes pan and zoom controls in graph script", () => {
+		const entities = [
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Encrypt data",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+		];
+		const html = generateHtmlReportWithGraph("full", entities as any);
+		expect(html).toContain("viewBox");
+		expect(html).toContain("wheel");
+		expect(html).toContain("mousedown");
+	});
+
+	test("includes graph link in sidebar", () => {
+		const entities = [
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Encrypt data",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+		];
+		const html = generateHtmlReportWithGraph("full", entities as any);
+		expect(html).toContain("<a href=\"#graph\">Graph</a>");
+	});
+
+	test("tooltip uses fixed positioning", () => {
+		const entities = [
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Encrypt data",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+		];
+		const html = generateHtmlReportWithGraph("full", entities as any);
+		expect(html).toContain("position: fixed");
+	});
 });
