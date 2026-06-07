@@ -199,6 +199,70 @@ export function reportRisks(entities: Entity[]): string {
 	return lines.join("\n").trimEnd() + "\n";
 }
 
+export interface ReportOptions {
+	format?: "markdown" | "json";
+	output?: string;
+	context?: string;
+}
+
+export function reportCommand(
+	type: string,
+	options: ReportOptions = {},
+): void {
+	const { readAllEntities, requireArcProject } = require("../io/files") as typeof import("../io/files");
+	requireArcProject();
+
+	let entities = readAllEntities();
+
+	if (options.context) {
+		entities = entities.filter(
+			(e) =>
+				e.context?.toLowerCase().includes(options.context!.toLowerCase()) ??
+			false,
+		);
+	}
+
+	const validTypes = ["requirements", "decisions", "traceability", "risks", "full"];
+	if (!validTypes.includes(type)) {
+		console.error(
+			`Unknown report type "${type}". Use: ${validTypes.join(", ")}`,
+		);
+		process.exit(1);
+	}
+
+	let md: string;
+	switch (type) {
+		case "requirements":
+			md = reportRequirements(entities);
+			break;
+		case "decisions":
+			md = reportDecisions(entities);
+			break;
+		case "traceability":
+			md = reportTraceability(entities);
+			break;
+		case "risks":
+			md = reportRisks(entities);
+			break;
+		case "full":
+			md = reportFull(entities);
+			break;
+		default:
+			md = "";
+	}
+
+	const format = options.format ?? "markdown";
+	const output = format === "json" ? JSON.stringify({ report: type, markdown: md }) : md;
+
+	if (options.output) {
+		const { writeFileSync } = require("node:fs") as typeof import("node:fs");
+		writeFileSync(options.output, output, "utf-8");
+		console.log(`Report written to ${options.output}`);
+	} else {
+		console.log(output);
+	}
+}
+
 export function reportFull(entities: Entity[]): string {
 	const graph = buildGraph(entities);
 	const typeCounts = new Map<string, number>();

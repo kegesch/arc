@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import { existsSync, readFileSync, rmSync } from "node:fs";
+import { join } from "node:path";
 import {
 	reportRequirements,
 	reportDecisions,
@@ -327,5 +329,36 @@ describe("report full", () => {
 		];
 		const md = reportFull(entities);
 		expect(md).toContain("entities");
+	});
+});
+
+// ─── CLI Command Integration ───
+
+describe("report command", () => {
+	test("writes report to file with --output", () => {
+		const outPath = join(import.meta.dir, "_tmp_report.md");
+		try {
+			const { reportCommand } = require("../src/commands/report");
+
+			const origExit = process.exit;
+			const origLog = console.log;
+			let logged = "";
+			process.exit = (() => {}) as never;
+			console.log = (msg: string) => { logged += msg; };
+
+			try {
+				reportCommand("requirements", { output: outPath });
+			} finally {
+				process.exit = origExit;
+				console.log = origLog;
+			}
+
+			expect(existsSync(outPath)).toBe(true);
+			const content = readFileSync(outPath, "utf-8");
+			expect(content).toContain("Requirements Catalog");
+			expect(logged).toContain("written to");
+		} finally {
+			if (existsSync(outPath)) rmSync(outPath);
+		}
 	});
 });
