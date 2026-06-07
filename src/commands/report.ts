@@ -199,7 +199,7 @@ export function reportRisks(entities: Entity[]): string {
 }
 
 export interface ReportOptions {
-	format?: "markdown" | "json";
+	format?: "markdown" | "html" | "json";
 	output?: string;
 	context?: string;
 }
@@ -254,15 +254,25 @@ export function reportCommand(type: string, options: ReportOptions = {}): void {
 			md = "";
 	}
 
-	const format = options.format ?? "markdown";
-	const output =
-		format === "json" ? JSON.stringify({ report: type, markdown: md }) : md;
+	const format = options.format ?? "html";
+	let output: string;
+
+	if (format === "html") {
+		const { generateHtmlReport } =
+			require("./report-html.js") as typeof import("./report-html.js");
+		output = generateHtmlReport(type, entities);
+	} else if (format === "json") {
+		output = JSON.stringify({ report: type, markdown: md });
+	} else {
+		output = md;
+	}
 
 	if (options.output) {
 		const { writeFileSync, mkdirSync } =
 			require("node:fs") as typeof import("node:fs");
 		const { dirname } = require("node:path") as typeof import("node:path");
-		mkdirSync(dirname(options.output), { recursive: true });
+		const dir = dirname(options.output);
+		if (dir !== ".") mkdirSync(dir, { recursive: true });
 		writeFileSync(options.output, output, "utf-8");
 		console.log(`Report written to ${options.output}`);
 	} else {

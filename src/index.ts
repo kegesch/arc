@@ -351,7 +351,7 @@ program
 		"Report type: requirements | decisions | traceability | risks | full",
 	)
 	.description("Generate stakeholder-facing documentation from the graph")
-	.option("--format <format>", "Output format: markdown or json", "markdown")
+	.option("--format <format>", "Output format: html, markdown or json", "html")
 	.option("--output <path>", "Write report to file instead of stdout")
 	.option("--context <context>", "Filter by context")
 	.action(
@@ -360,7 +360,7 @@ program
 			opts: { format?: string; output?: string; context?: string },
 		) => {
 			reportCommand(type, {
-				format: (opts.format as "markdown" | "json") ?? "markdown",
+				format: (opts.format as "html" | "markdown" | "json") ?? "html",
 				output: opts.output,
 				context: opts.context,
 			});
