@@ -255,7 +255,9 @@ export function reportCommand(
 	const output = format === "json" ? JSON.stringify({ report: type, markdown: md }) : md;
 
 	if (options.output) {
-		const { writeFileSync } = require("node:fs") as typeof import("node:fs");
+		const { writeFileSync, mkdirSync } = require("node:fs") as typeof import("node:fs");
+		const { dirname } = require("node:path") as typeof import("node:path");
+		mkdirSync(dirname(options.output), { recursive: true });
 		writeFileSync(options.output, output, "utf-8");
 		console.log(`Report written to ${options.output}`);
 	} else {
