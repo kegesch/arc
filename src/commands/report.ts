@@ -1,6 +1,17 @@
 import { buildGraph, getDependents } from "../graph/graph.js";
 import type { Decision, Entity, Requirement, Risk } from "../types";
 
+function demoteHeadings(md: string, _levels: number): string {
+	return md.replace(
+		/^(#{1,4}) /gm,
+		(match) => "#".repeat(match.length) + "#" + " ",
+	);
+}
+
+function stripTitle(md: string): string {
+	return md.replace(/^# .+\n?/, "").replace(/^\n+/, "");
+}
+
 function entitiesOf<T extends Entity>(
 	entities: Entity[],
 	type: T["type"],
@@ -97,7 +108,7 @@ export function reportDecisions(entities: Entity[]): string {
 		const enabledBy = d.enables;
 		const isOrphan = drivenBy.length === 0;
 
-		lines.push(`## ${d.id}: ${d.title}`);
+		lines.push(`### ${d.id}: ${d.title}`);
 		let meta = `**Status:** ${d.status}`;
 		if (drivenBy.length > 0) {
 			meta += ` | **Driven by:** ${drivenBy.join(", ")}`;
@@ -112,8 +123,11 @@ export function reportDecisions(entities: Entity[]): string {
 		lines.push("");
 
 		if (d.body && d.body.trim().length > 0) {
-			lines.push(d.body.trim());
-			lines.push("");
+			const body = stripTitle(d.body.trim());
+			if (body.length > 0) {
+				lines.push(demoteHeadings(body, 1));
+				lines.push("");
+			}
 		}
 	}
 
@@ -304,18 +318,18 @@ export function reportFull(entities: Entity[]): string {
 
 	lines.push("## Requirements");
 	lines.push("");
-	lines.push(reportRequirements(entities));
+	lines.push(stripTitle(reportRequirements(entities)));
 	lines.push("## Decisions");
 	lines.push("");
-	lines.push(reportDecisions(entities));
+	lines.push(stripTitle(reportDecisions(entities)));
 	lines.push("## Traceability");
 	lines.push("");
-	lines.push(reportTraceability(entities));
+	lines.push(stripTitle(reportTraceability(entities)));
 
 	if (entitiesOf<Entity>(entities, "risk").length > 0) {
 		lines.push("## Risks");
 		lines.push("");
-		lines.push(reportRisks(entities));
+		lines.push(stripTitle(reportRisks(entities)));
 	}
 
 	return lines.join("\n").trimEnd() + "\n";
