@@ -94,7 +94,8 @@ describe("reportToHtml", () => {
 			"Decisions",
 			"# Decision Log\n\n### D-001: Use SQLite\n\n**Status:** accepted\n\n#### Context\n\nWe need local persistence.\n\n#### Decision\n\nUse SQLite.",
 		);
-		expect(html).toContain("<details>\n<summary>D-001: Use SQLite</summary>");
+		expect(html).toContain('<details id="entity-d-001">');
+		expect(html).toContain("<summary>D-001: Use SQLite</summary>");
 		expect(html).toContain("<strong>Status:</strong> accepted");
 		expect(html).toContain('<details class="sub-detail">');
 		expect(html).toContain("<summary>Context</summary>");
