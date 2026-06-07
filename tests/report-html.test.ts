@@ -87,15 +87,18 @@ describe("reportToHtml", () => {
 		expect(html).toContain("Risks");
 	});
 
-	test("wraps h3 sections in collapsible details elements", () => {
+	test("wraps h3 sections in collapsible details with nested h4 sub-details", () => {
 		const html = reportToHtml(
 			"Decisions",
-			"# Decision Log\n\n## D-001: Use SQLite\n\n**Status:** accepted\n\n### Context\n\nWe need local persistence.\n\n### Decision\n\nUse SQLite.",
+			"# Decision Log\n\n### D-001: Use SQLite\n\n**Status:** accepted\n\n#### Context\n\nWe need local persistence.\n\n#### Decision\n\nUse SQLite.",
 		);
-		expect(html).toContain("<details>");
-		expect(html).toContain("<summary>");
-		expect(html).toContain("Context");
+		expect(html).toContain("<details>\n<summary>D-001: Use SQLite</summary>");
+		expect(html).toContain("<strong>Status:</strong> accepted");
+		expect(html).toContain("<details class=\"sub-detail\">");
+		expect(html).toContain("<summary>Context</summary>");
 		expect(html).toContain("We need local persistence");
+		expect(html).toContain("<summary>Decision</summary>");
+		expect(html).toContain("Use SQLite");
 	});
 });
 

@@ -14,13 +14,33 @@ export function mdToHtml(md: string): string {
 	while (i < lines.length) {
 		const line = lines[i];
 
-		if (line.startsWith("### ")) {
+		if (line.startsWith("#### ")) {
+			const summary = inlineHtml(line.slice(5));
+			const contentLines: string[] = [];
+			i++;
+			while (
+				i < lines.length &&
+				!lines[i].match(/^#{1,4} /) &&
+				!lines[i].startsWith("|")
+			) {
+				contentLines.push(lines[i]);
+				i++;
+			}
+			const content = mdToHtml(contentLines.join("\n"));
+			if (content.trim()) {
+				blocks.push(
+					`<details class="sub-detail">\n<summary>${summary}</summary>\n<div class="detail-content">${content}</div>\n</details>`,
+				);
+			} else {
+				blocks.push(`<details class="sub-detail">\n<summary>${summary}</summary>\n</details>`);
+			}
+		} else if (line.startsWith("### ")) {
 			const summary = inlineHtml(line.slice(4));
 			const contentLines: string[] = [];
 			i++;
 			while (
 				i < lines.length &&
-				!lines[i].startsWith("#") &&
+				!lines[i].match(/^#{1,3} /) &&
 				!lines[i].startsWith("|")
 			) {
 				contentLines.push(lines[i]);
@@ -295,6 +315,21 @@ summary:hover {
 .detail-content {
   padding: 0.75rem 1rem;
   border-top: 1px solid var(--border);
+}
+
+.sub-detail {
+  margin: 0.25rem 0;
+  border-color: var(--border);
+}
+
+.sub-detail summary {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.sub-detail .detail-content {
+  padding: 0.5rem 0.75rem;
 }
 
 .report-meta {
