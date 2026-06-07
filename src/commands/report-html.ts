@@ -34,7 +34,9 @@ export function mdToHtml(md: string): string {
 					`<details class="sub-detail">\n<summary>${summary}</summary>\n<div class="detail-content">${content}</div>\n</details>`,
 				);
 			} else {
-				blocks.push(`<details class="sub-detail">\n<summary>${summary}</summary>\n</details>`);
+				blocks.push(
+					`<details class="sub-detail">\n<summary>${summary}</summary>\n</details>`,
+				);
 			}
 		} else if (line.startsWith("### ")) {
 			const summary = inlineHtml(line.slice(4));
@@ -346,11 +348,51 @@ summary:hover {
 
 @media print {
   nav.sidebar { display: none; }
+  .graph-section { display: none; }
   .layout { display: block; }
   body { font-size: 11pt; }
   h2 { page-break-before: auto; }
   table { font-size: 9pt; }
   details[open] .detail-content { display: block; }
+}
+
+.graph-section {
+  margin: 2rem 0 3rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.graph-section h2 { margin-top: 0; margin-bottom: 0.5rem; }
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+}
+.graph-legend span { display: flex; align-items: center; gap: 0.3rem; }
+.graph-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+#graph-canvas {
+  width: 100%;
+  height: 500px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  cursor: grab;
+}
+#graph-canvas:active { cursor: grabbing; }
+#graph-tooltip {
+  position: absolute;
+  display: none;
+  background: var(--text);
+  color: white;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 10;
 }
 `.trim();
 
@@ -489,7 +531,13 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 export function buildGraphJson(entities: Entity[]): {
-	nodes: { id: string; title: string; type: string; color: string; anchor: string }[];
+	nodes: {
+		id: string;
+		title: string;
+		type: string;
+		color: string;
+		anchor: string;
+	}[];
 	edges: { from: string; to: string; type: string }[];
 } {
 	const graph = buildGraph(entities);
@@ -548,4 +596,162 @@ export function generateHtmlReport(
 	}
 
 	return reportToHtml(title, md);
+}
+
+function buildGraphJs(graphData: ReturnType<typeof buildGraphJson>): string {
+	return `
+(function(){
+  var data = ${JSON.stringify(graphData)};
+  var svg = document.getElementById('graph-canvas');
+  var tooltip = document.getElementById('graph-tooltip');
+  if (!svg || !data || data.nodes.length === 0) return;
+
+  var w = svg.clientWidth || 800;
+  var h = svg.clientHeight || 500;
+  var ns = 'http://www.w3.org/2000/svg';
+
+  var nodeMap = {};
+  data.nodes.forEach(function(n) {
+    nodeMap[n.id] = Object.assign({}, n, {
+      x: w/2 + (Math.random()-0.5)*w*0.6,
+      y: h/2 + (Math.random()-0.5)*h*0.6,
+      vx: 0, vy: 0
+    });
+  });
+
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(ns, tag);
+    if (attrs) Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  var gEl = el('g', {id:'graph-group'}, svg);
+  var defs = el('defs', {}, gEl);
+  var marker = el('marker', {
+    id:'arrow', viewBox:'0 0 10 10', refX:'24', refY:'5',
+    markerWidth:'6', markerHeight:'6', orient:'auto-start-reverse'
+  }, defs);
+  el('path', {d:'M 0 0 L 10 5 L 0 10 z', fill:'#ccc'}, marker);
+
+  var edgeEls = data.edges.map(function(e) {
+    var line = el('line', {
+      stroke:'#ccc', 'stroke-width':'1', 'marker-end':'url(#arrow)'
+    }, gEl);
+    line._from = e.from;
+    line._to = e.to;
+    return line;
+  });
+
+  var nodeEls = data.nodes.map(function(n) {
+    var g = el('g', {style:'cursor:pointer'}, gEl);
+    var radius = n.type==='vision' ? 14 : n.type==='decision' ? 10 : 8;
+    el('circle', {
+      r: radius, fill: n.color, stroke:'#fff', 'stroke-width':'2'
+    }, g);
+    var text = el('text', {
+      'font-size':'7', 'font-family':'sans-serif',
+      'text-anchor':'middle', dy:'-16', fill:'#555'
+    }, g);
+    text.textContent = n.id;
+    g.addEventListener('mouseenter', function() {
+      tooltip.style.display = 'block';
+      tooltip.textContent = n.id + ': ' + n.title;
+    });
+    g.addEventListener('mousemove', function(ev) {
+      tooltip.style.left = (ev.clientX + 8) + 'px';
+      tooltip.style.top = (ev.clientY - 24) + 'px';
+    });
+    g.addEventListener('mouseleave', function() {
+      tooltip.style.display = 'none';
+    });
+    g.addEventListener('click', function() {
+      var anchor = document.getElementById('entity-' + n.anchor);
+      if (anchor) anchor.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+    return {g: g, n: nodeMap[n.id]};
+  });
+
+  var running = true;
+  var frameCount = 0;
+  function tick() {
+    if (!running) return;
+    frameCount++;
+    if (frameCount > 300) { running = false; return; }
+    for (var i = 0; i < data.nodes.length; i++) {
+      for (var j = i+1; j < data.nodes.length; j++) {
+        var a = nodeMap[data.nodes[i].id];
+        var b = nodeMap[data.nodes[j].id];
+        var dx = b.x - a.x, dy = b.y - a.y;
+        var dist = Math.sqrt(dx*dx+dy*dy) || 1;
+        var force = 2000 / (dist*dist);
+        a.vx -= dx/dist*force; a.vy -= dy/dist*force;
+        b.vx += dx/dist*force; b.vy += dy/dist*force;
+      }
+    }
+    data.edges.forEach(function(e) {
+      var a = nodeMap[e.from], b = nodeMap[e.to];
+      if (!a || !b) return;
+      var dx = b.x - a.x, dy = b.y - a.y;
+      var dist = Math.sqrt(dx*dx+dy*dy) || 1;
+      var force = (dist - 80) * 0.05;
+      a.vx += dx/dist*force; a.vy += dy/dist*force;
+      b.vx -= dx/dist*force; b.vy -= dy/dist*force;
+    });
+    data.nodes.forEach(function(n) {
+      var nd = nodeMap[n.id];
+      nd.vx += (w/2 - nd.x) * 0.01;
+      nd.vy += (h/2 - nd.y) * 0.01;
+      nd.vx *= 0.6; nd.vy *= 0.6;
+      nd.x += nd.vx * 0.3;
+      nd.y += nd.vy * 0.3;
+      nd.x = Math.max(20, Math.min(w-20, nd.x));
+      nd.y = Math.max(20, Math.min(h-20, nd.y));
+    });
+    nodeEls.forEach(function(ne) {
+      ne.g.setAttribute('transform','translate('+ne.n.x+','+ne.n.y+')');
+    });
+    edgeEls.forEach(function(le) {
+      var a = nodeMap[le._from], b = nodeMap[le._to];
+      if (!a || !b) return;
+      le.setAttribute('x1',a.x); le.setAttribute('y1',a.y);
+      le.setAttribute('x2',b.x); le.setAttribute('y2',b.y);
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();`;
+}
+
+export function generateHtmlReportWithGraph(
+	type: string,
+	entities: Entity[],
+): string {
+	const graphData = buildGraphJson(entities);
+	const baseHtml = generateHtmlReport(type, entities);
+
+	if (graphData.nodes.length === 0) return baseHtml;
+
+	const legendTypes = [...new Set(entities.map((e) => e.type))].sort();
+	const legendHtml = legendTypes
+		.map(
+			(t) =>
+				`<span><span class="dot" style="background:${TYPE_COLORS[t] ?? "#999"}"></span>${t}</span>`,
+		)
+		.join("");
+
+	const graphSection = `<div class="graph-section">
+<h2>Graph</h2>
+<div class="graph-legend">${legendHtml}</div>
+<svg id="graph-canvas"></svg>
+<div id="graph-tooltip"></div>
+</div>`;
+
+	const script = `<script>${buildGraphJs(graphData)}</script>`;
+
+	const withGraph = baseHtml
+		.replace("</main>", `${graphSection}\n      </main>`)
+		.replace("</body>", `${script}\n</body>`);
+
+	return withGraph;
 }

@@ -4,6 +4,7 @@ import {
 	mdToHtml,
 	groupSectionsByCategory,
 	buildGraphJson,
+	generateHtmlReportWithGraph,
 } from "../src/commands/report-html";
 
 describe("mdToHtml", () => {
@@ -95,7 +96,7 @@ describe("reportToHtml", () => {
 		);
 		expect(html).toContain("<details>\n<summary>D-001: Use SQLite</summary>");
 		expect(html).toContain("<strong>Status:</strong> accepted");
-		expect(html).toContain("<details class=\"sub-detail\">");
+		expect(html).toContain('<details class="sub-detail">');
 		expect(html).toContain("<summary>Context</summary>");
 		expect(html).toContain("We need local persistence");
 		expect(html).toContain("<summary>Decision</summary>");
@@ -134,8 +135,33 @@ describe("groupSectionsByCategory", () => {
 describe("buildGraphJson", () => {
 	test("extracts nodes with id, title, type, color, and anchor from entities", () => {
 		const entities = [
-			{ type: "requirement", id: "R-001", title: "Encrypt data", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: [], conflicts_with: [], requested_by: [] },
-			{ type: "decision", id: "D-001", title: "Use AES", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", driven_by: ["R-001"], enables: [], affects: [], depends_on: [] },
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Encrypt data",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+			{
+				type: "decision",
+				id: "D-001",
+				title: "Use AES",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				driven_by: ["R-001"],
+				enables: [],
+				affects: [],
+				depends_on: [],
+			},
 		];
 		const graph = buildGraphJson(entities as any);
 		expect(graph.nodes).toHaveLength(2);
@@ -149,8 +175,33 @@ describe("buildGraphJson", () => {
 
 	test("extracts edges from entity relationships", () => {
 		const entities = [
-			{ type: "requirement", id: "R-001", title: "Encrypt data", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: [], conflicts_with: [], requested_by: [] },
-			{ type: "decision", id: "D-001", title: "Use AES", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", driven_by: ["R-001"], enables: [], affects: [], depends_on: [] },
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Encrypt data",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+			{
+				type: "decision",
+				id: "D-001",
+				title: "Use AES",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				driven_by: ["R-001"],
+				enables: [],
+				affects: [],
+				depends_on: [],
+			},
 		];
 		const graph = buildGraphJson(entities as any);
 		expect(graph.edges).toHaveLength(1);
@@ -161,11 +212,77 @@ describe("buildGraphJson", () => {
 
 	test("deduplicates duplicate edges", () => {
 		const entities = [
-			{ type: "requirement", id: "R-001", title: "A", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: [], conflicts_with: [], requested_by: [] },
-			{ type: "decision", id: "D-001", title: "B", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", driven_by: ["R-001", "R-001"], enables: [], affects: [], depends_on: [] },
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "A",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+			{
+				type: "decision",
+				id: "D-001",
+				title: "B",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				driven_by: ["R-001", "R-001"],
+				enables: [],
+				affects: [],
+				depends_on: [],
+			},
 		];
 		const graph = buildGraphJson(entities as any);
 		const drivenEdges = graph.edges.filter((e) => e.type === "driven_by");
 		expect(drivenEdges).toHaveLength(1);
+	});
+});
+
+describe("generateHtmlReportWithGraph", () => {
+	test("embeds interactive graph SVG with nodes, edges, and tooltip", () => {
+		const entities = [
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Encrypt data",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+			{
+				type: "decision",
+				id: "D-001",
+				title: "Use AES",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "",
+				driven_by: ["R-001"],
+				enables: [],
+				affects: [],
+				depends_on: [],
+			},
+		];
+		const html = generateHtmlReportWithGraph("full", entities as any);
+		expect(html).toContain("graph-canvas");
+		expect(html).toContain("graph-tooltip");
+		expect(html).toContain("graph-legend");
+		expect(html).toContain("R-001");
+		expect(html).toContain("D-001");
+		expect(html).toContain("<script>");
 	});
 });
