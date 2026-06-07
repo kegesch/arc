@@ -255,28 +255,31 @@ export function reportCommand(type: string, options: ReportOptions = {}): void {
 	}
 
 	const format = options.format ?? "html";
-	let output: string;
+	let content: string;
 
 	if (format === "html") {
 		const { generateHtmlReport } =
 			require("./report-html.js") as typeof import("./report-html.js");
-		output = generateHtmlReport(type, entities);
+		content = generateHtmlReport(type, entities);
 	} else if (format === "json") {
-		output = JSON.stringify({ report: type, markdown: md });
+		content = JSON.stringify({ report: type, markdown: md });
 	} else {
-		output = md;
+		content = md;
 	}
 
-	if (options.output) {
+	const outputPath =
+		options.output ?? (format === "html" ? "report.html" : undefined);
+
+	if (outputPath) {
 		const { writeFileSync, mkdirSync } =
 			require("node:fs") as typeof import("node:fs");
 		const { dirname } = require("node:path") as typeof import("node:path");
-		const dir = dirname(options.output);
+		const dir = dirname(outputPath);
 		if (dir !== ".") mkdirSync(dir, { recursive: true });
-		writeFileSync(options.output, output, "utf-8");
-		console.log(`Report written to ${options.output}`);
+		writeFileSync(outputPath, content, "utf-8");
+		console.log(`Report written to ${outputPath}`);
 	} else {
-		console.log(output);
+		console.log(content);
 	}
 }
 

@@ -15,8 +15,25 @@ export function mdToHtml(md: string): string {
 		const line = lines[i];
 
 		if (line.startsWith("### ")) {
-			blocks.push(`<h3>${inlineHtml(line.slice(4))}</h3>`);
+			const summary = inlineHtml(line.slice(4));
+			const contentLines: string[] = [];
 			i++;
+			while (
+				i < lines.length &&
+				!lines[i].startsWith("#") &&
+				!lines[i].startsWith("|")
+			) {
+				contentLines.push(lines[i]);
+				i++;
+			}
+			const content = mdToHtml(contentLines.join("\n"));
+			if (content.trim()) {
+				blocks.push(
+					`<details>\n<summary>${summary}</summary>\n<div class="detail-content">${content}</div>\n</details>`,
+				);
+			} else {
+				blocks.push(`<details>\n<summary>${summary}</summary>\n</details>`);
+			}
 		} else if (line.startsWith("## ")) {
 			blocks.push(`<h2>${inlineHtml(line.slice(3))}</h2>`);
 			i++;
@@ -53,7 +70,7 @@ export function mdToHtml(md: string): string {
 function inlineHtml(text: string): string {
 	return text
 		.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-		.replace(/⚠/g, "<span class=\"warning-icon\">⚠</span>");
+		.replace(/⚠/g, '<span class="warning-icon">⚠</span>');
 }
 
 function tableToHtml(lines: string[]): string {
@@ -128,31 +145,41 @@ nav.sidebar {
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
 }
 
-nav.sidebar h3 {
-  font-size: 0.75rem;
+.sidebar-group {
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-group-title {
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--muted);
-  margin-bottom: 0.5rem;
-}
-
-nav.sidebar ul {
-  list-style: none;
-}
-
-nav.sidebar li {
   margin-bottom: 0.25rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--border);
 }
 
-nav.sidebar a {
+.sidebar-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-group li {
+  margin-bottom: 0.15rem;
+}
+
+.sidebar-group a {
   color: var(--accent);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
-nav.sidebar a:hover {
+.sidebar-group a:hover {
   text-decoration: underline;
 }
 
@@ -230,6 +257,46 @@ strong {
   color: var(--warning);
 }
 
+details {
+  margin: 0.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+summary {
+  padding: 0.5rem 0.75rem;
+  background: var(--surface);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+summary::before {
+  content: "▸";
+  font-size: 0.8rem;
+  transition: transform 0.15s;
+  display: inline-block;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+summary:hover {
+  background: var(--accent-light);
+}
+
+.detail-content {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
 .report-meta {
   color: var(--muted);
   font-size: 0.9rem;
@@ -246,8 +313,50 @@ strong {
   body { font-size: 11pt; }
   h2 { page-break-before: auto; }
   table { font-size: 9pt; }
+  details[open] .detail-content { display: block; }
 }
 `.trim();
+
+const CATEGORY_MAP: Record<string, string> = {
+	requirements: "Requirements",
+	unaddressed: "Requirements",
+	"vision-derivation": "Requirements",
+	decisions: "Decisions",
+	traceability: "Traceability",
+	"traceability-matrix": "Traceability",
+	"untraced-requirements": "Traceability",
+	risks: "Risks",
+	"risk-register": "Risks",
+};
+
+export interface SectionGroup {
+	category: string;
+	sections: { id: string; title: string }[];
+}
+
+export function groupSectionsByCategory(
+	sections: { id: string; title: string; level: number }[],
+): SectionGroup[] {
+	const map = new Map<string, { id: string; title: string }[]>();
+	const order: string[] = [];
+
+	for (const s of sections) {
+		let category = "Overview";
+		for (const [key, cat] of Object.entries(CATEGORY_MAP)) {
+			if (s.id.startsWith(key) || s.id === key) {
+				category = cat;
+				break;
+			}
+		}
+		if (!map.has(category)) {
+			map.set(category, []);
+			order.push(category);
+		}
+		map.get(category)!.push({ id: s.id, title: s.title });
+	}
+
+	return order.map((cat) => ({ category: cat, sections: map.get(cat)! }));
+}
 
 function extractSections(
 	md: string,
@@ -267,31 +376,44 @@ function extractSections(
 	return sections;
 }
 
+function buildSidebar(
+	sections: { id: string; title: string; level: number }[],
+): string {
+	if (sections.length <= 1) return "";
+
+	const groups = groupSectionsByCategory(sections);
+
+	const groupHtml = groups
+		.map(
+			(g) =>
+				`<div class="sidebar-group">
+  <div class="sidebar-group-title">${g.category}</div>
+  <ul>
+${g.sections.map((s) => `    <li><a href="#${s.id}">${s.title}</a></li>`).join("\n")}
+  </ul>
+</div>`,
+		)
+		.join("\n");
+
+	return `<nav class="sidebar">
+${groupHtml}
+</nav>`;
+}
+
 export function reportToHtml(title: string, mdContent: string): string {
 	const bodyHtml = mdToHtml(mdContent);
 	const sections = extractSections(mdContent);
 
-	const navHtml =
-		sections.length > 1
-			? `<nav class="sidebar">
-  <h3>Contents</h3>
-  <ul>
-${sections.map((s) => `    <li><a href="#${s.id}">${s.title}</a></li>`).join("\n")}
-  </ul>
-</nav>`
-			: "";
+	const navHtml = buildSidebar(sections);
 
-	const bodyWithIds = bodyHtml.replace(
-		/<h2>(.*?)<\/h2>/g,
-		(_, content) => {
-			const id = content
-				.replace(/<[^>]+>/g, "")
-				.toLowerCase()
-				.replace(/[^a-z0-9\s]/g, "")
-				.replace(/\s+/g, "-");
-			return `<h2 id="${id}">${content}</h2>`;
-		},
-	);
+	const bodyWithIds = bodyHtml.replace(/<h2>(.*?)<\/h2>/g, (_, content) => {
+		const id = content
+			.replace(/<[^>]+>/g, "")
+			.toLowerCase()
+			.replace(/[^a-z0-9\s]/g, "")
+			.replace(/\s+/g, "-");
+		return `<h2 id="${id}">${content}</h2>`;
+	});
 
 	return `<!DOCTYPE html>
 <html lang="en">

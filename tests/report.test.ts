@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import {
 	reportRequirements,
@@ -361,6 +361,35 @@ describe("report command", () => {
 			expect(logged).toContain("written to");
 		} finally {
 			if (existsSync(outPath)) rmSync(outPath);
+		}
+	});
+
+	test("defaults to report.html when no --output given", () => {
+		const origDir = process.cwd();
+		const tmpDir = join(import.meta.dir, "_tmp_report_default");
+		mkdirSync(tmpDir, { recursive: true });
+		const defaultPath = join(tmpDir, "report.html");
+		try {
+			process.chdir(tmpDir);
+			mkdirSync(join(tmpDir, ".arc", "requirements"), { recursive: true });
+			const { reportCommand } = require("../src/commands/report");
+
+			const origExit = process.exit;
+			process.exit = (() => {}) as never;
+
+			try {
+				reportCommand("requirements");
+			} finally {
+				process.exit = origExit;
+			}
+
+			expect(existsSync(defaultPath)).toBe(true);
+			const content = readFileSync(defaultPath, "utf-8");
+			expect(content).toContain("<!DOCTYPE html>");
+			expect(content).toContain("Requirements Catalog");
+		} finally {
+			process.chdir(origDir);
+			rmSync(tmpDir, { recursive: true, force: true });
 		}
 	});
 });
