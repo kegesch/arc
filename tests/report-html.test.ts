@@ -326,7 +326,7 @@ describe("generateHtmlReportWithGraph", () => {
 			},
 		];
 		const html = generateHtmlReportWithGraph("full", entities as any);
-		expect(html).toContain("<a href=\"#graph\">Graph</a>");
+		expect(html).toContain('<a href="#graph">Graph</a>');
 	});
 
 	test("tooltip uses fixed positioning", () => {

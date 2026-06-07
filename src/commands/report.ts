@@ -1,5 +1,5 @@
 import { buildGraph, getDependents } from "../graph/graph.js";
-import type { Decision, Entity, Requirement, Risk } from "../types";
+import type { Assumption, Decision, Entity, EntityModel, Requirement, Risk, UseCase } from "../types";
 
 function demoteHeadings(md: string, _levels: number): string {
 	return md.replace(
@@ -212,6 +212,157 @@ export function reportRisks(entities: Entity[]): string {
 	return lines.join("\n").trimEnd() + "\n";
 }
 
+export function reportAssumptions(entities: Entity[]): string {
+	const assumptions = entitiesOf<Assumption>(entities, "assumption");
+	if (assumptions.length === 0)
+		return "# Assumptions\n\nNo assumptions found.\n";
+
+	const lines: string[] = ["# Assumptions", ""];
+
+	for (const a of assumptions) {
+		lines.push(`### ${a.id}: ${a.title}`);
+		let meta = `**Status:** ${a.status}`;
+		if (a.promoted_to) meta += ` | **Promoted to:** ${a.promoted_to}`;
+		lines.push(meta);
+		lines.push("");
+		if (a.body && a.body.trim().length > 0) {
+			const body = stripTitle(a.body.trim());
+			if (body.length > 0) {
+				lines.push(demoteHeadings(body, 1));
+				lines.push("");
+			}
+		}
+	}
+
+	return lines.join("\n").trimEnd() + "\n";
+}
+
+export function reportVisions(entities: Entity[]): string {
+	const graph = buildGraph(entities);
+	const visions = entitiesOf<Entity>(entities, "vision");
+	if (visions.length === 0) return "# Visions\n\nNo visions found.\n";
+
+	const lines: string[] = ["# Visions", ""];
+
+	for (const v of visions) {
+		lines.push(`### ${v.id}: ${v.title}`);
+		lines.push(`**Status:** ${v.status}`);
+		lines.push("");
+
+		const reqs = getDependents(graph, v.id).filter(
+			(d) => d.type === "requirement",
+		);
+		if (reqs.length > 0) {
+			lines.push(
+				`**Requirements:** ${reqs.map((r) => r.id).join(", ")}`,
+			);
+			lines.push("");
+		}
+
+		if (v.body && v.body.trim().length > 0) {
+			const body = stripTitle(v.body.trim());
+			if (body.length > 0) {
+				lines.push(demoteHeadings(body, 1));
+				lines.push("");
+			}
+		}
+	}
+
+	return lines.join("\n").trimEnd() + "\n";
+}
+
+export function reportUseCases(entities: Entity[]): string {
+	const useCases = entitiesOf<UseCase>(entities, "use_case");
+	if (useCases.length === 0)
+		return "# Use Cases\n\nNo use cases found.\n";
+
+	const lines: string[] = ["# Use Cases", ""];
+
+	for (const uc of useCases) {
+		lines.push(`### ${uc.id}: ${uc.title}`);
+		let meta = `**Status:** ${uc.status}`;
+		if (uc.actors.length > 0)
+			meta += ` | **Actors:** ${uc.actors.join(", ")}`;
+		if (uc.derived_from.length > 0)
+			meta += ` | **Derived from:** ${uc.derived_from.join(", ")}`;
+		lines.push(meta);
+		lines.push("");
+
+		if (uc.preconditions.length > 0) {
+			lines.push(`**Preconditions:** ${uc.preconditions.join("; ")}`);
+			lines.push("");
+		}
+		if (uc.acceptance_criteria.length > 0) {
+			lines.push(
+				`**Acceptance criteria:** ${uc.acceptance_criteria.join("; ")}`,
+			);
+			lines.push("");
+		}
+		if (uc.main_flow.length > 0) {
+			for (const step of uc.main_flow) {
+				lines.push(`${step.step}. ${step.actor}: ${step.action}`);
+			}
+			lines.push("");
+		}
+		if (uc.body && uc.body.trim().length > 0) {
+			const body = stripTitle(uc.body.trim());
+			if (body.length > 0) {
+				lines.push(demoteHeadings(body, 1));
+				lines.push("");
+			}
+		}
+	}
+
+	return lines.join("\n").trimEnd() + "\n";
+}
+
+export function reportEntityModels(entities: Entity[]): string {
+	const models = entitiesOf<EntityModel>(entities, "entity_model");
+	if (models.length === 0)
+		return "# Entity Models\n\nNo entity models found.\n";
+
+	const lines: string[] = ["# Entity Models", ""];
+
+	for (const em of models) {
+		lines.push(`### ${em.id}: ${em.title}`);
+		let meta = `**Status:** ${em.status}`;
+		if (em.derived_from.length > 0)
+			meta += ` | **Derived from:** ${em.derived_from.join(", ")}`;
+		lines.push(meta);
+		lines.push("");
+
+		for (const entity of em.entities) {
+			lines.push(`**${entity.name}**`);
+			if (entity.attributes.length > 0) {
+				const attrs = entity.attributes
+					.map((a) => `${a.name}: ${a.type}${a.required ? "*" : ""}`)
+					.join(", ");
+				lines.push(`Attributes: ${attrs}`);
+			}
+			if (entity.relationships.length > 0) {
+				const rels = entity.relationships
+					.map(
+						(r) =>
+							`${r.type} → ${r.target}`,
+					)
+					.join(", ");
+				lines.push(`Relationships: ${rels}`);
+			}
+			lines.push("");
+		}
+
+		if (em.body && em.body.trim().length > 0) {
+			const body = stripTitle(em.body.trim());
+			if (body.length > 0) {
+				lines.push(demoteHeadings(body, 1));
+				lines.push("");
+			}
+		}
+	}
+
+	return lines.join("\n").trimEnd() + "\n";
+}
+
 export interface ReportOptions {
 	format?: "markdown" | "html" | "json";
 	output?: string;
@@ -326,10 +477,34 @@ export function reportFull(entities: Entity[]): string {
 	lines.push("");
 	lines.push(stripTitle(reportTraceability(entities)));
 
+	if (entitiesOf<Entity>(entities, "vision").length > 0) {
+		lines.push("## Visions");
+		lines.push("");
+		lines.push(stripTitle(reportVisions(entities)));
+	}
+
+	if (entitiesOf<Entity>(entities, "assumption").length > 0) {
+		lines.push("## Assumptions");
+		lines.push("");
+		lines.push(stripTitle(reportAssumptions(entities)));
+	}
+
 	if (entitiesOf<Entity>(entities, "risk").length > 0) {
 		lines.push("## Risks");
 		lines.push("");
 		lines.push(stripTitle(reportRisks(entities)));
+	}
+
+	if (entitiesOf<Entity>(entities, "use_case").length > 0) {
+		lines.push("## Use Cases");
+		lines.push("");
+		lines.push(stripTitle(reportUseCases(entities)));
+	}
+
+	if (entitiesOf<Entity>(entities, "entity_model").length > 0) {
+		lines.push("## Entity Models");
+		lines.push("");
+		lines.push(stripTitle(reportEntityModels(entities)));
 	}
 
 	return lines.join("\n").trimEnd() + "\n";

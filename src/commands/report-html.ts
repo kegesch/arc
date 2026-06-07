@@ -413,6 +413,10 @@ const CATEGORY_MAP: Record<string, string> = {
 	"untraced-requirements": "Traceability",
 	risks: "Risks",
 	"risk-register": "Risks",
+	visions: "Visions",
+	assumptions: "Assumptions",
+	"use-cases": "Use Cases",
+	"entity-models": "Entity Models",
 };
 
 export interface SectionGroup {

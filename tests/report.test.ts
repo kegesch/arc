@@ -13,6 +13,10 @@ import {
 	reportTraceability,
 	reportRisks,
 	reportFull,
+	reportAssumptions,
+	reportVisions,
+	reportUseCases,
+	reportEntityModels,
 } from "../src/commands/report";
 import type {
 	Assumption,
@@ -22,6 +26,8 @@ import type {
 	Risk,
 	Stakeholder,
 	Vision,
+	UseCase,
+	EntityModel,
 } from "../src/types";
 
 function makeRequirementEntities(): Entity[] {
@@ -436,5 +442,114 @@ describe("report command", () => {
 			process.chdir(origDir);
 			rmSync(tmpDir, { recursive: true, force: true });
 		}
+	});
+});
+
+describe("report assumptions", () => {
+	test("generates assumptions catalog with status and promotion info", () => {
+		const entities: Entity[] = [
+			{ type: "assumption", id: "A-001", title: "Users have internet", status: "validated", date: "2026-01-01", tags: [], body: "", filePath: "" },
+			{ type: "assumption", id: "A-002", title: "Low latency needed", status: "invalidated", date: "2026-01-01", tags: [], body: "", filePath: "", promoted_to: "R-010" },
+		];
+		const md = reportAssumptions(entities);
+		expect(md).toContain("# Assumptions");
+		expect(md).toContain("A-001");
+		expect(md).toContain("Users have internet");
+		expect(md).toContain("validated");
+		expect(md).toContain("A-002");
+		expect(md).toContain("invalidated");
+		expect(md).toContain("R-010");
+	});
+
+	test("returns empty message when no assumptions", () => {
+		const md = reportAssumptions([]);
+		expect(md).toContain("No assumptions found");
+	});
+});
+
+describe("report visions", () => {
+	test("generates visions catalog with linked requirements", () => {
+		const entities: Entity[] = [
+			{ type: "vision", id: "V-001", title: "Secure platform", status: "active", date: "2026-01-01", tags: [], body: "", filePath: "" },
+			{ type: "requirement", id: "R-001", title: "Encrypt data", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: ["V-001"], conflicts_with: [], requested_by: [] },
+		];
+		const md = reportVisions(entities);
+		expect(md).toContain("# Visions");
+		expect(md).toContain("V-001");
+		expect(md).toContain("Secure platform");
+		expect(md).toContain("R-001");
+	});
+
+	test("returns empty message when no visions", () => {
+		const md = reportVisions([]);
+		expect(md).toContain("No visions found");
+	});
+});
+
+describe("report use cases", () => {
+	test("generates use cases catalog with actors and criteria", () => {
+		const entities: Entity[] = [
+			{
+				type: "use_case", id: "UC-001", title: "User login", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "",
+				actors: ["User", "System"], preconditions: ["User has account"], main_flow: [], acceptance_criteria: ["Login succeeds"], derived_from: ["R-001"], requested_by: [],
+			},
+		];
+		const md = reportUseCases(entities);
+		expect(md).toContain("# Use Cases");
+		expect(md).toContain("UC-001");
+		expect(md).toContain("User login");
+		expect(md).toContain("User, System");
+		expect(md).toContain("Login succeeds");
+	});
+
+	test("returns empty message when no use cases", () => {
+		const md = reportUseCases([]);
+		expect(md).toContain("No use cases found");
+	});
+});
+
+describe("report entity models", () => {
+	test("generates entity models catalog with entities", () => {
+		const entities: Entity[] = [
+			{
+				type: "entity_model", id: "EM-001", title: "User model", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "",
+				entities: [{ name: "User", attributes: [{ name: "id", type: "string", required: true }], relationships: [] }], derived_from: ["R-001"],
+			},
+		];
+		const md = reportEntityModels(entities);
+		expect(md).toContain("# Entity Models");
+		expect(md).toContain("EM-001");
+		expect(md).toContain("User model");
+		expect(md).toContain("User");
+	});
+
+	test("returns empty message when no entity models", () => {
+		const md = reportEntityModels([]);
+		expect(md).toContain("No entity models found");
+	});
+});
+
+describe("report full includes all entity types", () => {
+	test("includes visions, assumptions, use cases, entity models sections", () => {
+		const entities: Entity[] = [
+			{ type: "requirement", id: "R-001", title: "Test req", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", derived_from: ["V-001"], conflicts_with: [], requested_by: [] },
+			{ type: "assumption", id: "A-001", title: "Test assumption", status: "validated", date: "2026-01-01", tags: [], body: "", filePath: "" },
+			{ type: "decision", id: "D-001", title: "Test dec", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "", driven_by: ["R-001"], enables: [], affects: [], depends_on: [] },
+			{ type: "risk", id: "K-001", title: "Test risk", status: "identified", date: "2026-01-01", tags: [], body: "", filePath: "", mitigated_by: [] },
+			{ type: "vision", id: "V-001", title: "Test vision", status: "active", date: "2026-01-01", tags: [], body: "", filePath: "" },
+			{
+				type: "use_case", id: "UC-001", title: "Test UC", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "",
+				actors: [], preconditions: [], main_flow: [], acceptance_criteria: [], derived_from: ["R-001"], requested_by: [],
+			},
+			{
+				type: "entity_model", id: "EM-001", title: "Test EM", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "",
+				entities: [], derived_from: ["R-001"],
+			},
+		];
+		const md = reportFull(entities);
+		expect(md).toContain("## Visions");
+		expect(md).toContain("## Assumptions");
+		expect(md).toContain("## Use Cases");
+		expect(md).toContain("## Entity Models");
 	});
 });

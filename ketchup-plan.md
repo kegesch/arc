@@ -1,5 +1,7 @@
-### Bottle: Graph Visualization Fixes
+### Bottle: Add remaining entity types to report
 
-- [ ] Burst 1: Add pan/zoom to graph JS (viewBox manipulation with wheel + drag) [depends: none]
-- [ ] Burst 2: Fix tooltip positioning (move tooltip outside graph-section, use fixed positioning) [depends: none]
-- [ ] Burst 3: Add Graph link in sidebar [depends: none]
+- [ ] Burst 1: reportAssumptions + test [depends: none]
+- [ ] Burst 2: reportVisions + test [depends: none]
+- [ ] Burst 3: reportUseCases + test [depends: none]
+- [ ] Burst 4: reportEntityModels + test [depends: none]
+- [ ] Burst 5: reportFull includes all entity types + test [depends: 1,2,3,4]
