@@ -559,6 +559,19 @@ export function findDecisionsWithoutUseCases(g: ArcGraph): GapWarning[] {
 	return warnings;
 }
 
+/** Find entities with zero incoming and zero outgoing edges — completely disconnected. */
+export function findUnconnectedEntities(g: ArcGraph): Entity[] {
+	const unconnected: Entity[] = [];
+	for (const [, entity] of g.entities) {
+		const hasIncoming = (g.incoming.get(entity.id) ?? []).length > 0;
+		const hasOutgoing = (g.outgoing.get(entity.id) ?? []).length > 0;
+		if (!hasIncoming && !hasOutgoing) {
+			unconnected.push(entity);
+		}
+	}
+	return unconnected;
+}
+
 export function findRequirementsWithoutVision(
 	g: ArcGraph,
 ): VisionOrphanWarning[] {

@@ -12,6 +12,7 @@ import {
 } from "../src/graph/graph";
 import {
 	findOrphans,
+	findUnconnectedEntities,
 } from "../src/graph/analysis";
 import {
 	parseEntity,
@@ -1511,5 +1512,39 @@ A customer's intent to purchase items.
 	test("getTypeFromId recognizes T- prefix", () => {
 		const { getTypeFromId } = require("../src/types");
 		expect(getTypeFromId("T-001")).toBe("term");
+	});
+});
+
+describe("findUnconnectedEntities", () => {
+	test("finds entities with no incoming or outgoing edges", () => {
+		const entities = [
+			{ type: "requirement", id: "R-001", title: "Req", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "R-001.md", driven_by: [], derived_from: [], conflicts_with: [], requested_by: [] },
+			{ type: "requirement", id: "R-002", title: "Req 2", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "R-002.md", driven_by: ["D-001"], derived_from: [], conflicts_with: [], requested_by: [] },
+			{ type: "decision", id: "D-001", title: "Dec", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "D-001.md", driven_by: [], enables: ["R-002"], affects: [], depends_on: [] },
+		];
+		const g = buildGraph(entities);
+		const unconnected = findUnconnectedEntities(g);
+		expect(unconnected.map((e: any) => e.id)).toEqual(["R-001"]);
+	});
+
+	test("returns empty when all entities are connected", () => {
+		const entities = [
+			{ type: "requirement", id: "R-001", title: "Req", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "R-001.md", driven_by: ["D-001"], derived_from: [], conflicts_with: [], requested_by: [] },
+			{ type: "decision", id: "D-001", title: "Dec", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "D-001.md", driven_by: [], enables: ["R-001"], affects: [], depends_on: [] },
+		];
+		const g = buildGraph(entities);
+		const unconnected = findUnconnectedEntities(g);
+		expect(unconnected).toEqual([]);
+	});
+
+	test("finds multiple unconnected entities of different types", () => {
+		const entities = [
+			{ type: "requirement", id: "R-001", title: "Req", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "R-001.md", driven_by: [], derived_from: [], conflicts_with: [], requested_by: [] },
+			{ type: "assumption", id: "A-001", title: "Assm", status: "unvalidated", date: "2026-01-01", tags: [], body: "", filePath: "A-001.md", driven_by: [] },
+			{ type: "risk", id: "K-001", title: "Risk", status: "draft", date: "2026-01-01", tags: [], body: "", filePath: "K-001.md", driven_by: [], mitigated_by: [] },
+		];
+		const g = buildGraph(entities);
+		const unconnected = findUnconnectedEntities(g);
+		expect(unconnected.map((e: any) => e.id).sort()).toEqual(["A-001", "K-001", "R-001"]);
 	});
 });

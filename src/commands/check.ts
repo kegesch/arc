@@ -17,6 +17,7 @@ import {
 	findUnvalidatedAssumptions,
 	findRequirementsWithoutVision,
 	findDecisionsWithoutUseCases,
+	findUnconnectedEntities,
 } from "../graph/analysis.js";
 import { readAllEntities, requireArcProject } from "../io/files.js";
 
@@ -184,6 +185,16 @@ export function runCheck(contextFilter?: string): CheckResult {
 			message: w.message,
 			ids: [w.entity.id],
 			suggestion: `arc edit ${w.entity.id} to add ${w.field}`,
+		});
+	}
+
+	for (const e of findUnconnectedEntities(graph)) {
+		result.warnings.push({
+			kind: "unconnected_entity",
+			severity: "warning",
+			message: `${e.type} ${e.id} "${e.title}" has no connections (no incoming or outgoing edges)`,
+			ids: [e.id],
+			suggestion: `Link to related entity: arc link ${e.id} <related-id>`,
 		});
 	}
 
