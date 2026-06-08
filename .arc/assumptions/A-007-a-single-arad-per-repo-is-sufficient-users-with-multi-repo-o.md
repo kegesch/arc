@@ -1,9 +1,10 @@
 ---
 id: A-007
-title: "A single .arad/ per repo is sufficient — users with multi-repo orgs will manage cross-repo references manually"
-status: unvalidated
+title: A single .arad/ per repo is sufficient — users with multi-repo orgs will manage cross-repo references manually
+status: validated
 date: 2026-05-01
-tags: [scope]
+tags:
+  - scope
 ---
 
 # Assumption: A single .arad/ per repo is sufficient — users with multi-repo orgs will manage cross-repo references manually

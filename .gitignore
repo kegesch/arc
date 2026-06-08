@@ -5,3 +5,4 @@ dist/
 *.tgz
 .pi-lens/
 .ketchup/logs/
+report.html
