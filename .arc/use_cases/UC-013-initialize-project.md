@@ -22,7 +22,8 @@ acceptance_criteria:
   - .arc/ directory created
   - Subdirectories for all entity types created
   - arc.yaml with project name written
-derived_from: []
+derived_from:
+  - R-001
 requested_by: []
 ---
 

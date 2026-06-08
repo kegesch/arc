@@ -30,7 +30,8 @@ acceptance_criteria:
   - tag
   - context
   - Output as text table or JSON
-derived_from: []
+derived_from:
+  - R-003
 requested_by: []
 ---
 

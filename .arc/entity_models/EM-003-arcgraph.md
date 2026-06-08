@@ -23,7 +23,8 @@ entities:
         type: Map of Entity array
         required: true
     relationships: []
-derived_from: []
+derived_from:
+  - R-003
 ---
 
 # Entity Model: ArcGraph

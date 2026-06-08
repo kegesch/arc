@@ -1,10 +1,21 @@
 ---
 id: D-002
-title: "Store entities as Markdown files with YAML frontmatter in .arad/ directory"
+title: Store entities as Markdown files with YAML frontmatter in .arad/ directory
 status: accepted
 date: 2026-05-01
-tags: [storage, format]
-driven_by: [R-002, A-003, R-015, R-001, R-018]
+tags:
+  - storage
+  - format
+driven_by:
+  - R-002
+  - A-003
+  - R-015
+  - R-001
+  - R-018
+  - A-006
+enables: []
+depends_on: []
+affects: []
 ---
 
 # Decision: Store entities as Markdown files with YAML frontmatter in .arad/ directory

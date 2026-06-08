@@ -37,7 +37,8 @@ acceptance_criteria:
   - Frontmatter contains all required fields
   - ID is auto-incremented
   - Default template body generated if none provided
-derived_from: []
+derived_from:
+  - R-002
 requested_by: []
 ---
 

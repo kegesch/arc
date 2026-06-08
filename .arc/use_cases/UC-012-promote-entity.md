@@ -26,7 +26,8 @@ acceptance_criteria:
   - Assumption promoted to requirement
   - Idea promoted to requirement or decision
   - Dependent decisions auto-linked to new entity
-derived_from: []
+derived_from:
+  - R-025
 requested_by: []
 ---
 

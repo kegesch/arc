@@ -19,7 +19,8 @@ entities:
     relationships:
       - target: ArcGraph
         type: belongs to
-derived_from: []
+derived_from:
+  - R-003
 ---
 
 # Entity Model: Edge

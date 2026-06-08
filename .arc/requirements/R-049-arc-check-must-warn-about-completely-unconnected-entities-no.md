@@ -3,7 +3,8 @@ id: R-049
 title: arc check must warn about completely unconnected entities (no incoming or outgoing edges)
 status: accepted
 date: 2026-06-08
-derived_from: []
+derived_from:
+  - V-001
 conflicts_with: []
 requested_by: []
 ---

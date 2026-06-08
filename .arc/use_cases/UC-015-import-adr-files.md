@@ -25,7 +25,8 @@ acceptance_criteria:
   - ADR files parsed for title and status
   - Each ADR becomes a decision entity
   - Relationships not imported (manual step)
-derived_from: []
+derived_from:
+  - R-023
 requested_by: []
 ---
 

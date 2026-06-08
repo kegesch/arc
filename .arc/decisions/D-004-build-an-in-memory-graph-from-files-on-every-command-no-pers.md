@@ -1,10 +1,23 @@
 ---
 id: D-004
-title: "Build an in-memory graph from files on every command — no persistent index"
+title: Build an in-memory graph from files on every command — no persistent index
 status: accepted
 date: 2026-05-01
-tags: [architecture, performance]
-driven_by: [R-003, A-002, R-004, R-005, R-007, R-008, R-017]
+tags:
+  - architecture
+  - performance
+driven_by:
+  - R-003
+  - A-002
+  - R-004
+  - R-005
+  - R-007
+  - R-008
+  - R-017
+  - A-007
+enables: []
+depends_on: []
+affects: []
 ---
 
 # Decision: Build an in-memory graph from files on every command — no persistent index

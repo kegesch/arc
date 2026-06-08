@@ -29,7 +29,8 @@ acceptance_criteria:
   - Structured fields rendered for use_case and entity_model
   - Dependencies and dependents listed
   - File path shown
-derived_from: []
+derived_from:
+  - R-003
 requested_by: []
 ---
 

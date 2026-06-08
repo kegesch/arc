@@ -31,7 +31,8 @@ acceptance_criteria:
   - Each node shows entity type and status
   - Edge types labeled on connections
   - Root entity shown at top
-derived_from: []
+derived_from:
+  - R-008
 requested_by: []
 ---
 

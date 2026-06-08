@@ -1,10 +1,16 @@
 ---
 id: D-050
-title: "arc next is a per-entity graph-completeness guide"
+title: arc next is a per-entity graph-completeness guide
 status: proposed
 date: 2026-05-31
-driven_by: [R-003, R-041]
+driven_by:
+  - R-003
+  - R-041
+  - A-015
+enables: []
 supersedes: D-047
+depends_on: []
+affects: []
 ---
 
 ## Context

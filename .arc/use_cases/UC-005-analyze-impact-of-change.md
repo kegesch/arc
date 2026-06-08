@@ -30,7 +30,8 @@ acceptance_criteria:
   - Direct dependents listed first
   - Transitive dependents shown
   - Entities grouped by distance from root
-derived_from: []
+derived_from:
+  - R-007
 requested_by: []
 ---
 

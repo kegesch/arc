@@ -35,7 +35,8 @@ entities:
     relationships:
       - target: Edge
         type: has many outgoing
-derived_from: []
+derived_from:
+  - R-003
 ---
 
 # Entity Model: Entity

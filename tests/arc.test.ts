@@ -10,10 +10,7 @@ import {
 	impactAnalysis,
 	traceUp,
 } from "../src/graph/graph";
-import {
-	findOrphans,
-	findUnconnectedEntities,
-} from "../src/graph/analysis";
+import { findOrphans, findUnconnectedEntities } from "../src/graph/analysis";
 import {
 	parseEntity,
 	serializeEntity,
@@ -1334,7 +1331,6 @@ Body text.
 		const result = impactAnalysis(g, "S-001");
 		expect(result.direct.map((e) => e.id)).toContain("D-001");
 	});
-
 });
 // ─── Risk ───
 
@@ -1518,9 +1514,48 @@ A customer's intent to purchase items.
 describe("findUnconnectedEntities", () => {
 	test("finds entities with no incoming or outgoing edges", () => {
 		const entities = [
-			{ type: "requirement", id: "R-001", title: "Req", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "R-001.md", driven_by: [], derived_from: [], conflicts_with: [], requested_by: [] },
-			{ type: "requirement", id: "R-002", title: "Req 2", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "R-002.md", driven_by: ["D-001"], derived_from: [], conflicts_with: [], requested_by: [] },
-			{ type: "decision", id: "D-001", title: "Dec", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "D-001.md", driven_by: [], enables: ["R-002"], affects: [], depends_on: [] },
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Req",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "R-001.md",
+				driven_by: [],
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+			{
+				type: "requirement",
+				id: "R-002",
+				title: "Req 2",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "R-002.md",
+				driven_by: ["D-001"],
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+			{
+				type: "decision",
+				id: "D-001",
+				title: "Dec",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "D-001.md",
+				driven_by: [],
+				enables: ["R-002"],
+				affects: [],
+				depends_on: [],
+			},
 		];
 		const g = buildGraph(entities);
 		const unconnected = findUnconnectedEntities(g);
@@ -1529,8 +1564,34 @@ describe("findUnconnectedEntities", () => {
 
 	test("returns empty when all entities are connected", () => {
 		const entities = [
-			{ type: "requirement", id: "R-001", title: "Req", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "R-001.md", driven_by: ["D-001"], derived_from: [], conflicts_with: [], requested_by: [] },
-			{ type: "decision", id: "D-001", title: "Dec", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "D-001.md", driven_by: [], enables: ["R-001"], affects: [], depends_on: [] },
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Req",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "R-001.md",
+				driven_by: ["D-001"],
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+			{
+				type: "decision",
+				id: "D-001",
+				title: "Dec",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "D-001.md",
+				driven_by: [],
+				enables: ["R-001"],
+				affects: [],
+				depends_on: [],
+			},
 		];
 		const g = buildGraph(entities);
 		const unconnected = findUnconnectedEntities(g);
@@ -1539,12 +1600,50 @@ describe("findUnconnectedEntities", () => {
 
 	test("finds multiple unconnected entities of different types", () => {
 		const entities = [
-			{ type: "requirement", id: "R-001", title: "Req", status: "accepted", date: "2026-01-01", tags: [], body: "", filePath: "R-001.md", driven_by: [], derived_from: [], conflicts_with: [], requested_by: [] },
-			{ type: "assumption", id: "A-001", title: "Assm", status: "unvalidated", date: "2026-01-01", tags: [], body: "", filePath: "A-001.md", driven_by: [] },
-			{ type: "risk", id: "K-001", title: "Risk", status: "draft", date: "2026-01-01", tags: [], body: "", filePath: "K-001.md", driven_by: [], mitigated_by: [] },
+			{
+				type: "requirement",
+				id: "R-001",
+				title: "Req",
+				status: "accepted",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "R-001.md",
+				driven_by: [],
+				derived_from: [],
+				conflicts_with: [],
+				requested_by: [],
+			},
+			{
+				type: "assumption",
+				id: "A-001",
+				title: "Assm",
+				status: "unvalidated",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "A-001.md",
+				driven_by: [],
+			},
+			{
+				type: "risk",
+				id: "K-001",
+				title: "Risk",
+				status: "draft",
+				date: "2026-01-01",
+				tags: [],
+				body: "",
+				filePath: "K-001.md",
+				driven_by: [],
+				mitigated_by: [],
+			},
 		];
 		const g = buildGraph(entities);
 		const unconnected = findUnconnectedEntities(g);
-		expect(unconnected.map((e: any) => e.id).sort()).toEqual(["A-001", "K-001", "R-001"]);
+		expect(unconnected.map((e: any) => e.id).sort()).toEqual([
+			"A-001",
+			"K-001",
+			"R-001",
+		]);
 	});
 });

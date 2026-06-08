@@ -42,7 +42,8 @@ acceptance_criteria:
   - Unvalidated assumptions listed
   - Structured field warnings shown
   - Clean exit code 0 when no issues
-derived_from: []
+derived_from:
+  - R-005
 requested_by: []
 ---
 

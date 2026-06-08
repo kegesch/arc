@@ -30,7 +30,8 @@ acceptance_criteria:
   - Relationship added to source entity frontmatter
   - Bidirectional links updated where applicable
   - Invalid edge types rejected
-derived_from: []
+derived_from:
+  - R-020
 requested_by: []
 ---
 

@@ -22,7 +22,8 @@ entities:
     relationships:
       - target: Entity
         type: describes
-derived_from: []
+derived_from:
+  - R-003
 ---
 
 # Entity Model: EntityDescriptor

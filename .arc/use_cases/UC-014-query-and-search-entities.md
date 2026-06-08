@@ -31,7 +31,8 @@ acceptance_criteria:
   - driven_by
   - id
   - Results ranked by relevance
-derived_from: []
+derived_from:
+  - R-011
 requested_by: []
 ---
 

@@ -25,7 +25,8 @@ acceptance_criteria:
   - Entity file renamed
   - All references across the graph updated
   - Type mismatch between old and new prefix rejected
-derived_from: []
+derived_from:
+  - R-024
 requested_by: []
 ---
 

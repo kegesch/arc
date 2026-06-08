@@ -29,7 +29,8 @@ acceptance_criteria:
   - Assumption marked as invalidated
   - Dependent decisions flagged
   - Optional opposing requirement created and linked
-derived_from: []
+derived_from:
+  - R-009
 requested_by: []
 ---
 

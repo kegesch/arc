@@ -5,6 +5,8 @@ status: accepted
 date: 2026-05-30
 driven_by:
   - R-003
+  - A-013
+  - A-014
 enables: []
 depends_on: []
 affects: []

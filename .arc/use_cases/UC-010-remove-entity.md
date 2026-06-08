@@ -25,7 +25,8 @@ acceptance_criteria:
   - Entity file deleted
   - Option to force removal despite dependents
   - Option to clean references from dependents
-derived_from: []
+derived_from:
+  - R-019
 requested_by: []
 ---
 

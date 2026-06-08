@@ -1,21 +1,16 @@
 ---
-id: D-012
-title: Use GitHub Actions for CI with cross-platform binary builds
-status: accepted
-date: 2026-05-01
-tags:
-  - ci
-  - distribution
+id: D-057
+title: Detect unconnected entities in arc check
+status: proposed
+date: 2026-06-08
 driven_by:
-  - R-012
-  - R-014
-  - A-016
+  - R-049
 enables: []
 depends_on: []
 affects: []
 ---
 
-# Decision: Use GitHub Actions for CI with cross-platform binary builds
+# Decision: Detect unconnected entities in arc check
 
 ## Context
 
