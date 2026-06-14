@@ -8,11 +8,15 @@ priority: 110
 
 Arc is a tool for architecture traceability. This project must eat its own dog food — every architectural artifact lives in `.arc/`.
 
-## Before Writing Code
+## Before Writing Code — delegate, don't backfill
 
-1. **Is there a requirement?** If not, add one: `bun run dev add requirement "title"`
-2. **Is there a decision?** If making a design choice, add one: `bun run dev add decision "title"` and link it to the relevant requirements
-3. **Are you assuming something?** Record it: `bun run dev add assumption "title"`
+K-004 (evidence: A-013) shows that capturing architecture *during* focused coding does not happen reliably. So don't do it yourself mid-task:
+
+1. **Is there an R-xxx for this work?** If not, hand the request to the **`arc-requirements-engineer`** agent. It commits a well-formed slice (R/D/A + links, clean check) and returns one ID.
+2. **Then**: run `arc context <R-xxx> --format json` and implement against it.
+3. **Reference** `<R-xxx>` in your commit. The dogfooding validator (v2) checks the ID *relates* to the diff — a name-drop won't pass.
+
+Author arc entities directly only for trivial touch-ups (`arc link`). Capture is the RE agent's job, not yours mid-coding.
 
 ## Entity Types
 
