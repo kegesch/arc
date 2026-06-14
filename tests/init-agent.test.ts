@@ -119,7 +119,7 @@ Old instructions here.
 
 		// Mock process.exit to catch the exit code
 		const originalExit = process.exit;
-		let exitCode: number | null = null;
+		let exitCode = -1;
 		process.exit = ((code: number) => {
 			exitCode = code ?? 0;
 			// Don't actually exit — throw to stop execution
@@ -151,6 +151,94 @@ Old instructions here.
 			expect(content).toContain("Stakeholder");
 			expect(content).toContain("Risk");
 			expect(content).toContain("Term");
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+});
+
+describe("init-agent delegation stack", () => {
+	test("installs requirements-engineer agent to .pi/agents/", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+			initAgentCommand();
+			const agentPath = join(TMP, ".pi", "agents", "arc-requirements-engineer.md");
+			expect(existsSync(agentPath)).toBe(true);
+			const content = readFileSync(agentPath, "utf-8");
+			expect(content).toContain("arc-requirements-engineer");
+			expect(content).toContain("requirements engineer");
+			expect(content).toContain("arc context");
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
+	test("installs ketchup validator and reminder when .ketchup exists", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+			mkdirSync(join(TMP, ".ketchup"), { recursive: true });
+			initAgentCommand();
+			expect(
+				existsSync(join(TMP, ".ketchup", "validators", "arc-dogfooding.md")),
+			).toBe(true);
+			expect(existsSync(join(TMP, ".ketchup", "reminders", "arc.md"))).toBe(
+				true,
+			);
+			const validator = readFileSync(
+				join(TMP, ".ketchup", "validators", "arc-dogfooding.md"),
+				"utf-8",
+			);
+			expect(validator).toContain("Semantic relevance");
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
+	test("skips ketchup artifacts when .ketchup absent and creates no .ketchup dir", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+			initAgentCommand();
+			expect(existsSync(join(TMP, ".ketchup"))).toBe(false);
+			expect(
+				existsSync(join(TMP, ".ketchup", "validators", "arc-dogfooding.md")),
+			).toBe(false);
+			expect(
+				existsSync(join(TMP, ".ketchup", "reminders", "arc.md")),
+			).toBe(false);
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
+	test("templates are genericized — no arc-internal references", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+			initAgentCommand();
+			const agent = readFileSync(
+				join(TMP, ".pi", "agents", "arc-requirements-engineer.md"),
+				"utf-8",
+			);
+			expect(agent).not.toContain("bun run dev");
+			expect(agent).not.toMatch(/[DA]-0\d{2}/);
+			expect(agent).not.toContain("4cdcbcb");
+			expect(agent).toContain("arc status");
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
+	test("idempotent — re-running overwrites templates without error", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+			initAgentCommand();
+			initAgentCommand();
+			const agentPath = join(TMP, ".pi", "agents", "arc-requirements-engineer.md");
+			expect(existsSync(agentPath)).toBe(true);
 		} finally {
 			process.chdir(originalDir);
 		}

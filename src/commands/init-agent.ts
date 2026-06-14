@@ -1,6 +1,7 @@
 // arc init-agent — append ARC usage instructions to AGENTS.md
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { isArcProject } from "../io/files.js";
 
 const AGENTS_FILE = "AGENTS.md";
@@ -73,6 +74,67 @@ arc skill --install                   # Install skill file into .hermes/skills/a
 <!-- /arc:agent-instructions -->`;
 }
 
+// ─── Delegation stack: install genericized agent/validator/reminder templates ───
+
+const DELEGATION_TEMPLATES: {
+	src: string;
+	target: string[];
+	always: boolean;
+}[] = [
+	{
+		src: "arc-requirements-engineer.md",
+		target: [".pi", "agents", "arc-requirements-engineer.md"],
+		always: true,
+	},
+	{
+		src: "arc-dogfooding.md",
+		target: [".ketchup", "validators", "arc-dogfooding.md"],
+		always: false,
+	},
+	{
+		src: "arc-reminder.md",
+		target: [".ketchup", "reminders", "arc.md"],
+		always: false,
+	},
+];
+
+function resolveTemplateDir(): string {
+	const thisDir = dirname(fileURLToPath(import.meta.url));
+	const candidates = [
+		join(thisDir, "..", "skill", "agents"),
+		join(thisDir, "..", "..", "skill", "agents"),
+	];
+	for (const path of candidates) {
+		if (existsSync(path)) return path;
+	}
+	throw new Error(
+		`Cannot find delegation templates. Tried: ${candidates.join(", ")}`,
+	);
+}
+
+function deployDelegationStack(cwd: string): void {
+	const templateDir = resolveTemplateDir();
+	const ketchupExists = existsSync(join(cwd, ".ketchup"));
+
+	console.log("Installing arc agent-delegation stack...");
+	for (const t of DELEGATION_TEMPLATES) {
+		const targetRel = join(...t.target);
+		if (!t.always && !ketchupExists) {
+			console.log(`  Skipped ${targetRel} (.ketchup/ not found)`);
+			continue;
+		}
+		const targetPath = join(cwd, ...t.target);
+		if (existsSync(targetPath)) console.log(`  Overwriting ${targetRel}`);
+		mkdirSync(dirname(targetPath), { recursive: true });
+		writeFileSync(
+			targetPath,
+			readFileSync(join(templateDir, t.src), "utf-8"),
+			"utf-8",
+		);
+		console.log(`  Installed ${targetRel}`);
+	}
+}
+
 // ─── CLI entry point ───
 
 export function initAgentCommand(): void {
@@ -84,39 +146,30 @@ export function initAgentCommand(): void {
 	const agentsPath = join(process.cwd(), AGENTS_FILE);
 	const section = getArcSection();
 
-	if (existsSync(agentsPath)) {
-		const existing = readFileSync(agentsPath, "utf-8");
-
-		// Check if ARC section already exists
-		if (existing.includes(ARC_SECTION_MARKER)) {
-			// Replace existing section
-			const startMarker = ARC_SECTION_MARKER;
-			const endMarker = "<!-- /arc:agent-instructions -->";
-			const startIdx = existing.indexOf(startMarker);
-			const endIdx = existing.indexOf(endMarker);
-
-			if (startIdx !== -1 && endIdx !== -1) {
-				const endOfSection = endIdx + endMarker.length;
-				const updated =
-					existing.slice(0, startIdx) +
-					section +
-					existing.slice(endOfSection);
-				writeFileSync(agentsPath, updated, "utf-8");
-				console.log(`Updated ARC section in ${AGENTS_FILE}`);
-				return;
-			}
-		}
-
-		// Append section
-		const updated = existing.trimEnd() + "\n\n" + section + "\n";
-		writeFileSync(agentsPath, updated, "utf-8");
-		console.log(`Appended ARC section to ${AGENTS_FILE}`);
-	} else {
-		// Create new AGENTS.md with just the ARC section
+	if (!existsSync(agentsPath)) {
 		writeFileSync(agentsPath, section + "\n", "utf-8");
 		console.log(`Created ${AGENTS_FILE} with ARC instructions`);
+	} else {
+		const existing = readFileSync(agentsPath, "utf-8");
+		const startMarker = ARC_SECTION_MARKER;
+		const endMarker = "<!-- /arc:agent-instructions -->";
+		const startIdx = existing.indexOf(startMarker);
+		const endIdx = existing.indexOf(endMarker);
+
+		if (startIdx !== -1 && endIdx !== -1) {
+			const endOfSection = endIdx + endMarker.length;
+			const updated =
+				existing.slice(0, startIdx) + section + existing.slice(endOfSection);
+			writeFileSync(agentsPath, updated, "utf-8");
+			console.log(`Updated ARC section in ${AGENTS_FILE}`);
+		} else {
+			const updated = existing.trimEnd() + "\n\n" + section + "\n";
+			writeFileSync(agentsPath, updated, "utf-8");
+			console.log(`Appended ARC section to ${AGENTS_FILE}`);
+		}
 	}
 
 	console.log("");
+	deployDelegationStack(process.cwd());
 	console.log("Agents working in this project will now understand ARC commands and conventions.");
 }
