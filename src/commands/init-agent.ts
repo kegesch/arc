@@ -171,5 +171,7 @@ export function initAgentCommand(): void {
 
 	console.log("");
 	deployDelegationStack(process.cwd());
-	console.log("Agents working in this project will now understand ARC commands and conventions.");
+	console.log(
+		"Agents working in this project will now understand ARC commands and conventions.",
+	);
 }

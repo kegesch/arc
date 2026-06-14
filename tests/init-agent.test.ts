@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { initAgentCommand } from "../src/commands/init-agent";
 
@@ -89,7 +95,8 @@ Old instructions here.
 			expect(content).toContain("<!-- arc:agent-instructions -->");
 
 			// Should only have one ARC section
-			const markerOccurrences = content.split("<!-- arc:agent-instructions -->").length - 1;
+			const markerOccurrences =
+				content.split("<!-- arc:agent-instructions -->").length - 1;
 			expect(markerOccurrences).toBe(1);
 		} finally {
 			process.chdir(originalDir);
@@ -105,7 +112,8 @@ Old instructions here.
 			initAgentCommand();
 
 			const content = readFileSync(join(TMP, "AGENTS.md"), "utf-8");
-			const markerOccurrences = content.split("<!-- arc:agent-instructions -->").length - 1;
+			const markerOccurrences =
+				content.split("<!-- arc:agent-instructions -->").length - 1;
 			expect(markerOccurrences).toBe(1);
 		} finally {
 			process.chdir(originalDir);
@@ -163,7 +171,12 @@ describe("init-agent delegation stack", () => {
 		try {
 			process.chdir(TMP);
 			initAgentCommand();
-			const agentPath = join(TMP, ".pi", "agents", "arc-requirements-engineer.md");
+			const agentPath = join(
+				TMP,
+				".pi",
+				"agents",
+				"arc-requirements-engineer.md",
+			);
 			expect(existsSync(agentPath)).toBe(true);
 			const content = readFileSync(agentPath, "utf-8");
 			expect(content).toContain("arc-requirements-engineer");
@@ -205,9 +218,9 @@ describe("init-agent delegation stack", () => {
 			expect(
 				existsSync(join(TMP, ".ketchup", "validators", "arc-dogfooding.md")),
 			).toBe(false);
-			expect(
-				existsSync(join(TMP, ".ketchup", "reminders", "arc.md")),
-			).toBe(false);
+			expect(existsSync(join(TMP, ".ketchup", "reminders", "arc.md"))).toBe(
+				false,
+			);
 		} finally {
 			process.chdir(originalDir);
 		}
@@ -237,7 +250,12 @@ describe("init-agent delegation stack", () => {
 			process.chdir(TMP);
 			initAgentCommand();
 			initAgentCommand();
-			const agentPath = join(TMP, ".pi", "agents", "arc-requirements-engineer.md");
+			const agentPath = join(
+				TMP,
+				".pi",
+				"agents",
+				"arc-requirements-engineer.md",
+			);
 			expect(existsSync(agentPath)).toBe(true);
 		} finally {
 			process.chdir(originalDir);
