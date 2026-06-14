@@ -15,6 +15,13 @@
     "validateCommitOnWork": true,
     "validateCommitOnUnknown": true
   },
+  "models": {
+    "tier1": {
+      "provider": "lmstudio",
+      "id": "google/gemma-4-12b-qat"
+    },
+    "tier2": null
+  },
   "overrides": {
     "validators": {},
     "reminders": {}
