@@ -144,6 +144,73 @@ Old instructions here.
 		}
 	});
 
+	test("emitted section teaches supersede-as-workflow", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+
+			initAgentCommand();
+
+			const content = readFileSync(join(TMP, "AGENTS.md"), "utf-8");
+			// Contract: supersede must appear in a directive/imperative workflow context
+			// (a rule that tells the agent to supersede), not only as a bare relationship
+			// entry like "Decision `supersedes` Decision (replacement)". A workflow rule
+			// co-locates a directive verb with the supersede action.
+			const lines = content.split("\n");
+			const directiveLinesWithSupersede = lines.filter(
+				(line) =>
+					/supersed\w*/i.test(line) &&
+					/\b(don'?t|do not|never|edit|rework|revis|update)\b/i.test(line),
+			);
+			expect(directiveLinesWithSupersede.length).toBeGreaterThan(0);
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
+	test("emitted section includes an R-vs-D decision aid", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+
+			initAgentCommand();
+
+			const content = readFileSync(join(TMP, "AGENTS.md"), "utf-8");
+			// agents must be able to tell R from D from the emitted section alone
+			expect(content).toMatch(/requirement.*constraint|constraint.*requirement/i);
+			expect(content).toMatch(/decision.*choice|choice.*decision/i);
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
+	test("emitted section includes all ten entity types", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+
+			initAgentCommand();
+
+			const content = readFileSync(join(TMP, "AGENTS.md"), "utf-8");
+			for (const t of [
+				"Requirement",
+				"Assumption",
+				"Decision",
+				"Idea",
+				"Stakeholder",
+				"Risk",
+				"Term",
+				"Use Case",
+				"Entity Model",
+				"Vision",
+			]) {
+				expect(content).toContain(t);
+			}
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
 	test("includes all seven entity types", () => {
 		const originalDir = process.cwd();
 		try {

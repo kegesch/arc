@@ -42,11 +42,20 @@ arc skill --install                   # Install skill file into .hermes/skills/a
 
 ### Workflow Rules
 
-1. **Before implementing a feature**, ensure there is a requirement for it. If not, add one: \`arc add requirement "description"\`
-2. **Before making a design choice**, add a decision linked to what drives it: \`arc add decision "title" --driven-by=R-001,A-001\`
-3. **If you're assuming something**, record it: \`arc add assumption "description"\`
-4. **After implementation**, run \`arc check\` to verify graph health
-5. **Always set \`driven_by\`** on decisions — decisions without backing are orphans
+1. **Before writing**, query first: \`arc query "<area>"\` and \`arc context <id>\` to see what exists. Read before you create.
+2. **Before implementing a feature**, ensure there is a requirement for it. If not, add one: \`arc add requirement "description"\`
+3. **Before making a design choice**, add a decision linked to what drives it: \`arc add decision "title" --driven-by=R-001,A-001\`
+4. **If you're assuming something**, record it: \`arc add assumption "description"\`
+5. **After implementation**, run \`arc check\` to verify graph health
+6. **Always set \`driven_by\`** on decisions — decisions without backing are orphans
+7. **Changing a design?** Don't add a parallel \`D-xxx\`. Either edit the existing decision in place or supersede it: \`arc link <new-D> <old-D> --type=supersedes\`. Rework, don't duplicate.
+
+### R vs D — a quick decision aid
+
+- **Requirement (R)**: *what* the system must do or satisfy — a capability, constraint, or quality the user/customer cares about. Testable. Asks "is this built?"
+- **Decision (D)**: *how* we chose to satisfy it — an architectural or design choice among alternatives. Asks "why this approach?"
+- If the user said "we need X" / "the system must Y" → **R**. If the user (or you) said "we'll do it with Z" / "use library Q" → **D**, and the D must be \`driven_by\` the R it satisfies.
+- Uncertain? Capture as an **A** (assumption) with a validation path, not as a D.
 
 ### Entity Types
 
@@ -59,6 +68,9 @@ arc skill --install                   # Install skill file into .hermes/skills/a
 | Stakeholder | S-xxx | Person/team/group with interest | active → inactive |
 | Risk | K-xxx | What could go wrong | identified → mitigated/accepted/materialized/closed |
 | Term | T-xxx | Shared vocabulary definition | draft → accepted → deprecated |
+| Use Case | UC-xxx | Structured scenario: actors, preconditions, main flow, acceptance criteria | draft → accepted |
+| Entity Model | EM-xxx | Structured domain model: entities, attributes, relationships | draft → accepted |
+| Vision | V-xxx | Project purpose and direction (root of the graph) | active → retired |
 
 ### Key Relationships
 
