@@ -17,10 +17,17 @@ This means:
 
 ### Workflow
 
+0. **Read first.** Run `arc query "<area>"` and `arc context <neighbor-id>` before creating — avoid duplicating an existing R, D, or A.
 1. Before implementing a feature, ensure there is a requirement for it.
-2. Before making a design choice, add a decision linked to the relevant requirements.
+2. Before making a design choice, add a decision linked to the relevant requirements. If a decision already exists for the same design area, **supersede it** (`arc link <new-D> <old-D> --type=supersedes`) rather than adding a parallel D — rework, don't duplicate.
 3. If you're assuming something, record it as an assumption.
 4. After implementation, check that the graph is healthy: `arc check`
+
+### R vs D — a quick decision aid
+
+- **Requirement (R)**: *what* the system must do — a capability or constraint someone cares about. "Is this built?"
+- **Decision (D)**: *how* we chose to satisfy it — an architectural or design choice. "Why this approach?"
+- "We need X" / "the system must Y" → R. "Use Z" / "do it with Q" → D, and the D must be `driven_by` the R.
 
 ### Commands
 
