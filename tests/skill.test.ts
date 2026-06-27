@@ -118,6 +118,37 @@ describe("skill command", () => {
 		}
 	});
 
+	test("skill file teaches supersede-as-workflow", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+
+			let output = "";
+			const originalWrite = process.stdout.write.bind(process.stdout);
+			process.stdout.write = (chunk: string | Buffer | Uint8Array) => {
+				if (typeof chunk === "string") output += chunk;
+				else output += Buffer.from(chunk).toString();
+				return true;
+			};
+
+			skillCommand({ install: false });
+
+			process.stdout.write = originalWrite;
+
+			// Contract: supersede must appear in a directive/imperative workflow context,
+			// not only as a bare relationship entry.
+			const lines = output.split("\n");
+			const directiveLinesWithSupersede = lines.filter(
+				(line) =>
+					/supersed\w*/i.test(line) &&
+					/\b(don'?t|do not|never|edit|rework|revis|update)\b/i.test(line),
+			);
+			expect(directiveLinesWithSupersede.length).toBeGreaterThan(0);
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
 	test("skill file does not contain MCP references", () => {
 		const originalDir = process.cwd();
 		try {

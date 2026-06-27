@@ -7,6 +7,8 @@ description: Track architectural decisions, requirements, assumptions, and ideas
 
 ARC is a CLI tool that maintains a linked graph of architectural decisions, the requirements that drive them, and the assumptions that underpin them. All data lives in markdown files committed to git. Use it to keep your reasoning traceable, find contradictions, and ensure nothing is built on shaky ground.
 
+**Read before you write.** Before adding an entity, run `arc query "<area>"` and `arc context <neighbor-id>` to see what already exists. Capture is cheap to do twice and expensive to undo.
+
 ## Setup
 
 Before using ARC commands, ensure the project has been initialized:
@@ -197,9 +199,6 @@ arc link D-001 R-002
 # Link a decision to another decision it enables
 arc link D-001 D-002 --type=enables
 
-# Mark a decision as superseding an older one (auto-marks old as superseded)
-arc link D-003 D-001 --type=supersedes
-
 # Mark two requirements as conflicting
 arc link R-002 R-003 --type=conflicts_with
 
@@ -211,6 +210,19 @@ arc link D-003 S-002 --type=affects
 
 # Link a risk to the decision that mitigates it
 arc link K-001 D-005 --type=mitigated_by
+```
+
+### Rework: supersede, don't duplicate
+
+When a design choice changes, don't add a parallel `D-xxx`. Either edit the existing decision in place, or supersede it:
+
+```bash
+# Mark the new decision as superseding the old (auto-marks old as superseded)
+arc link D-003 D-001 --type=supersedes
+```
+
+The same applies to requirements that are no longer needed: mark them `deprecated` or link them with `supersedes` rather than leaving stale guidance in the graph.
+
 ```
 
 Edge type is auto-inferred when unambiguous:
