@@ -18,7 +18,7 @@
   "models": {
     "tier1": {
       "provider": "lmstudio",
-      "id": "google/gemma-4-12b-qat"
+      "id": "ornith-1.0-9b"
     },
     "tier2": null
   },
