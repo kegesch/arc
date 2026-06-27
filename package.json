@@ -1,6 +1,6 @@
 {
   "name": "@kegesch/arc",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Architecture, Requirements & Choices — traceability for humans and agents",
   "type": "module",
   "keywords": [
