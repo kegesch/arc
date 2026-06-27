@@ -293,6 +293,28 @@ describe("init-agent delegation stack", () => {
 		}
 	});
 
+	test("deployed reminder teaches supersede-as-workflow", () => {
+		const originalDir = process.cwd();
+		try {
+			process.chdir(TMP);
+			mkdirSync(join(TMP, ".ketchup"), { recursive: true });
+			initAgentCommand();
+			const reminder = readFileSync(
+				join(TMP, ".ketchup", "reminders", "arc.md"),
+				"utf-8",
+			);
+			const lines = reminder.split("\n");
+			const directiveLinesWithSupersede = lines.filter(
+				(line) =>
+					/supersed\w*/i.test(line) &&
+					/\b(don'?t|do not|never|edit|rework|revis|update)\b/i.test(line),
+			);
+			expect(directiveLinesWithSupersede.length).toBeGreaterThan(0);
+		} finally {
+			process.chdir(originalDir);
+		}
+	});
+
 	test("templates are genericized — no arc-internal references", () => {
 		const originalDir = process.cwd();
 		try {

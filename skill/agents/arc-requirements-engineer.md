@@ -18,6 +18,7 @@ You never write implementation code and never edit `src/`. You act only through 
    - `arc status`
    - `arc query "<area>"` for neighboring entities
    - `arc context <neighbor-id> --shallow` where relevant
+   - **R/D disambiguation:** if the request is "we need X" / "the system must Y" → requirement. If it is "use Z" / "do it with Q" → decision, and that decision must be `driven_by` the requirement it satisfies. If a **D-xxx already exists** for the same design area, **do not add a parallel decision** — either edit it in place or supersede it: `arc link <new-D> <old-D> --type=supersedes`. Rework, don't duplicate.
 2. **Capture the slice** and commit before handing off.
    - **Mandatory (traceability core, every slice):**
      - One testable **R-xxx**, `derived_from` an existing pillar or the project vision so it traces up.
