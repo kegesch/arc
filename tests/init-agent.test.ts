@@ -177,7 +177,9 @@ Old instructions here.
 
 			const content = readFileSync(join(TMP, "AGENTS.md"), "utf-8");
 			// agents must be able to tell R from D from the emitted section alone
-			expect(content).toMatch(/requirement.*constraint|constraint.*requirement/i);
+			expect(content).toMatch(
+				/requirement.*constraint|constraint.*requirement/i,
+			);
 			expect(content).toMatch(/decision.*choice|choice.*decision/i);
 		} finally {
 			process.chdir(originalDir);

@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { skillCommand } from "../src/commands/skill";
 
@@ -36,7 +42,9 @@ describe("skill command", () => {
 
 			// Should contain the skill file content
 			expect(output).toContain("ARC");
-			expect(output).toContain("Architecture, Requirements, Assumptions, Decisions");
+			expect(output).toContain(
+				"Architecture, Requirements, Assumptions, Decisions",
+			);
 			expect(output).toContain("arc add requirement");
 			expect(output).toContain("arc add decision");
 			expect(output).toContain("arc check");
@@ -76,10 +84,7 @@ describe("skill command", () => {
 
 			skillCommand({ install: true });
 
-			const content = readFileSync(
-				join(targetDir, "SKILL.md"),
-				"utf-8",
-			);
+			const content = readFileSync(join(targetDir, "SKILL.md"), "utf-8");
 			// Should be overwritten, not old content
 			expect(content).not.toBe("OLD CONTENT");
 			expect(content).toContain("ARC");
