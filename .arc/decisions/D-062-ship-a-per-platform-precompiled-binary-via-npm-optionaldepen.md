@@ -15,7 +15,7 @@ depends_on: []
 affects: []
 ---
 
-Ship the CLI as a per-platform precompiled binary delivered through npm via the `optionalDependencies` pattern: a tiny shim package (`@kegesch/arc`) plus one per-arch package (`@kegesch/arc-linux-x64`, `-linux-arm64`, `-darwin-x64`, `-darwin-arm64`, `-windows-x64`) that each contain only the `bun build --compile` output. npm selects the matching platform package at install time, and the shim's `bin` entry resolves the per-arch sibling from `node_modules` and execs it.
+Ship the CLI as a per-platform precompiled binary delivered through npm via the `optionalDependencies` pattern: a tiny shim package (`@kegesch/arc`) plus one per-arch package (`@kegesch/arc-linux-x64`, `-linux-arm64`, `-darwin-x64`, `-darwin-arm64`, `-win32-x64`) that each contain only the `bun build --compile` output. npm selects the matching platform package at install time, and the shim's `bin` entry resolves the per-arch sibling from `node_modules` and execs it.
 
 ## Context
 
@@ -32,6 +32,7 @@ The @kegesch/arc npm package becomes a shim. Its `bin` entry is a small Node.js-
 5. If the sibling is not present (unsupported platform), prints a clear error pointing the user to the GitHub Releases download page and exits 1.
 
 The per-arch packages each contain:
+
 - A `package.json` with no `bin` (the shim does the resolution) and one `optionalDependency` on the matching runtime if needed (none — the binary is standalone).
 - The single `bun build --compile` output from D-011, named `arc` (or `arc.exe` on Windows).
 

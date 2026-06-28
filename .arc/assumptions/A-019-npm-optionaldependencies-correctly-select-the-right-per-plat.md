@@ -16,7 +16,7 @@ D-062 is the chosen mechanism for fixing the npm-distribution gap (R-051). If np
 
 ## Validation path
 
-1. Stand up a local npm registry (e.g. `verdaccio`) and publish the @kegesch/arc shim plus the five per-arch packages `@kegesch/arc-linux-x64`, `-linux-arm64`, `-darwin-x64`, `-darwin-arm64`, `-windows-x64`.
+1. Stand up a local npm registry (e.g. `verdaccio`) and publish the @kegesch/arc shim plus the five per-arch packages `@kegesch/arc-linux-x64`, `-linux-arm64`, `-darwin-x64`, `-darwin-arm64`, `-win32-x64`.
 2. In a clean container per platform (no bun, no node, no deno on PATH) — or use Docker matrix images — run `npm install -g @kegesch/arc` against the local registry.
 3. Verify the shim resolves to a working binary: `arc --version` returns the expected version, `arc check` on a tiny fixture exits 0.
 4. Verify the install size: only the matching arch package is downloaded; the others are skipped or absent.

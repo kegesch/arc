@@ -10,11 +10,9 @@ A CLI tool that tracks architectural decisions, requirements, and assumptions as
 npm install -g @kegesch/arc
 ```
 
-Or with bun:
+No extra runtime required — the npm package ships a per-platform standalone binary via the standard `optionalDependencies` pattern: a tiny `bin/arc.cjs` shim resolves `@kegesch/arc-<platform>-<arch>` at install time and execs the precompiled binary for your OS. The CLI itself is a single self-contained executable (built with `bun build --compile`) — no `bun` on PATH, no `deno` on PATH. `node` is the implicit runtime for the shim (it comes with `npm`).
 
-```bash
-bun install -g @kegesch/arc
-```
+For other platforms or if you prefer a direct download, see the [GitHub Releases](https://github.com/kegesch/arc/releases) page.
 
 ## Quick Start
 

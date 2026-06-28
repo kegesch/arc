@@ -18,11 +18,11 @@
     "url": "https://github.com/kegesch/arc.git"
   },
   "bin": {
-    "arc": "./src/index.ts"
+    "arc": "./bin/arc.cjs"
   },
   "files": [
-    "src/**",
-    "skill/**",
+    "bin",
+    "skill",
     "README.md",
     "LICENSE"
   ],
@@ -34,8 +34,9 @@
   "scripts": {
     "dev": "bun run src/index.ts",
     "build": "bun build src/index.ts --compile --outfile arc",
+    "build:platform": "node scripts/build-binary.cjs",
     "test": "bun test",
-    "prepublishOnly": "echo 'Publishing via bun. If you need a build step, add it here.'"
+    "prepublishOnly": "echo 'Publishing via bun. The per-platform binaries are built and published by CI.'"
   },
   "dependencies": {
     "commander": "^13.1.0",
@@ -44,5 +45,12 @@
   "devDependencies": {
     "@types/bun": "^1.2.0",
     "typescript": "^5.8.0"
+  },
+  "optionalDependencies": {
+    "@kegesch/arc-linux-x64": "0.3.3",
+    "@kegesch/arc-linux-arm64": "0.3.3",
+    "@kegesch/arc-darwin-x64": "0.3.3",
+    "@kegesch/arc-darwin-arm64": "0.3.3",
+    "@kegesch/arc-win32-x64": "0.3.3"
   }
 }

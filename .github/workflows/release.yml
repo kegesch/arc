@@ -16,11 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - name: Bump version in package.json
+      - name: Bump version in shim + all 5 per-arch packages
         run: |
           CURRENT=$(jq -r .version package.json)
           echo "Current version: $CURRENT"
-          bun x json -I -f package.json -e "this.version='${{ inputs.version }}'"
+          node scripts/bump-version.cjs "${{ inputs.version }}"
           NEW=$(jq -r .version package.json)
           echo "New version: $NEW"
       - name: Set tag output
@@ -30,25 +30,39 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json
-          git diff --staged --quiet || git commit -m "chore: release v${{ inputs.version }}"
-          git tag -a "v${{ inputs.version }}" -m "Release v${{ inputs.version }}"
+          git add package.json packages/*/package.json
+          git diff --staged --quiet \
+            || git commit -m "chore: release v${{ inputs.version }}"
+          git tag -a "v${{ inputs.version }}" \
+            -m "Release v${{ inputs.version }}"
           git push origin main --follow-tags
 
   build:
     needs: bump
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
             target: linux-x64
-            artifact: arc-linux-x64
+            outfile: packages/arc-linux-x64/arc
+            artifact_name: arc-linux-x64
+          - os: ubuntu-24.04-arm
+            target: linux-arm64
+            outfile: packages/arc-linux-arm64/arc
+            artifact_name: arc-linux-arm64
+          - os: macos-15-intel
+            target: darwin-x64
+            outfile: packages/arc-darwin-x64/arc
+            artifact_name: arc-darwin-x64
           - os: macos-latest
             target: darwin-arm64
-            artifact: arc-darwin-arm64
+            outfile: packages/arc-darwin-arm64/arc
+            artifact_name: arc-darwin-arm64
           - os: windows-latest
-            target: windows-x64
-            artifact: arc-windows-x64.exe
+            target: win32-x64
+            outfile: packages/arc-win32-x64/arc.exe
+            artifact_name: arc-win32-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -56,11 +70,11 @@ jobs:
           ref: ${{ needs.bump.outputs.tag }}
       - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - run: bun build src/index.ts --compile --outfile ${{ matrix.artifact }}
+      - run: bun build src/index.ts --compile --outfile ${{ matrix.outfile }}
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact }}
-          path: ${{ matrix.artifact }}
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.outfile }}
 
   release:
     needs: [bump, build]
@@ -79,7 +93,7 @@ jobs:
           files: artifacts/**/*
 
   publish-npm:
-    needs: [bump, release]
+    needs: [bump, build, release]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -93,5 +107,32 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
           package-manager-cache: false # never use caching in release builds
-      - name: Publish to npm
+      - name: Download per-platform binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: arc-*
+          merge-multiple: true
+      - name: Place binaries into per-arch package directories
+        run: |
+          cp dist/arc-linux-x64/arc packages/arc-linux-x64/arc
+          cp dist/arc-linux-arm64/arc packages/arc-linux-arm64/arc
+          cp dist/arc-darwin-x64/arc packages/arc-darwin-x64/arc
+          cp dist/arc-darwin-arm64/arc packages/arc-darwin-arm64/arc
+          cp dist/arc-win32-x64/arc.exe packages/arc-win32-x64/arc.exe
+      - name: Publish per-arch packages first
+        # Per-arch must exist before the shim, because the shim's
+        # optionalDependencies reference the per-arch versions.
+        run: |
+          set -e
+          for dir in \
+            packages/arc-linux-x64 \
+            packages/arc-linux-arm64 \
+            packages/arc-darwin-x64 \
+            packages/arc-darwin-arm64 \
+            packages/arc-win32-x64; do
+            echo "Publishing $dir"
+            (cd "$dir" && npm publish --access public)
+          done
+      - name: Publish shim package
         run: npm publish --access public
