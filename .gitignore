@@ -5,4 +5,6 @@ dist/
 *.tgz
 .pi-lens/
 .ketchup/logs/
+/ketchup-plan.md
+.pi/agents/*-run-*.md
 report.html
