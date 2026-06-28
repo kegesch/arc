@@ -1,6 +1,6 @@
 {
   "name": "@kegesch/arc",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Architecture, Requirements & Choices — traceability for humans and agents",
   "type": "module",
   "keywords": [
@@ -47,10 +47,10 @@
     "typescript": "^5.8.0"
   },
   "optionalDependencies": {
-    "@kegesch/arc-linux-x64": "0.3.3",
-    "@kegesch/arc-linux-arm64": "0.3.3",
-    "@kegesch/arc-darwin-x64": "0.3.3",
-    "@kegesch/arc-darwin-arm64": "0.3.3",
-    "@kegesch/arc-win32-x64": "0.3.3"
+    "@kegesch/arc-linux-x64": "0.5.0",
+    "@kegesch/arc-linux-arm64": "0.5.0",
+    "@kegesch/arc-darwin-x64": "0.5.0",
+    "@kegesch/arc-darwin-arm64": "0.5.0",
+    "@kegesch/arc-win32-x64": "0.5.0"
   }
 }

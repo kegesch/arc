@@ -1,10 +1,14 @@
 {
   "name": "@kegesch/arc-win32-x64",
-  "version": "0.3.3",
+  "version": "0.5.0",
   "description": "arc binary for win32-x64",
   "license": "MIT",
-  "os": ["win32"],
-  "cpu": ["x64"],
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
   "files": [
     "arc.exe"
   ]
