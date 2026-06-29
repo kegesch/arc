@@ -1,10 +1,14 @@
 {
   "name": "@kegesch/arc-darwin-x64",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "arc binary for darwin-x64",
   "license": "MIT",
-  "os": ["darwin"],
-  "cpu": ["x64"],
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ],
   "files": [
     "arc"
   ]

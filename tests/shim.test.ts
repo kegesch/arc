@@ -38,7 +38,7 @@ describe("arc npm shim platform map", () => {
 
 describe("arc npm shim file", () => {
 	test("starts with the node shebang", () => {
-		const firstLine = readFileSync(SHIM, "utf-8").split("\n", 1)[0];
+		const firstLine = readFileSync(SHIM, "utf-8").split("\n", 1)[0].trimEnd();
 		expect(firstLine).toBe("#!/usr/bin/env node");
 	});
 

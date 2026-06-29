@@ -38,19 +38,17 @@
     "test": "bun test",
     "prepublishOnly": "echo 'Publishing via bun. The per-platform binaries are built and published by CI.'"
   },
-  "dependencies": {
-    "commander": "^13.1.0",
-    "yaml": "^2.7.1"
-  },
   "devDependencies": {
     "@types/bun": "^1.2.0",
-    "typescript": "^5.8.0"
+    "commander": "^13.1.0",
+    "typescript": "^5.8.0",
+    "yaml": "^2.7.1"
   },
   "optionalDependencies": {
-    "@kegesch/arc-linux-x64": "0.3.3",
-    "@kegesch/arc-linux-arm64": "0.3.3",
-    "@kegesch/arc-darwin-x64": "0.3.3",
-    "@kegesch/arc-darwin-arm64": "0.3.3",
-    "@kegesch/arc-win32-x64": "0.3.3"
+    "@kegesch/arc-linux-x64": "0.4.0",
+    "@kegesch/arc-linux-arm64": "0.4.0",
+    "@kegesch/arc-darwin-x64": "0.4.0",
+    "@kegesch/arc-darwin-arm64": "0.4.0",
+    "@kegesch/arc-win32-x64": "0.4.0"
   }
 }
