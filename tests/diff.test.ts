@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { diffEntityChanges } from "../src/git";
 
@@ -16,6 +16,10 @@ function write(dir: string, path: string, content: string): void {
 	const full = join(dir, path);
 	mkdirSync(dirname(full), { recursive: true });
 	writeFileSync(full, content);
+}
+
+function rename(dir: string, from: string, to: string): void {
+	renameSync(join(dir, from), join(dir, to));
 }
 
 function commit(dir: string, message: string): void {
@@ -65,6 +69,23 @@ describe("diffEntityChanges", () => {
 		]);
 		expect(diff.modified).toEqual([
 			{ id: "D-001", path: ".arc/decisions/D-001-one.md" },
+		]);
+	});
+
+	test("folds a same-id filename rename into modified", () => {
+		rename(
+			dir,
+			".arc/decisions/D-001-one.md",
+			".arc/decisions/D-001-one-renamed.md",
+		);
+		commit(dir, "c3");
+
+		const diff = diffEntityChanges(dir, "HEAD~1", "HEAD");
+
+		expect(diff.added).toEqual([]);
+		expect(diff.removed).toEqual([]);
+		expect(diff.modified).toEqual([
+			{ id: "D-001", path: ".arc/decisions/D-001-one-renamed.md" },
 		]);
 	});
 });
