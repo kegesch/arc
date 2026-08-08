@@ -88,4 +88,43 @@ describe("diffEntityChanges", () => {
 			{ id: "D-001", path: ".arc/decisions/D-001-one-renamed.md" },
 		]);
 	});
+
+	test("classifies rename lines with the same id as modified", () => {
+		git(dir, ["config", "diff.renames", "true"]);
+		rename(
+			dir,
+			".arc/decisions/D-001-one.md",
+			".arc/decisions/D-001-one-renamed.md",
+		);
+		commit(dir, "c3");
+
+		const diff = diffEntityChanges(dir, "HEAD~1", "HEAD");
+
+		expect(diff.modified).toEqual([
+			{ id: "D-001", path: ".arc/decisions/D-001-one-renamed.md" },
+		]);
+		expect(diff.added).toEqual([]);
+		expect(diff.removed).toEqual([]);
+	});
+
+	test("splits cross-id rename lines into removed and added", () => {
+		git(dir, ["config", "diff.renames", "true"]);
+		write(
+			dir,
+			".arc/decisions/D-004-four.md",
+			entity("D-004", "Four", "v1-revised"),
+		);
+		rmSync(join(dir, ".arc/decisions/D-001-one.md"));
+		commit(dir, "c3");
+
+		const diff = diffEntityChanges(dir, "HEAD~1", "HEAD");
+
+		expect(diff.added).toEqual([
+			{ id: "D-004", path: ".arc/decisions/D-004-four.md" },
+		]);
+		expect(diff.removed).toEqual([
+			{ id: "D-001", path: ".arc/decisions/D-001-one.md" },
+		]);
+		expect(diff.modified).toEqual([]);
+	});
 });
