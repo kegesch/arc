@@ -5,6 +5,7 @@ import { dirname, join } from "node:path";
 import { diffEntityChanges } from "../src/git";
 
 const TMP = join(import.meta.dir, "_tmp_diff");
+const SRC_INDEX = join(import.meta.dir, "..", "src", "index.ts");
 
 function git(dir: string, args: string[]): string {
 	const r = spawnSync("git", args, { cwd: dir, encoding: "utf-8" });
@@ -25,6 +26,21 @@ function rename(dir: string, from: string, to: string): void {
 function commit(dir: string, message: string): void {
 	git(dir, ["add", "-A"]);
 	git(dir, ["-c", "core.hooksPath=/dev/null", "commit", "-m", message]);
+}
+
+function runCli(
+	dir: string,
+	args: string[],
+): { status: number; stdout: string; stderr: string } {
+	const r = spawnSync(process.execPath, [SRC_INDEX, ...args], {
+		cwd: dir,
+		encoding: "utf-8",
+	});
+	return {
+		status: r.status ?? -1,
+		stdout: r.stdout ?? "",
+		stderr: r.stderr ?? "",
+	};
 }
 
 function entity(id: string, title: string, body = ""): string {
@@ -126,5 +142,69 @@ describe("diffEntityChanges", () => {
 			{ id: "D-001", path: ".arc/decisions/D-001-one.md" },
 		]);
 		expect(diff.modified).toEqual([]);
+	});
+});
+
+describe("arc diff command", () => {
+	test("renders status groups with titles from the current graph", () => {
+		const r = runCli(dir, ["diff", "HEAD~1"]);
+
+		expect(r.status).toBe(0);
+		expect(r.stdout).toContain("Added (1):");
+		expect(r.stdout).toContain("D-003");
+		expect(r.stdout).toContain("Three");
+		expect(r.stdout).toContain("Removed (1):");
+		expect(r.stdout).toContain(".arc/decisions/D-002-two.md");
+		expect(r.stdout).toContain("Modified (1):");
+		expect(r.stdout).toContain("One");
+	});
+
+	test("renders only non-empty groups", () => {
+		write(dir, ".arc/decisions/D-005-five.md", entity("D-005", "Five", "v5"));
+		commit(dir, "c3");
+
+		const r = runCli(dir, ["diff", "HEAD~1"]);
+
+		expect(r.status).toBe(0);
+		expect(r.stdout).toContain("Added (1):");
+		expect(r.stdout).toContain("Five");
+		expect(r.stdout).not.toContain("Removed");
+		expect(r.stdout).not.toContain("Modified");
+	});
+
+	test("reports no changes between identical refs", () => {
+		const r = runCli(dir, ["diff", "HEAD", "HEAD"]);
+
+		expect(r.status).toBe(0);
+		expect(r.stdout).toContain("No changes.");
+	});
+
+	test("emits machine-readable json", () => {
+		const r = runCli(dir, ["diff", "HEAD~1", "--format", "json"]);
+
+		expect(r.status).toBe(0);
+		expect(JSON.parse(r.stdout)).toEqual({
+			added: [
+				{
+					id: "D-003",
+					title: "Three",
+					path: ".arc/decisions/D-003-three.md",
+				},
+			],
+			removed: [
+				{
+					id: "D-002",
+					title: ".arc/decisions/D-002-two.md",
+					path: ".arc/decisions/D-002-two.md",
+				},
+			],
+			modified: [
+				{
+					id: "D-001",
+					title: "One",
+					path: ".arc/decisions/D-001-one.md",
+				},
+			],
+		});
 	});
 });
