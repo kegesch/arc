@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { mkdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { diffEntityChanges } from "../src/git";
 
@@ -206,5 +207,36 @@ describe("arc diff command", () => {
 				},
 			],
 		});
+	});
+
+	test("exits 1 with the git error on an invalid ref", () => {
+		const r = runCli(dir, ["diff", "nope"]);
+
+		expect(r.status).toBe(1);
+		expect(r.stderr).toContain("nope");
+	});
+
+	test("exits nonzero with usage when no ref is given", () => {
+		const r = runCli(dir, ["diff"]);
+
+		expect(r.status).not.toBe(0);
+		expect(r.stderr).toContain("missing required argument");
+	});
+
+	test("exits 1 outside a git repository", () => {
+		const noGitDir = join(tmpdir(), `arc-no-git-${process.pid}-${Date.now()}`);
+		mkdirSync(join(noGitDir, ".arc/decisions"), { recursive: true });
+		writeFileSync(
+			join(noGitDir, ".arc/decisions/D-001-one.md"),
+			entity("D-001", "One", "v1"),
+		);
+		try {
+			const r = runCli(noGitDir, ["diff", "HEAD"]);
+
+			expect(r.status).toBe(1);
+			expect(r.stderr).toContain("Not a git repository");
+		} finally {
+			rmSync(noGitDir, { recursive: true, force: true });
+		}
 	});
 });
