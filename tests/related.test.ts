@@ -4,6 +4,7 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { relatedEntityIds } from "../src/git";
+import { relatedCommand } from "../src/commands/related";
 
 const TMP = join(import.meta.dir, "_tmp_related");
 const SRC_INDEX = join(import.meta.dir, "..", "src", "index.ts");
@@ -38,6 +39,46 @@ function runCli(
 		stdout: r.stdout ?? "",
 		stderr: r.stderr ?? "",
 	};
+}
+
+function capture(fn: () => void): {
+	stdout: string;
+	stderr: string;
+	exitCode: number | undefined;
+} {
+	const originalLog = console.log;
+	const originalError = console.error;
+	const originalExit = process.exit;
+	let stdout = "";
+	let stderr = "";
+	let exitCode: number | undefined;
+	console.log = (...args: unknown[]) => {
+		stdout += `${args.join(" ")}\n`;
+	};
+	console.error = (...args: unknown[]) => {
+		stderr += `${args.join(" ")}\n`;
+	};
+	process.exit = ((code?: number) => {
+		exitCode = code;
+	}) as unknown as typeof process.exit;
+	try {
+		fn();
+	} finally {
+		console.log = originalLog;
+		console.error = originalError;
+		process.exit = originalExit;
+	}
+	return { stdout, stderr, exitCode };
+}
+
+function inDir(dir: string, fn: () => void): void {
+	const original = process.cwd();
+	process.chdir(dir);
+	try {
+		fn();
+	} finally {
+		process.chdir(original);
+	}
 }
 
 function entity(id: string, title: string, body = ""): string {
@@ -128,13 +169,35 @@ describe("arc related command", () => {
 		const r = runCli(dir, ["related", "code.ts", "--format", "json"]);
 
 		expect(r.status).toBe(0);
-		const parsed = JSON.parse(r.stdout);
-		expect(parsed.file).toBe("code.ts");
-		expect(parsed.related.map((e: { id: string }) => e.id)).toEqual([
-			"D-001",
-			"D-002",
-		]);
-		expect(parsed.related[0].trace.id).toBe("D-001");
+		expect(JSON.parse(r.stdout)).toEqual({
+			file: "code.ts",
+			related: [
+				{
+					id: "D-001",
+					title: "One",
+					trace: {
+						id: "D-001",
+						title: "One",
+						type: "decision",
+						status: "accepted",
+						edgeType: "root",
+						children: [],
+					},
+				},
+				{
+					id: "D-002",
+					title: "Two",
+					trace: {
+						id: "D-002",
+						title: "Two",
+						type: "decision",
+						status: "accepted",
+						edgeType: "root",
+						children: [],
+					},
+				},
+			],
+		});
 	});
 
 	test("skips entities no longer in the graph", () => {
@@ -181,6 +244,121 @@ describe("arc related command", () => {
 
 			expect(r.status).toBe(1);
 			expect(r.stderr).toContain("not a git repository");
+		} finally {
+			rmSync(noGitDir, { recursive: true, force: true });
+		}
+	});
+});
+
+describe("arc related command (in-process coverage)", () => {
+	test("renders related entities with their rationale trace", () => {
+		inDir(dir, () => {
+			const { stdout } = capture(() =>
+				relatedCommand("code.ts", { format: "text" }),
+			);
+
+			expect(stdout).toContain("Entities related to code.ts");
+			expect(stdout).toContain("D-001");
+			expect(stdout).toContain("D-002");
+		});
+	});
+
+	test("emits machine-readable json", () => {
+		inDir(dir, () => {
+			const { stdout } = capture(() =>
+				relatedCommand("code.ts", { format: "json" }),
+			);
+
+			expect(JSON.parse(stdout)).toEqual({
+				file: "code.ts",
+				related: [
+					{
+						id: "D-001",
+						title: "One",
+						trace: {
+							id: "D-001",
+							title: "One",
+							type: "decision",
+							status: "accepted",
+							edgeType: "root",
+							children: [],
+						},
+					},
+					{
+						id: "D-002",
+						title: "Two",
+						trace: {
+							id: "D-002",
+							title: "Two",
+							type: "decision",
+							status: "accepted",
+							edgeType: "root",
+							children: [],
+						},
+					},
+				],
+			});
+		});
+	});
+
+	test("skips entities no longer in the graph", () => {
+		rmSync(join(dir, ".arc/decisions/D-002-two.md"));
+
+		inDir(dir, () => {
+			const { stdout } = capture(() =>
+				relatedCommand("code.ts", { format: "text" }),
+			);
+
+			expect(stdout).toContain("D-001");
+			expect(stdout).not.toContain("D-002");
+		});
+	});
+
+	test("exits 1 with a clear message for a file with no commits", () => {
+		write(dir, "untracked.ts", "x");
+
+		inDir(dir, () => {
+			const { stderr, exitCode } = capture(() =>
+				relatedCommand("untracked.ts", { format: "text" }),
+			);
+
+			expect(exitCode).toBe(1);
+			expect(stderr).toContain("No commits found");
+		});
+	});
+
+	test("reports no related entities when commits touch no arc files", () => {
+		write(dir, "code2.ts", "x");
+		commit(dir, "c4");
+
+		inDir(dir, () => {
+			const { stdout } = capture(() =>
+				relatedCommand("code2.ts", { format: "text" }),
+			);
+
+			expect(stdout).toContain("No related entities found");
+		});
+	});
+
+	test("exits 1 outside a git repository", () => {
+		const noGitDir = join(
+			tmpdir(),
+			`arc-related-inproc-${process.pid}-${Date.now()}`,
+		);
+		mkdirSync(join(noGitDir, ".arc/decisions"), { recursive: true });
+		writeFileSync(
+			join(noGitDir, ".arc/decisions/D-001-one.md"),
+			entity("D-001", "One", "v1"),
+		);
+		try {
+			inDir(noGitDir, () => {
+				const { stderr, exitCode } = capture(() =>
+					relatedCommand("code.ts", { format: "text" }),
+				);
+
+				expect(exitCode).toBe(1);
+				expect(stderr).toContain("not a git repository");
+			});
 		} finally {
 			rmSync(noGitDir, { recursive: true, force: true });
 		}
