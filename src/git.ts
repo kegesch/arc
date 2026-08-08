@@ -112,22 +112,22 @@ export function diffEntityChanges(
 }
 
 export function relatedEntityIds(dir: string, file: string): RelatedResult {
-const r = runGit(dir, ["rev-list", "HEAD", "--", file]);
-if (r.status !== 0) {
-throw new Error(r.stderr.trim() || `git rev-list failed (${r.status})`);
-}
-const shas = r.stdout.split("\n").filter((s) => s !== "");
-const ids = new Set<string>();
-for (const sha of shas) {
-const show = runGit(dir, ["show", "--name-only", "--format=", sha]);
-for (const line of show.stdout.split("\n")) {
-if (line.startsWith(".arc/")) ids.add(idFromPath(line));
-}
-}
-return { ids: [...ids].sort(), commitCount: shas.length };
+	const r = runGit(dir, ["rev-list", "HEAD", "--", file]);
+	if (r.status !== 0) {
+		throw new Error(r.stderr.trim() || `git rev-list failed (${r.status})`);
+	}
+	const shas = r.stdout.split("\n").filter((s) => s !== "");
+	const ids = new Set<string>();
+	for (const sha of shas) {
+		const show = runGit(dir, ["show", "--name-only", "--format=", sha]);
+		for (const line of show.stdout.split("\n")) {
+			if (line.startsWith(".arc/")) ids.add(idFromPath(line));
+		}
+	}
+	return { ids: [...ids].sort(), commitCount: shas.length };
 }
 
 export interface RelatedResult {
-ids: string[];
-commitCount: number;
+	ids: string[];
+	commitCount: number;
 }
