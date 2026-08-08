@@ -22,6 +22,7 @@ import { skillCommand } from "./commands/skill.js";
 import { initAgentCommand } from "./commands/init-agent.js";
 import { contextCommand } from "./commands/context.js";
 import { diffCommand } from "./commands/diff.js";
+import { relatedCommand } from "./commands/related.js";
 import { nextCommand } from "./commands/next.js";
 import { reportCommand } from "./commands/report.js";
 import {
@@ -259,6 +260,17 @@ program
 			diffCommand(refA, refB, opts);
 		},
 	);
+
+program
+	.command("related")
+	.argument("<file>", "Source file to trace arc rationale for")
+	.option("--format <format>", "Output format: text or json", "text")
+	.description(
+		"Find arc entities related to a code file via git history co-occurrence",
+	)
+	.action((file: string, opts: { format?: string }) => {
+		relatedCommand(file, opts);
+	});
 
 program
 	.command("graph")
