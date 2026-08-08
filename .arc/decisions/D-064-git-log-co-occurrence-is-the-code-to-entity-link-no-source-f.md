@@ -1,7 +1,7 @@
 ---
 id: D-064
 title: Git-log co-occurrence is the code-to-entity link; no source field
-status: accepted
+status: superseded
 date: 2026-08-06
 tags:
   - git
