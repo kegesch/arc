@@ -312,6 +312,16 @@ arc graph --format ascii     # Plain text tree
 
 Pipe Mermaid output into a markdown file for GitHub rendering. Pipe DOT into `dot -Tpng` for images.
 
+### 7. Git-scoped queries
+
+```bash
+arc diff HEAD~3              # Which entities changed since 3 commits ago (--format json)
+arc diff v0.1.0              # ...since a tag
+arc related src/foo.ts       # Arc rationale behind a code file, traced up via git history
+```
+
+`arc diff` compares `.arc/` between git refs (added/removed/modified, identified by entity id, not filename similarity). `arc related` finds entities whose files were changed in the same commits as the given file and walks up the graph to the rationale.
+
 ## File Format
 
 Each entity is a markdown file with YAML frontmatter in `.arc/`:

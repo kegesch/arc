@@ -294,6 +294,8 @@ arc promote <id> [--to <type>]        Promote assumption/idea (default: assumpti
 arc link <from> <to>                  Link two entities
 arc unlink <from> <to>               Remove a relationship
 arc query <text>                      Search entities (supports modifiers)
+arc diff <ref> [ref2]                 Show entities added/removed/modified between git refs (--format)
+arc related <file>                    Trace arc rationale for a code file via git history (--format)
 arc graph                             Visualize graph (mermaid, dot, ascii)
 arc skill                             Output skill file for AI agents
 arc skill --install                   Install skill file into .hermes/skills/arc/
