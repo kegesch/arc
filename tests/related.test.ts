@@ -96,7 +96,7 @@ function mergeWithConflicts(dir: string): void {
 		".arc/decisions/D-001-one.md",
 		entity("D-001", "One", "merged-v1"),
 	);
-	commit(dir, "merge feat (R-001)");
+	commit(dir, "merge feat");
 }
 
 let dir: string;
@@ -111,20 +111,15 @@ beforeEach(() => {
 	write(dir, "code.ts", "a");
 	write(dir, ".arc/decisions/D-001-one.md", entity("D-001", "One", "v1"));
 	write(dir, ".arc/decisions/D-002-two.md", entity("D-002", "Two", "v2"));
-	write(
-		dir,
-		".arc/requirements/R-001-one.md",
-		entity("R-001", "Requirement One", "r1"),
-	);
-	commit(dir, "feat(git): add code (R-001)");
+	commit(dir, "c1");
 	git(dir, ["checkout", "-q", "-b", "feat"]);
 	write(dir, "code.ts", "b");
 	write(dir, ".arc/decisions/D-001-one.md", entity("D-001", "One", "f1"));
-	commit(dir, "feat(git): modify code (R-001, D-001)");
+	commit(dir, "c2");
 	git(dir, ["checkout", "-q", "main"]);
 	write(dir, "code.ts", "c");
 	write(dir, ".arc/decisions/D-001-one.md", entity("D-001", "One", "m1"));
-	commit(dir, "feat(git): modify code (R-002)");
+	commit(dir, "c3");
 	mergeWithConflicts(dir);
 });
 
@@ -133,12 +128,12 @@ afterEach(() => {
 });
 
 describe("relatedEntityIds", () => {
-test("unions commit-message entity ids with co-occurring file ids", () => {
-expect(relatedEntityIds(dir, "code.ts")).toEqual({
-ids: ["D-001", "D-002", "R-001", "R-002"],
-commitCount: 4,
-});
-});
+	test("returns distinct co-occurring entity ids across history including merges", () => {
+		expect(relatedEntityIds(dir, "code.ts")).toEqual({
+			ids: ["D-001", "D-002"],
+			commitCount: 4,
+		});
+	});
 
 	test("reports zero commits for a file with no history", () => {
 		write(dir, "untracked.ts", "x");
@@ -168,7 +163,6 @@ describe("arc related command", () => {
 		expect(r.stdout).toContain("Entities related to code.ts");
 		expect(r.stdout).toContain("D-001");
 		expect(r.stdout).toContain("D-002");
-		expect(r.stdout).toContain("R-001");
 	});
 
 	test("emits machine-readable json", () => {
@@ -202,18 +196,6 @@ describe("arc related command", () => {
 						children: [],
 					},
 				},
-				{
-					id: "R-001",
-					title: "Requirement One",
-					trace: {
-						id: "R-001",
-						title: "Requirement One",
-						type: "requirement",
-						status: "accepted",
-						edgeType: "root",
-						children: [],
-					},
-				},
 			],
 		});
 	});
@@ -226,7 +208,6 @@ describe("arc related command", () => {
 		expect(r.status).toBe(0);
 		expect(r.stdout).toContain("D-001");
 		expect(r.stdout).not.toContain("D-002");
-		expect(r.stdout).toContain("R-001");
 	});
 
 	test("exits 1 with a clear message for a file with no commits", () => {
@@ -279,7 +260,6 @@ describe("arc related command (in-process coverage)", () => {
 			expect(stdout).toContain("Entities related to code.ts");
 			expect(stdout).toContain("D-001");
 			expect(stdout).toContain("D-002");
-			expect(stdout).toContain("R-001");
 		});
 	});
 
@@ -316,18 +296,6 @@ describe("arc related command (in-process coverage)", () => {
 							children: [],
 						},
 					},
-					{
-						id: "R-001",
-						title: "Requirement One",
-						trace: {
-							id: "R-001",
-							title: "Requirement One",
-							type: "requirement",
-							status: "accepted",
-							edgeType: "root",
-							children: [],
-						},
-					},
 				],
 			});
 		});
@@ -343,7 +311,6 @@ describe("arc related command (in-process coverage)", () => {
 
 			expect(stdout).toContain("D-001");
 			expect(stdout).not.toContain("D-002");
-			expect(stdout).toContain("R-001");
 		});
 	});
 
