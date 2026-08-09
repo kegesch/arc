@@ -34,6 +34,10 @@ export function diffEntityChanges(
 	refA: string,
 	refB: string,
 ): EntityDiff {
+	const probe = runGit(dir, ["rev-parse", "--git-dir"]);
+	if (probe.status !== 0) {
+throw new Error(probe.stderr.trim() || "not a git repository");
+	}
 	const r = runGit(dir, [
 		"diff",
 		"--name-status",

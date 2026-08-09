@@ -301,7 +301,7 @@ describe("arc diff command", () => {
 			const r = runCli(noGitDir, ["diff", "HEAD"]);
 
 			expect(r.status).toBe(1);
-			expect(r.stderr).toContain("Not a git repository");
+			expect(r.stderr).toContain("not a git repository");
 		} finally {
 			rmSync(noGitDir, { recursive: true, force: true });
 		}
@@ -409,7 +409,7 @@ describe("arc diff command (in-process coverage)", () => {
 				);
 
 				expect(exitCode).toBe(1);
-				expect(stderr).toContain("Not a git repository");
+				expect(stderr).toContain("not a git repository");
 			});
 		} finally {
 			rmSync(noGitDir, { recursive: true, force: true });
