@@ -320,7 +320,7 @@ arc diff v0.1.0              # ...since a tag
 arc related src/foo.ts       # Arc rationale behind a code file, traced up via git history
 ```
 
-`arc diff` compares `.arc/` between git refs (added/removed/modified, identified by entity id, not filename similarity). `arc related` finds entities whose files were changed in the same commits as the given file and walks up the graph to the rationale.
+`arc diff` compares `.arc/` between git refs (added/removed/modified, identified by entity id, not filename similarity). `arc related` finds entities whose files were changed in the same commits as the given file — or anywhere on the current branch since the integration-branch fork (merge-base), when the per-commit scan finds nothing — and walks up the graph to the rationale.
 
 ## File Format
 
