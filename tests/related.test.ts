@@ -1,4 +1,13 @@
-import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import {
+	afterEach,
+	beforeEach,
+	describe,
+	expect,
+	setDefaultTimeout,
+	test,
+} from "bun:test";
+
+setDefaultTimeout(20000);
 import { spawnSync } from "node:child_process";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";

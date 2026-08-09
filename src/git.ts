@@ -111,6 +111,21 @@ export function diffEntityChanges(
 	};
 }
 
+function integrationRef(dir: string): string | null {
+	const candidates: string[][] = [
+		["symbolic-ref", "refs/remotes/origin/HEAD"],
+		["rev-parse", "--abbrev-ref", "@{upstream}"],
+		["rev-parse", "--verify", "--quiet", "origin/main"],
+		["rev-parse", "--verify", "--quiet", "main"],
+		["rev-parse", "--verify", "--quiet", "master"],
+	];
+	for (const args of candidates) {
+		const r = runGit(dir, args);
+		if (r.status === 0 && r.stdout.trim() !== "") return r.stdout.trim();
+	}
+	return null;
+}
+
 export function relatedEntityIds(dir: string, file: string): RelatedResult {
 	const r = runGit(dir, ["rev-list", "HEAD", "--", file]);
 	if (r.status !== 0) {
@@ -122,6 +137,23 @@ export function relatedEntityIds(dir: string, file: string): RelatedResult {
 		const show = runGit(dir, ["show", "--name-only", "--format=", sha]);
 		for (const line of show.stdout.split("\n")) {
 			if (line.startsWith(".arc/")) ids.add(idFromPath(line));
+		}
+	}
+	const ref = integrationRef(dir);
+	if (ref) {
+		const base = runGit(dir, ["merge-base", ref, "HEAD"]);
+		if (base.status === 0) {
+			const range = runGit(dir, [
+				"diff",
+				"--name-only",
+				base.stdout.trim(),
+				"HEAD",
+				"--",
+				".arc",
+			]);
+			for (const line of range.stdout.split("\n")) {
+				if (line.startsWith(".arc/")) ids.add(idFromPath(line));
+			}
 		}
 	}
 	return { ids: [...ids].sort(), commitCount: shas.length };
