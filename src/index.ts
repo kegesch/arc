@@ -21,6 +21,8 @@ import { traceCommand } from "./commands/trace.js";
 import { skillCommand } from "./commands/skill.js";
 import { initAgentCommand } from "./commands/init-agent.js";
 import { contextCommand } from "./commands/context.js";
+import { diffCommand } from "./commands/diff.js";
+import { relatedCommand } from "./commands/related.js";
 import { nextCommand } from "./commands/next.js";
 import { reportCommand } from "./commands/report.js";
 import {
@@ -242,6 +244,32 @@ program
 	.description("Search entities by text or structured modifiers")
 	.action((terms: string[]) => {
 		queryCommand(terms.join(" "));
+	});
+
+program
+	.command("diff")
+	.argument(
+		"<ref>",
+		"Git ref to compare against HEAD (e.g. HEAD~3, v0.1.0, main..HEAD)",
+	)
+	.argument("[ref2]", "Optional second ref; defaults to HEAD")
+	.option("--format <format>", "Output format: text or json", "text")
+	.description("Show arc entities added, removed, or modified between git refs")
+	.action(
+		(refA: string, refB: string | undefined, opts: { format?: string }) => {
+			diffCommand(refA, refB, opts);
+		},
+	);
+
+program
+	.command("related")
+	.argument("<file>", "Source file to trace arc rationale for")
+	.option("--format <format>", "Output format: text or json", "text")
+	.description(
+		"Find arc entities related to a code file via git history co-occurrence",
+	)
+	.action((file: string, opts: { format?: string }) => {
+		relatedCommand(file, opts);
 	});
 
 program
