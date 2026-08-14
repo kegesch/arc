@@ -2,7 +2,7 @@ schemaVersion: "2"
 kind: mixin
 name: arc-toolchain
 displayName: arc toolchain (mise)
-version: "0.2.0"
+version: "0.2.1"
 description: >-
   Installs mise (mise-en-place) and uses the repo's mise.toml to provision the
   arc development toolchain (bun + node) inside an opencode sandbox, pre-warms
@@ -24,6 +24,7 @@ permissions:
       - api.github.com
       - objects.githubusercontent.com
       - release-assets.githubusercontent.com
+      - mise.en.dev
       # mise backend hosts for the tools this repo pins in mise.toml:
       # bun (aqua: oven-sh/bun) and node (corenode: nodejs.org dist).
       - nodejs.org
@@ -33,6 +34,7 @@ permissions:
       # - opencode-go     -> https://opencode.ai/zen/go/v1
       - api.z.ai
       - opencode.ai
+      - models.opencode.ai
 
 # Proxy-managed credentials: the container env vars hold only the
 # `proxy-managed` sentinel; the host-side egress proxy swaps the real key
@@ -82,6 +84,10 @@ environment:
 volumes:
   - path: /home/agent/.local/share/opencode
     size: 1g
+    # 1777 (sticky, world-writable, like /tmp): block volumes mount
+    # root-owned and the kit spec has no ownership field — without 1777 the
+    # agent user (1000) gets EACCES creating ~/.local/share/opencode/log.
+    mode: "1777"
 
 setup:
   install:

@@ -100,6 +100,13 @@ is preferred: the raw key never lands in container storage.
 
 If requests get blocked, check `sbx policy log <sandbox>` for denied hosts.
 
+## Troubleshooting
+
+- **`EACCES: permission denied, mkdir /home/agent/.local/share/opencode/log`** —
+  the state volume mounted root-owned (fixed in kit 0.2.1 via `mode: "1777"`).
+  Volumes are creation-time only, so recreate the sandbox:
+  `sbx rm <sandbox> && sbx run opencode --kit ./sbx-opencode/ .`
+
 ## Files
 
 - `spec.yaml` — kit declaration (credentials, install steps, network
