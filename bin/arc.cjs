@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 const { spawn } = require("node:child_process");
-const { existsSync } = require("node:fs");
+const { existsSync, chmodSync } = require("node:fs");
 const path = require("node:path");
 const { getTarget, listKeys } = require("./platforms.cjs");
 
@@ -33,6 +33,10 @@ if (!existsSync(binaryPath)) {
 	process.stderr.write(`arc: binary not found at ${binaryPath}\n`);
 	process.exit(1);
 }
+
+try {
+	chmodSync(binaryPath, 0o755);
+} catch {}
 
 const child = spawn(binaryPath, process.argv.slice(2), { stdio: "inherit" });
 child.on("exit", (code, signal) => {

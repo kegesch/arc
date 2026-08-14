@@ -1,5 +1,13 @@
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import {
+	copyFileSync,
+	mkdirSync,
+	readFileSync,
+	rmSync,
+	statSync,
+	writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, test } from "bun:test";
 import { getTarget, listKeys } from "../bin/platforms.cjs";
@@ -57,5 +65,34 @@ describe("arc npm shim runtime", () => {
 		if (result.status === 0) return;
 		expect(result.status).toBe(1);
 		expect(result.stderr).toContain("https://github.com/kegesch/arc/releases");
+	});
+});
+
+describe("arc npm shim executable handling", () => {
+	test("spawns the binary even when the installed package marks it non-executable", () => {
+		const tmp = join(tmpdir(), "arc-shim-exec");
+		mkdirSync(tmp, { recursive: true });
+		mkdirSync(join(tmp, "node_modules", "@kegesch", "arc-linux-x64"), {
+			recursive: true,
+		});
+		writeFileSync(
+			join(tmp, "node_modules", "@kegesch", "arc-linux-x64", "package.json"),
+			JSON.stringify({ name: "@kegesch/arc-linux-x64", version: "0.0.0" }),
+		);
+		const binary = join(tmp, "node_modules", "@kegesch", "arc-linux-x64", "arc");
+		writeFileSync(binary, process.execPath, { mode: 0o644 });
+		copyFileSync(join(import.meta.dir, "..", "bin", "arc.cjs"), join(tmp, "arc.cjs"));
+		copyFileSync(
+			join(import.meta.dir, "..", "bin", "platforms.cjs"),
+			join(tmp, "platforms.cjs"),
+		);
+		const result = spawnSync(process.execPath, [join(tmp, "arc.cjs"), "--version"], {
+			encoding: "utf-8",
+		});
+		const mode = statSync(binary).mode & 0o777;
+		rmSync(tmp, { recursive: true, force: true });
+		if (process.platform === "win32") return;
+		expect(result.status).toBe(0);
+		expect(mode & 0o111).not.toBe(0);
 	});
 });
