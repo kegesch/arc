@@ -1,6 +1,6 @@
 {
   "name": "@kegesch/arc-linux-x64",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "arc binary for linux-x64",
   "license": "MIT",
   "repository": {
