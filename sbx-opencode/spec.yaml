@@ -2,7 +2,7 @@ schemaVersion: "2"
 kind: mixin
 name: arc-toolchain
 displayName: arc toolchain (mise)
-version: "0.2.1"
+version: "0.2.2"
 description: >-
   Installs mise (mise-en-place) and uses the repo's mise.toml to provision the
   arc development toolchain (bun + node) inside an opencode sandbox, pre-warms
@@ -81,15 +81,22 @@ environment:
 # Persist opencode auth + session state across sandbox restarts/recreates.
 # This also keeps any manual `/connect` (auth.json) login alive, so the
 # credential bindings above are optional rather than mandatory.
+# NOTE: block volumes mount root-owned and the runtime does not apply
+# volumes[].mode to them — ownership is fixed by the root startup command
+# in setup.startup below, before the agent launches.
 volumes:
   - path: /home/agent/.local/share/opencode
     size: 1g
-    # 1777 (sticky, world-writable, like /tmp): block volumes mount
-    # root-owned and the kit spec has no ownership field — without 1777 the
-    # agent user (1000) gets EACCES creating ~/.local/share/opencode/log.
-    mode: "1777"
 
 setup:
+  # Runs as root on EVERY container start, before the agent launches —
+  # repairs the state volume's ownership (block volumes come up root:root
+  # 755, which makes opencode's uid 1000 hit EACCES on mkdir log/).
+  # install -d is create-or-repair: idempotent.
+  startup:
+    - command: ["install", "-d", "-o", "1000", "-g", "1000", "-m", "1777", "/home/agent/.local/share/opencode"]
+      user: "0"
+      description: "Make opencode state volume agent-writable"
   install:
     # 1. Install mise from a pinned, digest-verified GitHub release tarball
     #    (checksums from the release's SHASUMS256.txt, same pattern as the

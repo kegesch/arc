@@ -103,9 +103,11 @@ If requests get blocked, check `sbx policy log <sandbox>` for denied hosts.
 ## Troubleshooting
 
 - **`EACCES: permission denied, mkdir /home/agent/.local/share/opencode/log`** —
-  the state volume mounted root-owned (fixed in kit 0.2.1 via `mode: "1777"`).
-  Volumes are creation-time only, so recreate the sandbox:
-  `sbx rm <sandbox> && sbx run opencode --kit ./sbx-opencode/ .`
+  the state volume mounted root-owned (the runtime doesn't apply
+  `volumes[].mode` to block volumes). Kit 0.2.2 fixes it with a root startup
+  command that repairs ownership before the agent launches. For a sandbox
+  created with an older kit, fix it in place:
+  `sbx exec -u root <sandbox> -- install -d -o 1000 -g 1000 -m 1777 /home/agent/.local/share/opencode`
 
 ## Files
 
@@ -117,9 +119,11 @@ If requests get blocked, check `sbx policy log <sandbox>` for denied hosts.
 
 The kit allows exactly: `github.com`, `api.github.com`,
 `objects.githubusercontent.com`, `release-assets.githubusercontent.com`
-(mise + bun releases), `nodejs.org` (node dist), `registry.npmjs.org`
-(bun install), `api.z.ai` + `opencode.ai` (model providers). Anything else
-the agent needs must be allowed by the base agent or another kit.
+(mise + bun releases), `mise.en.dev` (mise metadata), `nodejs.org`
+(node dist), `registry.npmjs.org` (bun install), `api.z.ai` +
+`opencode.ai` + `models.opencode.ai` (model providers + model catalog).
+Anything else the agent needs must be allowed by the base agent or
+another kit.
 
 ## Bumping mise
 
