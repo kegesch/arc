@@ -3,6 +3,7 @@
 // CLI entry point
 
 import { Command } from "commander";
+import pkg from "../package.json";
 import { addCommand } from "./commands/add.js";
 import { checkCommand } from "./commands/check.js";
 import { editCommand } from "./commands/edit.js";
@@ -38,7 +39,7 @@ program
 	.description(
 		"Architecture, Requirements, Assumptions, Decisions — traceability for humans and agents",
 	)
-	.version("0.1.0");
+	.version(pkg.version);
 
 program
 	.command("init")
