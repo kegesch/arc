@@ -124,6 +124,10 @@ jobs:
           cp dist/arc-darwin-x64/arc     packages/arc-darwin-x64/arc
           cp dist/arc-darwin-arm64/arc   packages/arc-darwin-arm64/arc
           cp dist/arc-win32-x64/arc.exe  packages/arc-win32-x64/arc.exe
+          chmod +x packages/arc-linux-x64/arc \
+            packages/arc-linux-arm64/arc \
+            packages/arc-darwin-x64/arc \
+            packages/arc-darwin-arm64/arc
       - name: Publish per-arch packages first
         run: |
           set -e

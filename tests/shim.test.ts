@@ -70,6 +70,7 @@ describe("arc npm shim runtime", () => {
 
 describe("arc npm shim executable handling", () => {
 	test("spawns the binary even when the installed package marks it non-executable", () => {
+		if (process.platform === "win32") return;
 		const tmp = join(tmpdir(), "arc-shim-exec");
 		mkdirSync(tmp, { recursive: true });
 		mkdirSync(join(tmp, "node_modules", "@kegesch", "arc-linux-x64"), {
@@ -80,7 +81,7 @@ describe("arc npm shim executable handling", () => {
 			JSON.stringify({ name: "@kegesch/arc-linux-x64", version: "0.0.0" }),
 		);
 		const binary = join(tmp, "node_modules", "@kegesch", "arc-linux-x64", "arc");
-		writeFileSync(binary, process.execPath, { mode: 0o644 });
+		writeFileSync(binary, "#!/bin/sh\necho fake-arc-ok\n", { mode: 0o644 });
 		copyFileSync(join(import.meta.dir, "..", "bin", "arc.cjs"), join(tmp, "arc.cjs"));
 		copyFileSync(
 			join(import.meta.dir, "..", "bin", "platforms.cjs"),
@@ -91,8 +92,8 @@ describe("arc npm shim executable handling", () => {
 		});
 		const mode = statSync(binary).mode & 0o777;
 		rmSync(tmp, { recursive: true, force: true });
-		if (process.platform === "win32") return;
 		expect(result.status).toBe(0);
+		expect(result.stdout).toContain("fake-arc-ok");
 		expect(mode & 0o111).not.toBe(0);
 	});
 });
