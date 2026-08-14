@@ -1,0 +1,5 @@
+# Toolchain for developing arc (https://mise.jdx.dev).
+# Mirrors CI: bun-version pinned to the 1.3 line, node matches release.yml's node-version.
+[tools]
+bun = "1.3"
+node = "24"
