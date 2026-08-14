@@ -16,6 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.x"
       - name: Bump version in shim + all 5 per-arch packages
         run: |
           CURRENT=$(jq -r .version package.json)
@@ -64,6 +66,8 @@ jobs:
         with:
           ref: ${{ needs.bump.outputs.tag }}
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.x"
       - run: bun install
       - run: bun build src/index.ts --compile --outfile ${{ matrix.binary }}
       - uses: actions/upload-artifact@v4

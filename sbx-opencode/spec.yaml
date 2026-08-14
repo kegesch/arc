@@ -1,0 +1,170 @@
+schemaVersion: "2"
+kind: mixin
+name: arc-toolchain
+displayName: arc toolchain (mise)
+version: "0.2.0"
+description: >-
+  Installs mise (mise-en-place) and uses the repo's mise.toml to provision the
+  arc development toolchain (bun + node) inside an opencode sandbox, pre-warms
+  dependencies with `bun install`, and wires proxy-managed credentials for the
+  Z.AI GLM Coding Plan and OpenCode Go model providers.
+sourceURL: https://github.com/kegesch/arc
+licenses:
+  - MIT
+
+# This mixin is opencode-specific (BASH_ENV wiring, workspace layout).
+requires:
+  agent: opencode
+
+permissions:
+  network:
+    allow:
+      # mise itself: release tarball + GitHub releases API for version resolution.
+      - github.com
+      - api.github.com
+      - objects.githubusercontent.com
+      - release-assets.githubusercontent.com
+      # mise backend hosts for the tools this repo pins in mise.toml:
+      # bun (aqua: oven-sh/bun) and node (corenode: nodejs.org dist).
+      - nodejs.org
+      - registry.npmjs.org
+      # Model provider API endpoints (credential injection targets below).
+      # - zai-coding-plan -> https://api.z.ai/api/coding/paas/v4
+      # - opencode-go     -> https://opencode.ai/zen/go/v1
+      - api.z.ai
+      - opencode.ai
+
+# Proxy-managed credentials: the container env vars hold only the
+# `proxy-managed` sentinel; the host-side egress proxy swaps the real key
+# into the Authorization header for the injected domains. The real keys
+# never enter container storage.
+#
+# Bind on the host once per machine:
+#   sbx secret set zai <zai-api-key>         # z.ai/manage-apikey/apikey-list
+#   sbx secret set opencode-go <opencode-key> # opencode.ai/auth (Zen / Go)
+#
+# Env var names and endpoints come from the models.dev registry that
+# opencode itself uses (both providers are @ai-sdk/openai-compatible,
+# i.e. Authorization: Bearer):
+#   zai-coding-plan: ZHIPU_API_KEY    -> api.z.ai
+#   opencode-go:     OPENCODE_API_KEY -> opencode.ai
+credentials:
+  - service: zai
+    description: "Z.AI API key (GLM Coding Plan)"
+    apiKey:
+      name: ZHIPU_API_KEY
+      proxyManaged: true
+      inject:
+        - domain: api.z.ai
+          scheme: bearer
+  - service: opencode-go
+    description: "OpenCode API key (Go plan, from opencode.ai/auth)"
+    apiKey:
+      name: OPENCODE_API_KEY
+      proxyManaged: true
+      inject:
+        - domain: opencode.ai
+          scheme: bearer
+
+environment:
+  variables:
+    # Trust the repo's mise.toml without an interactive prompt (the user has
+    # already opted in by attaching this workspace to the sandbox).
+    MISE_TRUSTED_CONFIG_PATHS: "/"
+    # opencode spawns non-interactive `bash -c` shells for its tool calls;
+    # those don't read ~/.bashrc. BASH_ENV makes every such shell source the
+    # mise shim PATH first.
+    BASH_ENV: /home/agent/.config/mise/env.sh
+
+# Persist opencode auth + session state across sandbox restarts/recreates.
+# This also keeps any manual `/connect` (auth.json) login alive, so the
+# credential bindings above are optional rather than mandatory.
+volumes:
+  - path: /home/agent/.local/share/opencode
+    size: 1g
+
+setup:
+  install:
+    # 1. Install mise from a pinned, digest-verified GitHub release tarball
+    #    (checksums from the release's SHASUMS256.txt, same pattern as the
+    #    official docker/sbx-kits-contrib mise kit). To bump: change
+    #    MISE_VERSION and both SHA256s below.
+    - command: |
+        set -euo pipefail
+        MISE_VERSION=2026.5.2
+        ARCH=$(dpkg --print-architecture)
+        case "$ARCH" in
+          amd64)
+            TARBALL="mise-v${MISE_VERSION}-linux-x64.tar.gz"
+            SHA256="cdf616b3d8554bece574cb1a5c0f19cc0f551dffbecf66037df1cc06569a42ef"
+            ;;
+          arm64)
+            TARBALL="mise-v${MISE_VERSION}-linux-arm64.tar.gz"
+            SHA256="a746ad85fe8a7b62a6c72939da5fb4231074fd16c482f6334a598bd92926f41e"
+            ;;
+          *)
+            echo "unsupported sandbox arch: $ARCH (expected amd64 or arm64)" >&2
+            exit 1
+            ;;
+        esac
+        URL="https://github.com/jdx/mise/releases/download/v${MISE_VERSION}/${TARBALL}"
+        curl --proto '=https' --tlsv1.2 -fsSL -o /tmp/mise.tgz "$URL"
+        echo "${SHA256}  /tmp/mise.tgz" | sha256sum -c -
+        tar -C /tmp -xzf /tmp/mise.tgz mise/bin/mise
+        install -m 0755 /tmp/mise/bin/mise /usr/local/bin/mise
+        rm -rf /tmp/mise /tmp/mise.tgz
+        mise --version
+      user: "0"
+      description: "Install mise CLI v2026.5.2, version+digest pinned"
+    # 2. Wire mise activation into the agent user's interactive shells.
+    #    Append-only and grep-guarded so it stays idempotent.
+    - command: |
+        set -euo pipefail
+        for RC in ~/.bashrc ~/.profile; do
+          touch "$RC"
+          grep -qF 'mise activate bash' "$RC" || \
+            printf '\n# mise (added by arc-toolchain kit)\neval "$(mise activate bash)"\n' >> "$RC"
+        done
+      user: "1000"
+      description: "Hook `mise activate bash` into ~/.bashrc and ~/.profile"
+    # 3. Provision the repo toolchain from mise.toml (bun + node) and pre-warm
+    #    dependencies. Guarded on mise.toml existing so the kit also works in
+    #    --clone mode before the clone populates the workspace.
+    - command: |
+        set -euo pipefail
+        cd /home/agent/workspace
+        if [ ! -f mise.toml ]; then
+          echo "arc-toolchain: no mise.toml in workspace — skipping tool install"
+          exit 0
+        fi
+        MISE_YES=1 mise install
+        mise exec -- bun install
+        mise exec -- bun --version
+      user: "1000"
+      description: "mise install (bun, node) + pre-warm `bun install` in the workspace"
+
+agentInstructions:
+  content: |
+    ## Toolchain (mise)
+
+    The dev toolchain is managed by mise and pinned in `mise.toml` (bun 1.3, node 24).
+    mise shims are already on PATH. Commands for this repo:
+
+    - Install deps: `bun install`
+    - Run tests: `bun test`
+    - Build standalone binary: `bun run build`
+    - Run during development: `bun run dev -- <args>`
+
+    If a tool is missing, run `mise install` in the workspace root.
+
+    ## Model providers
+
+    Z.AI (GLM Coding Plan) and OpenCode Go are pre-wired via proxy-managed
+    credentials (`ZHIPU_API_KEY`, `OPENCODE_API_KEY` are already set to a
+    sentinel that the host proxy exchanges for the real key — never log or
+    write these values out). Pick a model with `/models`, e.g.
+    `zai-coding-plan/glm-5.3` or an `opencode-go/...` model.
+
+    If no credentials are bound on the host, run `/connect` in the TUI once
+    instead — the login persists on the `/home/agent/.local/share/opencode`
+    volume.
